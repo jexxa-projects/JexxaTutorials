@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>tutorials</artifactId>
+    <artifactId>jexxatutorials</artifactId>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>4.1.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>hellojexxa</artifactId>
@@ -18,29 +18,6 @@
   <build>
 
     <plugins>
-      <plugin>
-        <groupId>org.graalvm.nativeimage</groupId>
-        <artifactId>native-image-maven-plugin</artifactId>
-        <version>21.2.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>native-image</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <skip>true</skip> <!-- set to false to enable native image-->
-          <imageName>hellojexxa-native</imageName>
-          <buildArgs>
-            --no-fallback
-            --report-unsupported-elements-at-runtime
-            -H:+AllowIncompleteClasspath
-            -H:+ReportExceptionStackTraces
-          </buildArgs>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId> <!-- Extend configuration from parent-pom by main class-->
         <executions>

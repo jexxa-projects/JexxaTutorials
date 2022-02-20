@@ -1,33 +1,442 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>jexxa</artifactId>
-    <groupId>io.jexxa</groupId>
-    <version>4.1.1-SNAPSHOT</version>
-  </parent>
 
-  <artifactId>tutorials</artifactId>
-  <groupId>io.jexxa.tutorials</groupId>
-  <packaging>pom</packaging>
-  <name>Tutorials</name>
+    <groupId>io.jexxa.tutorials</groupId>
+    <artifactId>jexxatutorials</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <properties>
-      <jexxa-core-stable.version>4.1.0</jexxa-core-stable.version>
-  </properties>
+    <!-- Project Information -->
+    <name>JexxaTutorials</name>
+    <url>https://www.jexxa.io</url>
+    <description>JexxaTutorials</description>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Michael Repplinger</name>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/repplix/JexxaTutorials.git</connection>
+        <url>https://github.com/repplix/JexxaTutorials</url>
+        <developerConnection>scm:git:https://github.com/repplix/JexxaTutorials.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <!--version of  maven plugins  -->
+        <gpg.plugin.version>3.0.1</gpg.plugin.version>
+        <maven.clean.plugin>3.1.0</maven.clean.plugin>
+        <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
+        <maven.deploy.plugin>3.0.0-M1</maven.deploy.plugin>
+        <maven.failsafe.plugin>3.0.0-M5</maven.failsafe.plugin>
+        <maven.install.plugin>3.0.0-M1</maven.install.plugin>
+        <maven.jar.plugin>3.2.0</maven.jar.plugin>
+        <maven.resources.plugin>3.2.0</maven.resources.plugin>
+        <maven.site.plugin>3.9.1</maven.site.plugin>
+        <maven.surefire.plugin>3.0.0-M5</maven.surefire.plugin>
+        <maven.release.plugin>3.0.0-M4</maven.release.plugin>
+        <maven.jacoco.plugin>0.8.7</maven.jacoco.plugin>
+        <maven.reports.plugin>3.1.2</maven.reports.plugin>
+        <maven.enforcer.plugin>3.0.0</maven.enforcer.plugin>
+        <maven.javadoc.plugin>3.3.1</maven.javadoc.plugin>
+        <maven.templating.plugin>1.0.0</maven.templating.plugin>
+        <maven.versions.plugin>2.8.1</maven.versions.plugin>
+
+        <!--information for filtered sources  -->
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+        <!-- target/compiler configuration  -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>11</maven.compiler.release>
+
+        <!-- sonar configuration  -->
+        <sonar.organization>repplix</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>${sonar-login}</sonar.login>
+        <sonar.java.source>1.11</sonar.java.source>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-ut/jacoco.xml,target/site/jacoco-it/jacoco.xml </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.java.libraries>target</sonar.java.libraries>
+        <argLine>-Xmx2048m -Xms1024m</argLine>
+
+        <!-- version of compile dependencies -->
+        <jexxa.version>4.1.0</jexxa.version>
+        <commons.lang3.version>3.12.0</commons.lang3.version>
+
+
+        <!-- version of test dependencies -->
+        <activemq.client.version>5.16.4</activemq.client.version>
+        <postgres.version>42.3.3</postgres.version>
+        <unirest.java.version>3.13.6</unirest.java.version>
+        <junit.platform.launcher.version>1.8.2</junit.platform.launcher.version>
+        <junit.jupiter.engine.version>5.8.2</junit.jupiter.engine.version>
+        <junit.jupiter.params.version>5.8.2</junit.jupiter.params.version>
+        <slf4j.simple.version>1.7.36</slf4j.simple.version>
+        <slf4j.api.version>1.7.36</slf4j.api.version>
+        <awaitility.version>4.1.1</awaitility.version>
+
+        <!-- version of tutorials dependencies -->
+        <addendj.version>1.0.1</addendj.version>
+        <aspectj.version>1.9.8</aspectj.version>
+        <aspectjtools.version>1.9.8</aspectjtools.version>
+        <aspectjrt.version>1.9.8</aspectjrt.version>
+        <commons.cli.version>1.5.0</commons.cli.version>
+
+        <!-- version of maven dependencies for tutorials -->
+        <aspectj.maven.plugin.version>1.12.6</aspectj.maven.plugin.version>
+        <maven.jib.plugin>3.2.0</maven.jib.plugin>
+        <maven.shade.plugin>3.2.4</maven.shade.plugin>
+    </properties>
+
+    <build>
+        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (maybe moved to parent pom) -->
+            <plugins>
+                <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven.clean.plugin}</version>
+                </plugin>
+                <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>templating-maven-plugin</artifactId>
+                    <version>${maven.templating.plugin}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven.failsafe.plugin}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven.release.plugin}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.plugin}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${maven.install.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven.reports.plugin}</version>
+                </plugin>
+                <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven.site.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${maven.jacoco.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${gpg.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven.enforcer.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven.shade.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${maven.versions.plugin}</version>
+                    <configuration>
+                        <rulesUri>file:///${session.executionRootDirectory}/mavenVersionRules.xml</rulesUri>
+                    </configuration>
+                </plugin>
+
+
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+
+
+        </pluginManagement>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <!-- here the phase you need -->
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+
+                            <finalName>${project.artifactId}-jar-with-dependencies</finalName>
+
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>about.html</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>META-INF/*.txt</exclude>
+                                        <exclude>META-INF/NOTICE</exclude>
+                                        <exclude>META-INF/LICENSE</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>io.jexxa:jexxa-core</artifact>
+                                    <excludes>
+                                        <exclude>*.properties</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>io.jexxa.addendj:*</artifact>
+                                    <excludes>
+                                        <exclude>**/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>io.jexxa:jexxa-core</artifact>
+                                    <excludes>
+                                        <exclude>*.properties</exclude>
+                                    </excludes>
+                                </filter>
+
+                                <filter> <!-- filter aspectj related duplications -->
+                                    <artifact>org.aspectj:aspectjtools</artifact>
+                                    <excludes>
+                                        <exclude>org/aspectj/internal/**</exclude>
+                                        <exclude>org/aspectj/lang/**</exclude>
+                                        <exclude>org/aspectj/runtime/**</exclude>
+                                    </excludes>
+                                </filter>
+
+                                <filter>
+                                    <artifact>org.eclipse.jetty:*</artifact>
+                                    <excludes>
+                                        <exclude>**/encoding.properties</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+    <profiles>
+        <profile>
+            <id>active-on-jdk-16</id>
+            <activation>
+                <jdk>[16,)</jdk>
+            </activation>
+            <modules>
+                <module>BookStoreJ16</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>jacoco</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>io.jexxa.tutorials.*</exclude>
+                            </excludes>
+                        </configuration>
+
+                        <executions>
+                            <!--
+                                Prepares the property pointing to the JaCoCo runtime agent which
+                                is passed as VM argument when Maven the Surefire plugin is executed.
+                            -->
+                            <execution>
+                                <id>pre-unit-test</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                                    <!--
+                                        Sets the name of the property containing the settings
+                                        for JaCoCo runtime agent.
+                                    -->
+                                    <propertyName>surefireArgLine</propertyName>
+                                </configuration>
+                            </execution>
+                            <!--
+                                Ensures that the code coverage report for unit tests is created after
+                                unit tests have been run.
+                            -->
+                            <execution>
+                                <id>post-unit-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                                    <!-- Sets the output directory for the code coverage report. -->
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>pre-integration-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+                                    <!--
+                                        Sets the name of the property containing the settings
+                                        for JaCoCo runtime agent.
+                                    -->
+                                    <propertyName>failsafeArgLine</propertyName>
+                                </configuration>
+                            </execution>
+                            <!--
+                                Ensures that the code coverage report for integration tests after
+                                integration tests have been run.
+                            -->
+                            <execution>
+                                <id>post-integration-test</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+                                    <!-- Sets the output directory for the code coverage report. -->
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>merge-results</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>merge</goal>
+                                </goals>
+                                <configuration>
+                                    <fileSets>
+                                        <fileSet>
+                                            <directory>${project.build.directory}/coverage-reports</directory>
+                                            <includes>
+                                                <include>*.exec</include>
+                                            </includes>
+                                        </fileSet>
+                                    </fileSets>
+                                    <destFile>${project.build.directory}/coverage-reports/jacoco-aggregate.exec</destFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>post-merge-report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-aggregate.exec</dataFile>
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 
   <dependencies>
     <dependency>
       <groupId>io.jexxa</groupId>
       <artifactId>jexxa-web</artifactId>
-      <version>${project.version}</version>
+      <version>${jexxa.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.jexxa.jexxatest</groupId>
       <artifactId>jexxa-test</artifactId>
-      <version>${project.version}</version>
+      <version>${jexxa.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -39,127 +448,12 @@
 
   </dependencies>
 
-  <build>
-      <pluginManagement>
-          <plugins>
-              <plugin>
-                  <artifactId>maven-deploy-plugin</artifactId>
-                  <configuration>
-                      <skip>true</skip>
-                  </configuration>
-              </plugin>
-          </plugins>
-      </pluginManagement>
-
-      <plugins>
-          <plugin>
-              <artifactId>maven-resources-plugin</artifactId>
-              <executions>
-                  <execution>
-              <id>copy-resources</id>
-              <!-- here the phase you need -->
-              <phase>validate</phase>
-              <goals>
-                  <goal>copy-resources</goal>
-              </goals>
-              <configuration>
-                  <outputDirectory>${basedir}/target/classes</outputDirectory>
-                  <resources>
-                      <resource>
-                          <directory>src/main/resources</directory>
-                          <filtering>true</filtering>
-                      </resource>
-                  </resources>
-              </configuration>
-              </execution>
-              </executions>
-
-          </plugin>
-          <plugin>
-          <artifactId>maven-shade-plugin</artifactId>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>shade</goal>
-              </goals>
-              <configuration>
-
-                <finalName>${project.artifactId}-jar-with-dependencies</finalName>
-
-                <filters>
-                  <filter>
-                    <artifact>*:*</artifact>
-                    <excludes>
-                      <exclude>module-info.class</exclude>
-                      <exclude>about.html</exclude>
-                      <exclude>META-INF/MANIFEST.MF</exclude>
-                      <exclude>META-INF/*.txt</exclude>
-                      <exclude>META-INF/NOTICE</exclude>
-                      <exclude>META-INF/LICENSE</exclude>
-                    </excludes>
-                  </filter>
-                  <filter>
-                    <artifact>io.jexxa:jexxa-core</artifact>
-                    <excludes>
-                      <exclude>*.properties</exclude>
-                    </excludes>
-                  </filter>
-                  <filter>
-                    <artifact>io.jexxa.addendj:*</artifact>
-                    <excludes>
-                      <exclude>**/**</exclude>
-                    </excludes>
-                  </filter>
-                  <filter>
-                    <artifact>io.jexxa:jexxa-core</artifact>
-                    <excludes>
-                      <exclude>*.properties</exclude>
-                    </excludes>
-                  </filter>
-
-                  <filter> <!-- filter aspectj related duplications -->
-                    <artifact>org.aspectj:aspectjtools</artifact>
-                    <excludes>
-                      <exclude>org/aspectj/internal/**</exclude>
-                      <exclude>org/aspectj/lang/**</exclude>
-                      <exclude>org/aspectj/runtime/**</exclude>
-                    </excludes>
-                  </filter>
-
-                  <filter>
-                    <artifact>org.eclipse.jetty:*</artifact>
-                    <excludes>
-                      <exclude>**/encoding.properties</exclude>
-                    </excludes>
-                  </filter>
-                </filters>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>active-on-jdk-16</id>
-      <activation>
-        <jdk>[16,)</jdk>
-      </activation>
-      <modules>
-        <module>BookStoreJ16</module>
-      </modules>
-    </profile>
-  </profiles>
-
-
   <modules>
-    <module>HelloJexxa</module>
     <module>TimeService</module>
     <module>BookStore</module>
     <module>BookStoreJ</module>
     <module>ContractManagement</module>
+  <!---  <module>HelloJexxa</module> -->
   </modules>
 
 </project>
