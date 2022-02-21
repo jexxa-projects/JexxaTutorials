@@ -69,7 +69,7 @@
         <argLine>-Xmx2048m -Xms1024m</argLine>
 
         <!-- version of compile dependencies -->
-        <jexxa.version>4.1.0</jexxa.version>
+        <jexxa.version>4.1.1</jexxa.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
 
 
