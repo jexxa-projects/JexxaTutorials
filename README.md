@@ -38,4 +38,7 @@ See documentation [BookStoreJ - With OpenAPI support](BookStoreJ/README-OPENAPI.
 See documentation [BookStoreJ16](BookStoreJ16/)
 
 ## ContractManagement - Using an ObjectStore  
-See documentation [ContractManagement](ContractManagement/) 
+See documentation [ContractManagement](ContractManagement/)
+
+## TODO: 
+mvn jib:dockerBuild -PlocalDockerImage

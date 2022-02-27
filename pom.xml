@@ -2,15 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+    <!-- **************************************************************************** -->
+    <!-- TODO (REQUIRED): Change your project name, groupId, artifactId, ... here.    -->
+    <!-- **************************************************************************** -->
+    <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <artifactId>jexxatutorials</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
-    <!-- Project Information -->
-    <name>JexxaTutorials</name>
     <url>https://www.jexxa.io</url>
-    <description>JexxaTutorials</description>
+
+    <description>JexxaTutorials - Typical use cases for Jexxa</description>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -32,73 +35,199 @@
     </scm>
 
     <properties>
+        <image.repository.root>ghcr.io/repplix</image.repository.root>
+        <main.class>${project.groupId}.${project.name}</main.class>
+        <main.arguments>-jdbc</main.arguments>
+        <main.http.port>7500</main.http.port>
+        <main.https.port>8081</main.https.port>
+        <docker.base.image>eclipse-temurin:17-alpine</docker.base.image>
+
+        <!-- target/compiler configuration  -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+
+        <!-- version of dependencies -->
+        <jexxa-web.release.version>4.1.1</jexxa-web.release.version>
+        <addend.version>1.1.0</addend.version>
+        <activemq.client.version>5.16.4</activemq.client.version>
+        <postgres.version>42.3.3</postgres.version>
+        <slf4j.simple.version>1.7.36</slf4j.simple.version>
+        <commons.lang3.version>3.12.0</commons.lang3.version>
+        <commons.cli.version>1.5.0</commons.cli.version>
+
+        <!-- version of test dependencies -->
+        <junit.platform.launcher.version>1.8.2</junit.platform.launcher.version>
+        <junit.jupiter.engine.version>5.8.2</junit.jupiter.engine.version>
+        <junit.jupiter.params.version>5.8.2</junit.jupiter.params.version>
+        <awaitility.version>4.1.1</awaitility.version>
+        <h2database.version>2.1.210</h2database.version>
+        <unirest.java.version>3.13.6</unirest.java.version>
+        <jexxa-test.release.version>4.1.1</jexxa-test.release.version>
+
+        <!-- server-name used in mavens settings.xml to find to your repository credentials -->
+        <project.scm.id>github</project.scm.id>
+
+        <!--information for filtered sources  -->
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
         <!--version of  maven plugins  -->
-        <gpg.plugin.version>3.0.1</gpg.plugin.version>
         <maven.clean.plugin>3.1.0</maven.clean.plugin>
         <maven.compiler.plugin>3.10.0</maven.compiler.plugin>
-        <maven.deploy.plugin>3.0.0-M1</maven.deploy.plugin>
+        <maven.deploy.plugin>3.0.0-M2</maven.deploy.plugin>
         <maven.failsafe.plugin>3.0.0-M5</maven.failsafe.plugin>
         <maven.install.plugin>3.0.0-M1</maven.install.plugin>
         <maven.jar.plugin>3.2.2</maven.jar.plugin>
         <maven.resources.plugin>3.2.0</maven.resources.plugin>
         <maven.site.plugin>3.11.0</maven.site.plugin>
         <maven.surefire.plugin>3.0.0-M5</maven.surefire.plugin>
-        <maven.release.plugin>3.0.0-M5</maven.release.plugin>
+        <maven.release.plugin>3.0.0-M1</maven.release.plugin>
         <maven.jacoco.plugin>0.8.7</maven.jacoco.plugin>
-        <maven.reports.plugin>3.2.1</maven.reports.plugin>
+        <maven.reports.plugin>3.2.2</maven.reports.plugin>
         <maven.enforcer.plugin>3.0.0</maven.enforcer.plugin>
-        <maven.javadoc.plugin>3.3.1</maven.javadoc.plugin>
-        <maven.templating.plugin>1.0.0</maven.templating.plugin>
+        <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
         <maven.versions.plugin>2.9.0</maven.versions.plugin>
-
-        <!--information for filtered sources  -->
-        <build.timestamp>${maven.build.timestamp}</build.timestamp>
-        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-
-        <!-- target/compiler configuration  -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>11</maven.compiler.release>
-
-        <!-- sonar configuration  -->
-        <sonar.organization>repplix</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.login>${sonar-login}</sonar.login>
-        <sonar.java.source>1.11</sonar.java.source>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-ut/jacoco.xml,target/site/jacoco-it/jacoco.xml </sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.java.libraries>target</sonar.java.libraries>
-        <argLine>-Xmx2048m -Xms1024m</argLine>
-
-        <!-- version of compile dependencies -->
-        <jexxa.version>4.1.0</jexxa.version>
-        <commons.lang3.version>3.12.0</commons.lang3.version>
-
-
-        <!-- version of test dependencies -->
-        <activemq.client.version>5.16.4</activemq.client.version>
-        <postgres.version>42.3.3</postgres.version>
-        <unirest.java.version>3.13.6</unirest.java.version>
-        <junit.platform.launcher.version>1.8.2</junit.platform.launcher.version>
-        <junit.jupiter.engine.version>5.8.2</junit.jupiter.engine.version>
-        <junit.jupiter.params.version>5.8.2</junit.jupiter.params.version>
-        <slf4j.simple.version>1.7.36</slf4j.simple.version>
-        <slf4j.api.version>1.7.36</slf4j.api.version>
-        <awaitility.version>4.1.1</awaitility.version>
-
-        <!-- version of tutorials dependencies -->
-        <addendj.version>1.0.1</addendj.version>
-        <aspectj.version>1.9.8</aspectj.version>
-        <aspectjtools.version>1.9.8</aspectjtools.version>
-        <aspectjrt.version>1.9.8</aspectjrt.version>
-        <commons.cli.version>1.5.0</commons.cli.version>
-
-        <!-- version of maven dependencies for tutorials -->
-        <aspectj.maven.plugin.version>1.12.6</aspectj.maven.plugin.version>
+        <maven.build.helper.version>3.3.0</maven.build.helper.version>
         <maven.jib.plugin>3.2.0</maven.jib.plugin>
         <maven.shade.plugin>3.2.4</maven.shade.plugin>
+
     </properties>
 
+    <dependencies>
+        <!-- dependencies for application core -->
+        <dependency>
+            <groupId>io.jexxa</groupId>
+            <artifactId>jexxa-web</artifactId>
+            <version>${jexxa-web.release.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jexxa.addend</groupId>
+            <artifactId>Addend</artifactId>
+            <version>${addend.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.simple.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-client</artifactId>
+            <version>${activemq.client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${commons.cli.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>${junit.platform.launcher.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.engine.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.jupiter.params.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jexxa.jexxatest</groupId>
+            <artifactId>jexxa-test</artifactId>
+            <version>${jexxa-test.release.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2database.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>${unirest.java.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ********************************************************************** -->
+    <!-- IMPORTANT: Change following lines only if you are familiar with maven  -->
+    <!-- IMPORTANT: If you really need to adjust following lines, please check  -->
+    <!-- IMPORTANT: if you should start your maven project.                     -->
+    <!-- ********************************************************************** -->
+    <profiles>
+        <profile>     <!-- add tag developer image -->
+            <id>localDockerImage</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <dockerTag>developerImage</dockerTag>
+                <dockerMajorTag>developerImage</dockerMajorTag>
+                <dockerMajorMinorTag>developerImage</dockerMajorMinorTag>
+            </properties>
+
+
+        </profile>
+        <profile>
+            <id>dockerDeveloperTags</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+
+                    <!-- When calling maven release:prepare and release:perform execute only install and NOT deploy. Deploy publishes the image
+                         which should be bone by build server-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <goals>install</goals>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                        </configuration>
+                    </plugin>
+                </plugins>
+
+            </build>
+        </profile>
+    </profiles>
+
     <build>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (maybe moved to parent pom) -->
+        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults -->
             <plugins>
                 <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
                 <plugin>
@@ -107,25 +236,16 @@
                 </plugin>
                 <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
                 <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven.enforcer.plugin}</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven.resources.plugin}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>templating-maven-plugin</artifactId>
-                    <version>${maven.templating.plugin}</version>
-                </plugin>
-                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven.compiler.plugin}</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${maven.failsafe.plugin}</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${maven.release.plugin}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -140,9 +260,11 @@
                     <version>${maven.install.plugin}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>${maven.reports.plugin}</version>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven.deploy.plugin}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
                 </plugin>
                 <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
                 <plugin>
@@ -150,24 +272,13 @@
                     <version>${maven.site.plugin}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${maven.jacoco.plugin}</version>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven.reports.plugin}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>${gpg.plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>${maven.enforcer.plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>${maven.shade.plugin}</version>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${maven.build.helper.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -177,17 +288,7 @@
                         <rulesUri>file:///${session.executionRootDirectory}/mavenVersionRules.xml</rulesUri>
                     </configuration>
                 </plugin>
-
-
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </plugin>
             </plugins>
-
-
         </pluginManagement>
 
         <resources>
@@ -196,7 +297,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-
 
         <plugins>
             <plugin>
@@ -209,14 +309,126 @@
                 </configuration>
             </plugin>
 
+            <!-- Sets all docker tags -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- <phase>deploy</phase> -->
+                        <phase>validate</phase>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <configuration>
+                            <propertyPrefix>parsedVersion</propertyPrefix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- <phase>deploy</phase> -->
+                        <phase>validate</phase>
+
+                        <!-- Sets dockerTag to snapshot or latest -->
+                        <id>set-docker-image-tag</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>dockerTag</name>
+                            <value>${project.version} snapshot latest</value>
+                            <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+                            <replacement>$1$2</replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- <phase>deploy</phase> -->
+                        <phase>validate</phase>
+
+                        <!-- Sets dockerTag to snapshot or latest -->
+                        <id>set-dockerMajorTag-tag</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>dockerMajorTag</name>
+                            <value>${project.version} snapshot latest</value>
+                            <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+                            <replacement>${parsedVersion.majorVersion}.$1$2</replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- <phase>deploy</phase> -->
+                        <phase>validate</phase>
+
+                        <!-- Sets dockerTag to snapshot or latest -->
+                        <id>set-dockerMajorMinor-tag</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>dockerMajorMinorTag</name>
+                            <value>${project.version} snapshot latest</value>
+                            <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+                            <replacement>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.$1$2</replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven.failsafe.plugin}</version>
+                <configuration>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <!-- Property failsafeArgLine is set from failsafe plugin-->
+                    <argLine>${failsafeArgLine}</argLine>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.shade.plugin}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+
                         <configuration>
 
                             <finalName>${project.artifactId}-jar-with-dependencies</finalName>
@@ -240,24 +452,9 @@
                                     </excludes>
                                 </filter>
                                 <filter>
-                                    <artifact>io.jexxa.addendj:*</artifact>
-                                    <excludes>
-                                        <exclude>**/**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
                                     <artifact>io.jexxa:jexxa-core</artifact>
                                     <excludes>
                                         <exclude>*.properties</exclude>
-                                    </excludes>
-                                </filter>
-
-                                <filter> <!-- filter aspectj related duplications -->
-                                    <artifact>org.aspectj:aspectjtools</artifact>
-                                    <excludes>
-                                        <exclude>org/aspectj/internal/**</exclude>
-                                        <exclude>org/aspectj/lang/**</exclude>
-                                        <exclude>org/aspectj/runtime/**</exclude>
                                     </excludes>
                                 </filter>
 
@@ -268,178 +465,91 @@
                                     </excludes>
                                 </filter>
                             </filters>
+
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${main.class}</mainClass>
+                                </transformer>
+                            </transformers>
+
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin> <!-- build a docker image -->
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${maven.jib.plugin}</version>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <goals>
+                            <!-- <goal>dockerBuild</goal> -->
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <from>
+                        <image>${docker.base.image}</image>
+                    </from>
+                    <to>
+                        <image>${image.repository.root}/${project.artifactId}:${project.version}</image>
+                        <tags>
+                            <tag>${dockerTag}</tag>
+                            <tag>${dockerMajorTag}</tag>
+                            <tag>${dockerMajorMinorTag}</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <creationTime>
+                            USE_CURRENT_TIMESTAMP
+                        </creationTime>
+                        <args>
+                            <arg>
+                                ${main.arguments}
+                            </arg>
+                        </args>
+
+                        <ports>
+                            <port>${main.http.port}</port>
+                            <port>${main.https.port}</port>
+                        </ports>
+                    </container>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                </configuration>
+            </plugin>
         </plugins>
+
     </build>
 
-
-
-    <profiles>
-        <profile>
-            <id>active-on-jdk-16</id>
-            <activation>
-                <jdk>[16,)</jdk>
-            </activation>
-            <modules>
-                <module>BookStoreJ16</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>jacoco</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>io.jexxa.tutorials.*</exclude>
-                            </excludes>
-                        </configuration>
-
-                        <executions>
-                            <!--
-                                Prepares the property pointing to the JaCoCo runtime agent which
-                                is passed as VM argument when Maven the Surefire plugin is executed.
-                            -->
-                            <execution>
-                                <id>pre-unit-test</id>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- Sets the path to the file which contains the execution data. -->
-                                    <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-                                    <!--
-                                        Sets the name of the property containing the settings
-                                        for JaCoCo runtime agent.
-                                    -->
-                                    <propertyName>surefireArgLine</propertyName>
-                                </configuration>
-                            </execution>
-                            <!--
-                                Ensures that the code coverage report for unit tests is created after
-                                unit tests have been run.
-                            -->
-                            <execution>
-                                <id>post-unit-test</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- Sets the path to the file which contains the execution data. -->
-                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-                                    <!-- Sets the output directory for the code coverage report. -->
-                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>pre-integration-test</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- Sets the path to the file which contains the execution data. -->
-                                    <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
-                                    <!--
-                                        Sets the name of the property containing the settings
-                                        for JaCoCo runtime agent.
-                                    -->
-                                    <propertyName>failsafeArgLine</propertyName>
-                                </configuration>
-                            </execution>
-                            <!--
-                                Ensures that the code coverage report for integration tests after
-                                integration tests have been run.
-                            -->
-                            <execution>
-                                <id>post-integration-test</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- Sets the path to the file which contains the execution data. -->
-                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
-                                    <!-- Sets the output directory for the code coverage report. -->
-                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>merge-results</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>merge</goal>
-                                </goals>
-                                <configuration>
-                                    <fileSets>
-                                        <fileSet>
-                                            <directory>${project.build.directory}/coverage-reports</directory>
-                                            <includes>
-                                                <include>*.exec</include>
-                                            </includes>
-                                        </fileSet>
-                                    </fileSets>
-                                    <destFile>${project.build.directory}/coverage-reports/jacoco-aggregate.exec</destFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>post-merge-report</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <dataFile>${project.build.directory}/coverage-reports/jacoco-aggregate.exec</dataFile>
-                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
-
-  <dependencies>
-    <dependency>
-      <groupId>io.jexxa</groupId>
-      <artifactId>jexxa-web</artifactId>
-      <version>${jexxa.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jexxa.jexxatest</groupId>
-      <artifactId>jexxa-test</artifactId>
-      <version>${jexxa.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j.simple.version}</version>
-    </dependency>
-
-  </dependencies>
-
   <modules>
+    <module>HelloJexxa</module>
     <module>TimeService</module>
     <module>BookStore</module>
-    <module>BookStoreJ</module>
+   <!--- <module>BookStoreJ</module>-->
     <module>ContractManagement</module>
-    <module>HelloJexxa</module>
   </modules>
 
 </project>
