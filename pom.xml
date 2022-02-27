@@ -37,7 +37,7 @@
     <properties>
         <image.repository.root>ghcr.io/repplix</image.repository.root>
         <main.class>${project.groupId}.${project.name}</main.class>
-        <main.arguments></main.arguments>
+        <main.arguments>-jdbc</main.arguments>
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
         <docker.base.image>eclipse-temurin:17-alpine</docker.base.image>
