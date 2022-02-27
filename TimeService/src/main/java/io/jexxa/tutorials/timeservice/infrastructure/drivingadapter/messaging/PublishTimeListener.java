@@ -2,7 +2,7 @@ package io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging;
 
 import io.jexxa.infrastructure.drivingadapter.messaging.JMSConfiguration;
 import io.jexxa.infrastructure.drivingadapter.messaging.listener.TypedMessageListener;
-import io.jexxa.tutorials.timeservice.applicationservice.TimeService;
+import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
 
 import java.time.LocalTime;
 
@@ -11,14 +11,14 @@ import static io.jexxa.infrastructure.drivingadapter.messaging.JMSConfiguration.
 @SuppressWarnings("unused")
 public final class PublishTimeListener extends TypedMessageListener<LocalTime>
 {
-    private final TimeService timeService;
+    private final TimeApplicationService timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
 
     //To implement a so called PortAdapter we need a public constructor which expects a single argument that must be a InboundPort.
-    public PublishTimeListener(TimeService timeService)
+    public PublishTimeListener(TimeApplicationService timeApplicationService)
     {
         super(LocalTime.class);
-        this.timeService = timeService;
+        this.timeApplicationService = timeApplicationService;
     }
 
     @Override
@@ -27,6 +27,6 @@ public final class PublishTimeListener extends TypedMessageListener<LocalTime>
     public void onMessage(LocalTime localTime)
     {
         // Forward this information to corresponding application service.
-        timeService.displayPublishedTime(localTime);
+        timeApplicationService.displayPublishedTime(localTime);
     }
 }

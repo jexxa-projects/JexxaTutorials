@@ -195,7 +195,7 @@ Jexxa this constructor must take exactly one parameter which must be an `Inbound
 following code.          
 
 ```java
-public PublishTimeListener(TimeService timeService)
+public PublishTimeListener(TimeService timeApplicationService)
 {
     //...
 }

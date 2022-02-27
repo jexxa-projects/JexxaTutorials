@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
-public class TimeService
+public class TimeApplicationService
 {
     private final ITimePublisher timePublisher;
     private final IMessageDisplay messageDisplay;
@@ -20,7 +20,7 @@ public class TimeService
      * @param timePublisher required outbound port for this application service
      * @param messageDisplay required outbound port for this application service
      */
-    public TimeService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
+    public TimeApplicationService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
     {
         Objects.requireNonNull(timePublisher);
         Objects.requireNonNull(messageDisplay);

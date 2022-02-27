@@ -7,6 +7,7 @@ import io.jexxa.infrastructure.drivenadapterstrategy.messaging.jms.JMSSender;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLogger;
 import io.jexxa.infrastructure.drivingadapter.messaging.JMSAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
+import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
 import io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging.PublishTimeListener;
 import io.jexxa.utils.JexxaLogger;
 import org.apache.commons.cli.CommandLine;
@@ -30,7 +31,7 @@ public final class TimeService
                 .addDDDPackages(TimeService.class)
 
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
-                .bind(RESTfulRPCAdapter.class).to(TimeService.class)
+                .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
 
                 // Conditional bind is only executed if given expression evaluates to true
                 .conditionalBind( TimeService::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)

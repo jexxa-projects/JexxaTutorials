@@ -193,14 +193,14 @@ Implementing a port adapter for JMS is quite easy.
 @SuppressWarnings("unused")
 public final class PublishTimeListener extends TypedMessageListener<LocalTime>
 {
-    private final TimeService timeService;
+    private final TimeService timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
 
     //To implement a so called PortAdapter we need a public constructor which expects a single argument that must be a InboundPort.
-    public PublishTimeListener(TimeService timeService)
+    public PublishTimeListener(TimeService timeApplicationService)
     {
         super(LocalTime.class);
-        this.timeService = timeService;
+        this.timeApplicationService = timeApplicationService;
     }
 
     @Override
@@ -209,7 +209,7 @@ public final class PublishTimeListener extends TypedMessageListener<LocalTime>
     public void onMessage(LocalTime localTime)
     {
         // Forward this information to corresponding application service.
-        timeService.displayPublishedTime(localTime);
+        timeApplicationService.displayPublishedTime(localTime);
     }
 }
 ```
