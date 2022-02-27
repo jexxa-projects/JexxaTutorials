@@ -12,6 +12,7 @@
   <groupId>io.jexxa.tutorials.bookstore</groupId>
 
   <properties>
+    <main.arguments>-jdbc -jms</main.arguments>
     <main.http.port>7503</main.http.port>
     <main.https.port>8083</main.https.port>
   </properties>
