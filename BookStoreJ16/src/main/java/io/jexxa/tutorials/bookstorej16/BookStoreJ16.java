@@ -10,13 +10,16 @@ import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.IRep
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.RepositoryManager;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.imdb.IMDBRepository;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.jdbc.JDBCKeyValueRepository;
-import io.jexxa.infrastructure.drivingadapter.jmx.JMXAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.bookstorej16.applicationservice.BookStoreService;
 import io.jexxa.tutorials.bookstorej16.domainservice.ReferenceLibrary;
 import io.jexxa.tutorials.bookstorej16.infrastructure.support.J16JsonConverter;
 import io.jexxa.utils.JexxaLogger;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 public final class BookStoreJ16
 {
@@ -50,9 +53,8 @@ public final class BookStoreJ16
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
-                .bind(JMXAdapter.class).to(BookStoreService.class)
 
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()
 

@@ -11,7 +11,6 @@ import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.IRep
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.RepositoryManager;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.imdb.IMDBRepository;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.jdbc.JDBCKeyValueRepository;
-import io.jexxa.infrastructure.drivingadapter.jmx.JMXAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.bookstorej.domainservice.ReferenceLibrary;
 import io.jexxa.utils.JexxaLogger;
@@ -46,9 +45,8 @@ public final class BookStoreJ
                 // In case you annotate your domain core with your pattern language,
                 // You can also bind DrivingAdapter to annotated classes.
                 .bind(RESTfulRPCAdapter.class).toAnnotation(ApplicationService.class)
-                .bind(JMXAdapter.class).toAnnotation(ApplicationService.class)
 
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()
 
