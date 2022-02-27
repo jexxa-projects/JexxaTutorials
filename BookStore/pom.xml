@@ -12,6 +12,7 @@
 
   <properties>
     <main.class>io.jexxa.tutorials.bookstore.BookStoreJ16Application</main.class>
-    <jmx.port>1091</jmx.port>
+    <main.http.port>7503</main.http.port>
+    <main.https.port>8083</main.https.port>
   </properties>
 </project>

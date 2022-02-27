@@ -12,6 +12,7 @@
 
   <properties>
     <main.class>io.jexxa.tutorials.HelloJexxa</main.class>
-    <jmx.port>1099</jmx.port>
+    <main.http.port>7501</main.http.port>
+    <main.https.port>8081</main.https.port>
   </properties>
 </project>

@@ -12,7 +12,8 @@
 
   <properties>
     <main.class>io.jexxa.tutorials.timeservice.TimeServiceApplication</main.class>
-    <jmx.port>1098</jmx.port>
+    <main.http.port>7502</main.http.port>
+    <main.https.port>8082</main.https.port>
   </properties>
 
 </project>

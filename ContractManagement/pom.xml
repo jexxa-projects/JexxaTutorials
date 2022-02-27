@@ -13,7 +13,8 @@
 
   <properties>
     <main.class>io.jexxa.tutorials.contractmanagement.ContractManagementApplication</main.class>
-    <jmx.port>1090</jmx.port>
+    <main.http.port>7505</main.http.port>
+    <main.https.port>8085</main.https.port>
   </properties>
 
 </project>
