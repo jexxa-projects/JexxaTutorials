@@ -162,7 +162,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432" # TODO: Adjust Port "<free Port>:5432"
+      - "5433:5432"
     environment:
       POSTGRES_PASSWORD: "admin"
       POSTGRES_USER: "admin"
@@ -175,3 +175,4 @@ services:
 
 volumes:
   postgres-data:
+
