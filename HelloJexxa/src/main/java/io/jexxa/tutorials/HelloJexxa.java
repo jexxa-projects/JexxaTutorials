@@ -16,7 +16,7 @@ public final class HelloJexxa
     public static void main(String[] args)
     {
         //Create your jexxaMain for this application
-        var jexxaMain = new JexxaMain("HelloJexxa");
+        var jexxaMain = new JexxaMain(HelloJexxa.class);
 
         //print some application information
         JexxaLogger.getLogger(HelloJexxa.class)
@@ -29,6 +29,7 @@ public final class HelloJexxa
 
                 // Bind a REST adapter to a HelloJexxa object
                .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)
+               .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 //Start Jexxa and all bindings
                 // - Open following URL in browser to get greetings: http://localhost:7500/HelloJexxa/greetings

@@ -18,7 +18,7 @@ public class ContractManagement
         // In this tutorial we use an ObjectStore which is either an IMDB database or a JDBC based repository.
         ObjectStoreManager.setDefaultStrategy(getRepositoryStrategy(args));
 
-        var jexxaMain = new JexxaMain(ContractManagement.class.getSimpleName());
+        var jexxaMain = new JexxaMain(ContractManagement.class);
 
         //print some application information
         JexxaLogger.getLogger(ContractManagement.class)
@@ -29,6 +29,7 @@ public class ContractManagement
                 .addDDDPackages(ContractManagement.class)
 
                 .bind(RESTfulRPCAdapter.class).to(ContractService.class)
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()
 

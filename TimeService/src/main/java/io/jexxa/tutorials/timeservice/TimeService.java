@@ -5,12 +5,15 @@ import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSender;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSenderManager;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.jms.JMSSender;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLogger;
-import io.jexxa.infrastructure.drivingadapter.jmx.JMXAdapter;
 import io.jexxa.infrastructure.drivingadapter.messaging.JMSAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging.PublishTimeListener;
 import io.jexxa.utils.JexxaLogger;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 public final class TimeService
 {
@@ -27,14 +30,12 @@ public final class TimeService
                 .addDDDPackages(TimeService.class)
 
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
-                .bind(RESTfulRPCAdapter.class).to(io.jexxa.tutorials.timeservice.applicationservice.TimeService.class)
-                .bind(JMXAdapter.class).to(io.jexxa.tutorials.timeservice.applicationservice.TimeService.class)
-
+                .bind(RESTfulRPCAdapter.class).to(TimeService.class)
 
                 // Conditional bind is only executed if given expression evaluates to true
                 .conditionalBind( TimeService::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)
 
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()
 
