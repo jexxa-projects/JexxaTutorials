@@ -44,7 +44,7 @@
 
         <!-- target/compiler configuration  -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>11</maven.compiler.release>
 
         <!-- version of dependencies -->
         <jexxa-web.release.version>4.1.1</jexxa-web.release.version>
@@ -188,6 +188,16 @@
     <!-- IMPORTANT: if you should start your maven project.                     -->
     <!-- ********************************************************************** -->
     <profiles>
+        <profile>
+            <id>active-on-jdk-16</id>
+            <activation>
+                <jdk>[16,)</jdk>
+            </activation>
+            <modules>
+                <module>BookStoreJ16</module>
+            </modules>
+        </profile>
+
         <profile>     <!-- add tag developer image -->
             <id>localDockerImage</id>
             <activation>
