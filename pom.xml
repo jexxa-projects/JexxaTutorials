@@ -7,7 +7,7 @@
     <!-- **************************************************************************** -->
     <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
@@ -31,13 +31,13 @@
         <connection>scm:git:https://github.com/repplix/JexxaTutorials.git</connection>
         <url>https://github.com/repplix/JexxaTutorials</url>
         <developerConnection>scm:git:https://github.com/repplix/JexxaTutorials.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>jexxatutorials-1.0.2</tag>
     </scm>
 
     <properties>
         <image.repository.root>ghcr.io/repplix</image.repository.root>
         <main.class>${project.groupId}.${project.name}</main.class>
-        <main.arguments></main.arguments>
+        <main.arguments />
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
         <docker.base.image>eclipse-temurin:17-alpine</docker.base.image>
