@@ -18,7 +18,7 @@ import io.jexxa.tutorials.bookstorej16.infrastructure.support.J16JsonConverter;
 import io.jexxa.utils.JexxaLogger;
 import org.apache.commons.cli.*;
 
-public final class BookStoreJ16Application
+public final class BookStoreJ16
 {
     public static void main(String[] args)
     {
@@ -37,14 +37,14 @@ public final class BookStoreJ16Application
         // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
         MessageSenderManager.setDefaultStrategy(MessageLogger.class);
 
-        var jexxaMain = new JexxaMain(BookStoreJ16Application.class.getSimpleName());
+        var jexxaMain = new JexxaMain(BookStoreJ16.class);
 
         //print some application information
-        JexxaLogger.getLogger(BookStoreJ16Application.class)
+        JexxaLogger.getLogger(BookStoreJ16.class)
                 .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
         jexxaMain
                 //Define which outbound ports should be managed by Jexxa
-                .addDDDPackages(BookStoreJ16Application.class)
+                .addDDDPackages(BookStoreJ16.class)
 
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
@@ -76,11 +76,11 @@ public final class BookStoreJ16Application
     {
         if (parameterAvailable("jdbc", args))
         {
-            JexxaLogger.getLogger(BookStoreJ16Application.class).info("Use persistence strategy: {} ", JDBCKeyValueRepository.class.getSimpleName());
+            JexxaLogger.getLogger(BookStoreJ16.class).info("Use persistence strategy: {} ", JDBCKeyValueRepository.class.getSimpleName());
             return JDBCKeyValueRepository.class;
         }
 
-        JexxaLogger.getLogger(BookStoreJ16Application.class).info("Use persistence strategy: {} ", IMDBRepository.class.getSimpleName());
+        JexxaLogger.getLogger(BookStoreJ16.class).info("Use persistence strategy: {} ", IMDBRepository.class.getSimpleName());
         return IMDBRepository.class;
     }
 
@@ -88,11 +88,11 @@ public final class BookStoreJ16Application
     {
         if (parameterAvailable("jms", args))
         {
-            JexxaLogger.getLogger(BookStoreJ16Application.class).info("Use messaging strategy: {} ", JMSSender.class.getSimpleName());
+            JexxaLogger.getLogger(BookStoreJ16.class).info("Use messaging strategy: {} ", JMSSender.class.getSimpleName());
             return JMSSender.class;
         }
 
-        JexxaLogger.getLogger(BookStoreJ16Application.class).info("Use messaging strategy: {} ", MessageLogger.class.getSimpleName());
+        JexxaLogger.getLogger(BookStoreJ16.class).info("Use messaging strategy: {} ", MessageLogger.class.getSimpleName());
         return MessageLogger.class;
     }
 
@@ -106,7 +106,7 @@ public final class BookStoreJ16Application
             return line.hasOption(parameter);
         }
         catch( ParseException exp ) {
-            JexxaLogger.getLogger(BookStoreJ16Application.class)
+            JexxaLogger.getLogger(BookStoreJ16.class)
                     .error( "Parsing failed.  Reason: {}", exp.getMessage() );
         }
         return false;
@@ -114,7 +114,7 @@ public final class BookStoreJ16Application
 
 
 
-    private BookStoreJ16Application()
+    private BookStoreJ16()
     {
         //Private constructor since we only offer main
     }

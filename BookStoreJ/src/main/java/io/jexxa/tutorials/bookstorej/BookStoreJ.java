@@ -1,6 +1,7 @@
-package io.jexxa.tutorials.bookstore;
+package io.jexxa.tutorials.bookstorej;
 
 
+import io.jexxa.addend.applicationcore.ApplicationService;
 import io.jexxa.core.JexxaMain;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSender;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSenderManager;
@@ -12,12 +13,15 @@ import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.imdb
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.jdbc.JDBCKeyValueRepository;
 import io.jexxa.infrastructure.drivingadapter.jmx.JMXAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
-import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
-import io.jexxa.tutorials.bookstore.domainservice.ReferenceLibrary;
+import io.jexxa.tutorials.bookstorej.domainservice.ReferenceLibrary;
 import io.jexxa.utils.JexxaLogger;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
-public final class BookStoreApplication
+public final class BookStoreJ
 {
     public static void main(String[] args)
     {
@@ -30,23 +34,19 @@ public final class BookStoreApplication
         // The message sender is either a simple MessageLogger or a JMS sender.
         MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
 
-        // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
-        MessageSenderManager.setDefaultStrategy(MessageLogger.class);
+        var jexxaMain = new JexxaMain(BookStoreJ.class);
 
-        var jexxaMain = new JexxaMain(BookStoreApplication.class.getSimpleName());
-
-        //print some application information
-        JexxaLogger.getLogger(BookStoreApplication.class)
-                .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
         jexxaMain
                 //Define the default packages for inbound and outbound ports
-                .addDDDPackages(BookStoreApplication.class)
+                .addDDDPackages(BookStoreJ.class)
 
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
 
-                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
-                .bind(JMXAdapter.class).to(BookStoreService.class)
+                // In case you annotate your domain core with your pattern language,
+                // You can also bind DrivingAdapter to annotated classes.
+                .bind(RESTfulRPCAdapter.class).toAnnotation(ApplicationService.class)
+                .bind(JMXAdapter.class).toAnnotation(ApplicationService.class)
 
                 .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
 
@@ -72,11 +72,11 @@ public final class BookStoreApplication
     {
         if (parameterAvailable("jdbc", args))
         {
-            JexxaLogger.getLogger(BookStoreApplication.class).info("Use persistence strategy: {} ", JDBCKeyValueRepository.class.getSimpleName());
+            JexxaLogger.getLogger(BookStoreJ.class).info("Use persistence strategy: {} ", JDBCKeyValueRepository.class.getSimpleName());
             return JDBCKeyValueRepository.class;
         }
 
-        JexxaLogger.getLogger(BookStoreApplication.class).info("Use persistence strategy: {} ", IMDBRepository.class.getSimpleName());
+        JexxaLogger.getLogger(BookStoreJ.class).info("Use persistence strategy: {} ", IMDBRepository.class.getSimpleName());
         return IMDBRepository.class;
     }
 
@@ -84,11 +84,11 @@ public final class BookStoreApplication
     {
         if (parameterAvailable("jms", args))
         {
-            JexxaLogger.getLogger(BookStoreApplication.class).info("Use messaging strategy: {} ", JMSSender.class.getSimpleName());
+            JexxaLogger.getLogger(BookStoreJ.class).info("Use messaging strategy: {} ", JMSSender.class.getSimpleName());
             return JMSSender.class;
         }
 
-        JexxaLogger.getLogger(BookStoreApplication.class).info("Use messaging strategy: {} ", MessageLogger.class.getSimpleName());
+        JexxaLogger.getLogger(BookStoreJ.class).info("Use messaging strategy: {} ", MessageLogger.class.getSimpleName());
         return MessageLogger.class;
     }
 
@@ -102,15 +102,14 @@ public final class BookStoreApplication
             return line.hasOption(parameter);
         }
         catch( ParseException exp ) {
-            JexxaLogger.getLogger(BookStoreApplication.class)
+            JexxaLogger.getLogger(BookStoreJ.class)
                     .error( "Parsing failed.  Reason: {}", exp.getMessage() );
         }
         return false;
     }
 
 
-
-    private BookStoreApplication()
+    private BookStoreJ()
     {
         //Private constructor since we only offer main
     }

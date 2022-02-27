@@ -4,7 +4,7 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.core.JexxaMain;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.jexxatest.infrastructure.drivenadapterstrategy.messaging.recording.MessageRecorder;
-import io.jexxa.tutorials.bookstore.BookStoreApplication;
+import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.domain.businessexception.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.domainevent.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.valueobject.ISBN13;
@@ -36,7 +36,7 @@ class BookStoreServiceTest
         // If you have larger tests this speeds up Jexxa's dependency injection
         // Note: For unit-tests you just need to bind any driving adapter
         jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
-        jexxaMain.addDDDPackages(BookStoreApplication.class);
+        jexxaMain.addDDDPackages(BookStore.class);
     }
 
     @BeforeEach

@@ -7,11 +7,10 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>hellojexxa</artifactId>
   <name>HelloJexxa</name>
+  <artifactId>hellojexxa</artifactId>
 
   <properties>
-    <main.class>io.jexxa.tutorials.HelloJexxa</main.class>
     <main.http.port>7501</main.http.port>
     <main.https.port>8081</main.https.port>
   </properties>

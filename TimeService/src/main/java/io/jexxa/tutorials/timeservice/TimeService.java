@@ -8,12 +8,11 @@ import io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLo
 import io.jexxa.infrastructure.drivingadapter.jmx.JMXAdapter;
 import io.jexxa.infrastructure.drivingadapter.messaging.JMSAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
-import io.jexxa.tutorials.timeservice.applicationservice.TimeService;
 import io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging.PublishTimeListener;
 import io.jexxa.utils.JexxaLogger;
 import org.apache.commons.cli.*;
 
-public final class TimeServiceApplication
+public final class TimeService
 {
     public static void main(String[] args)
     {
@@ -21,19 +20,19 @@ public final class TimeServiceApplication
         MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
 
         //Create your jexxaMain for this application
-        var jexxaMain = new JexxaMain("TimeService");
+        var jexxaMain = new JexxaMain(TimeService.class);
 
         jexxaMain
                 //Define which outbound ports should be managed by Jexxa
-                .addDDDPackages(TimeServiceApplication.class)
+                .addDDDPackages(TimeService.class)
 
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
-                .bind(RESTfulRPCAdapter.class).to(TimeService.class)
-                .bind(JMXAdapter.class).to(TimeService.class)
+                .bind(RESTfulRPCAdapter.class).to(io.jexxa.tutorials.timeservice.applicationservice.TimeService.class)
+                .bind(JMXAdapter.class).to(io.jexxa.tutorials.timeservice.applicationservice.TimeService.class)
 
 
                 // Conditional bind is only executed if given expression evaluates to true
-                .conditionalBind( TimeServiceApplication::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)
+                .conditionalBind( TimeService::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)
 
                 .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
 
@@ -63,11 +62,11 @@ public final class TimeServiceApplication
     {
         if (parameterAvailable("jms", args))
         {
-            JexxaLogger.getLogger(TimeServiceApplication.class).info("Use messaging strategy: {} ", JMSSender.class.getSimpleName());
+            JexxaLogger.getLogger(TimeService.class).info("Use messaging strategy: {} ", JMSSender.class.getSimpleName());
             return JMSSender.class;
         }
 
-        JexxaLogger.getLogger(TimeServiceApplication.class).info("Use messaging strategy: {} ", MessageLogger.class.getSimpleName());
+        JexxaLogger.getLogger(TimeService.class).info("Use messaging strategy: {} ", MessageLogger.class.getSimpleName());
         return MessageLogger.class;
     }
 
@@ -82,14 +81,14 @@ public final class TimeServiceApplication
             return line.hasOption(parameter);
         }
         catch( ParseException exp ) {
-            JexxaLogger.getLogger(TimeServiceApplication.class)
+            JexxaLogger.getLogger(TimeService.class)
                     .error( "Parsing failed.  Reason: {}", exp.getMessage() );
         }
         return false;
     }
 
 
-    private TimeServiceApplication()
+    private TimeService()
     {
         //Private constructor since we only offer main
     }

@@ -7,12 +7,11 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-
-  <artifactId>contractmanagement</artifactId>
   <name>ContractManagement</name>
+  <artifactId>contractmanagement</artifactId>
+  <groupId>io.jexxa.tutorials.contractmanagement</groupId>
 
   <properties>
-    <main.class>io.jexxa.tutorials.contractmanagement.ContractManagementApplication</main.class>
     <main.http.port>7505</main.http.port>
     <main.https.port>8085</main.https.port>
   </properties>

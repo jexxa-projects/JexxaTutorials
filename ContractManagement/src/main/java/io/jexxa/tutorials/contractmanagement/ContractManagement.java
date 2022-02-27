@@ -10,7 +10,7 @@ import io.jexxa.tutorials.contractmanagement.applicationservice.ContractService;
 import io.jexxa.utils.JexxaLogger;
 import org.apache.commons.cli.*;
 
-public class ContractManagementApplication
+public class ContractManagement
 {
     public static void main(String[] args)
     {
@@ -18,15 +18,15 @@ public class ContractManagementApplication
         // In this tutorial we use an ObjectStore which is either an IMDB database or a JDBC based repository.
         ObjectStoreManager.setDefaultStrategy(getRepositoryStrategy(args));
 
-        var jexxaMain = new JexxaMain(ContractManagementApplication.class.getSimpleName());
+        var jexxaMain = new JexxaMain(ContractManagement.class.getSimpleName());
 
         //print some application information
-        JexxaLogger.getLogger(ContractManagementApplication.class)
+        JexxaLogger.getLogger(ContractManagement.class)
                 .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
 
         jexxaMain
                 //Define which outbound ports should be managed by Jexxa
-                .addDDDPackages(ContractManagementApplication.class)
+                .addDDDPackages(ContractManagement.class)
 
                 .bind(RESTfulRPCAdapter.class).to(ContractService.class)
 
@@ -51,11 +51,11 @@ public class ContractManagementApplication
     {
         if (jdbcParameterAvailable(args))
         {
-            JexxaLogger.getLogger(ContractManagementApplication.class).info("Use persistence strategy: {} ", JDBCObjectStore.class.getSimpleName());
+            JexxaLogger.getLogger(ContractManagement.class).info("Use persistence strategy: {} ", JDBCObjectStore.class.getSimpleName());
             return JDBCObjectStore.class;
         }
 
-        JexxaLogger.getLogger(ContractManagementApplication.class).info("Use persistence strategy: {} ", IMDBObjectStore.class.getSimpleName());
+        JexxaLogger.getLogger(ContractManagement.class).info("Use persistence strategy: {} ", IMDBObjectStore.class.getSimpleName());
         return IMDBObjectStore.class;
     }
 
@@ -69,14 +69,14 @@ public class ContractManagementApplication
             return line.hasOption("jdbc");
         }
         catch( ParseException exp ) {
-            JexxaLogger.getLogger(ContractManagementApplication.class)
+            JexxaLogger.getLogger(ContractManagement.class)
                     .error( "Parsing failed.  Reason: {}", exp.getMessage() );
         }
         return false;
     }
 
 
-    private ContractManagementApplication()
+    private ContractManagement()
     {
         //Private constructor since we only offer main
     }

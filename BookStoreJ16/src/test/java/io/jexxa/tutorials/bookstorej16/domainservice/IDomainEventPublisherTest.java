@@ -2,7 +2,7 @@ package io.jexxa.tutorials.bookstorej16.domainservice;
 
 import io.jexxa.core.JexxaMain;
 import io.jexxa.jexxatest.JexxaTest;
-import io.jexxa.tutorials.bookstorej16.BookStoreJ16Application;
+import io.jexxa.tutorials.bookstorej16.BookStoreJ16;
 import io.jexxa.tutorials.bookstorej16.domain.domainevent.BookSoldOut;
 import io.jexxa.tutorials.bookstorej16.domain.valueobject.ISBN13;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class IDomainEventPublisherTest
 {
     //Declare the packages that should be used by Jexxa
-    private static final String DRIVEN_ADAPTER  = BookStoreJ16Application.class.getPackageName() + ".infrastructure.drivenadapter";
-    private static final String OUTBOUND_PORTS  = BookStoreJ16Application.class.getPackageName() + ".domainservice";
+    private static final String DRIVEN_ADAPTER  = BookStoreJ16.class.getPackageName() + ".infrastructure.drivenadapter";
+    private static final String OUTBOUND_PORTS  = BookStoreJ16.class.getPackageName() + ".domainservice";
 
     private JexxaTest jexxaTest;
     private IDomainEventPublisher objectUnderTest;

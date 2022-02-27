@@ -7,11 +7,11 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>bookstore</artifactId>
   <name>BookStore</name>
+  <artifactId>bookstore</artifactId>
+  <groupId>io.jexxa.tutorials.bookstore</groupId>
 
   <properties>
-    <main.class>io.jexxa.tutorials.bookstore.BookStoreJ16Application</main.class>
     <main.http.port>7503</main.http.port>
     <main.https.port>8083</main.https.port>
   </properties>

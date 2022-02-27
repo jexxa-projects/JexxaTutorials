@@ -215,7 +215,7 @@ java -jar target/contractmanagement-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-main] INFO io.jexxa.tutorials.contractmanagement.ContractManagementApplication - Use persistence strategy: IMDBObjectStore 
+main] INFO io.jexxa.tutorials.contractmanagement.ContractManagement - Use persistence strategy: IMDBObjectStore 
 [main] INFO org.eclipse.jetty.util.log - Logging initialized @375ms to org.eclipse.jetty.util.log.Slf4jLog
 [main] INFO io.jexxa.core.JexxaMain - Jexxa-Core 3.1.0-SNAPSHOT; built: 2021-07-31 15:50; git: scm:git:https://github.com/repplix/Jexxa.git/jexxa-core;
 
@@ -237,7 +237,7 @@ java -jar target/contractmanagement-jar-with-dependencies.jar  -jdbc
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
-[main] INFO io.jexxa.tutorials.contractmanagement.ContractManagementApplication - Use persistence strategy: JDBCObjectStore 
+[main] INFO io.jexxa.tutorials.contractmanagement.ContractManagement - Use persistence strategy: JDBCObjectStore 
 ```
 
 Note: In case you want to use a difference database, you have to:

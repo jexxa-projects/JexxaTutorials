@@ -7,11 +7,11 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>timeservice</artifactId>
   <name>TimeService</name>
+  <artifactId>timeservice</artifactId>
+  <groupId>io.jexxa.tutorials.timeservice</groupId>
 
   <properties>
-    <main.class>io.jexxa.tutorials.timeservice.TimeServiceApplication</main.class>
     <main.http.port>7502</main.http.port>
     <main.https.port>8082</main.https.port>
   </properties>
