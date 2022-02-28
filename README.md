@@ -3,41 +3,40 @@
 ## General notes
 
 All tutorials focus on the usage of Jexxa. Therefore, the business logic in these tutorials is without any special meaning. In addition, we assume that you have a basic understanding of: 
-*   Writing Java code and build your programs using maven.
+* Writing Java code and build your programs using maven.
 
-*   A general understanding of the used technology stacks such as a messaging system or a database.
+* A general understanding of the used technology stacks such as a messaging system or a database.
 
-*   A general understanding of [ports and adapters](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
+* A general understanding of [ports and adapters](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
 
-*   All tutorials run by default without any additional infrastructure services such as JMS or a database.
+* All tutorials run by default without any additional infrastructure services such as JMS or a database.
 
-*   In case you want to run the tutorials with your infrastructure you should first run the steps `Build Jexxa from scratch` in Jexxa‘s [README.md](../README.md) to validate your infrastructure. 
-    *   If you do not have this infrastructure running on your developer machine, you can use docker together with the docker stack provided [here](https://github.com/repplix/Jexxa/blob/master/jexxa-core/src/test/resources/DeveloperStack.yaml).
-
-*   All tutorials use the latest public release of Jexxa and not the SNAPSHOT version of the current trunk. In case you want to make some changes in Jexxa itself replace `${jexxa-core.version}` with `${project.version}` in [parent-pom](pom.xml).    
-
+* In case you want to just run the tutorials, you can use: 
+  * Docker images provided [here](https://github.com/repplix?tab=packages&repo_name=JexxaTutorials). Please note that you need a running ActiveMQ and Postgres database   
+  * [Docker stack](deploy/docker-compose.yml) starting all tutorials 
+  
 ## HelloJexxa
-See documentation [HelloJexxa](HelloJexxa/)
+See documentation [HelloJexxa](HelloJexxa/README.md)
 
 ## TimeService - Async Messaging
-See documentation [TimeService](TimeService/)
+See documentation [TimeService](TimeService/README.md)
 
 ## TimeService - Flow of Control
 See documentation [TimeService - Flow of Control](TimeService/README-FlowOfControl.md)
 
 ## BookStore - Using a Repository  
-See documentation [BookStore](BookStore/)
+See documentation [BookStore](BookStore/README.md)
 
 ## BookStoreJ - Pattern Language 
-See documentation [BookStoreJ](BookStoreJ/)
+See documentation [BookStoreJ](BookStoreJ/README.md)
 
 ## BookStoreJ - OpenAPI Support 
 See documentation [BookStoreJ - With OpenAPI support](BookStoreJ/README-OPENAPI.md)
 
 ## BookStoreJ16 - Java Records
-See documentation [BookStoreJ16](BookStoreJ16/)
+See documentation [BookStoreJ16](BookStoreJ16/README.md)
 
 ## ContractManagement - Using an ObjectStore  
-See documentation [ContractManagement](ContractManagement/)
+See documentation [ContractManagement](ContractManagement/README.md)
 
 
