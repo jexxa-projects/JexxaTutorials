@@ -207,7 +207,7 @@ You will see following (or similar) output
 [main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStoreApplication' with 2 Driving Adapter 
 [main] INFO org.eclipse.jetty.util.log - Logging initialized @474ms to org.eclipse.jetty.util.log.Slf4jLog
 [main] INFO io.javalin.Javalin - Starting Javalin ...
-[main] INFO io.javalin.Javalin - Listening on http://localhost:7500/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:7503/
 [main] INFO io.javalin.Javalin - Javalin started in 148ms \o/
 [main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreApplication' successfully started in 0.484 seconds
 ```          
@@ -238,7 +238,7 @@ Note: In case you want to use a difference database, you have to:
 
 Command: 
 ```Console
-curl -X GET  http://localhost:7500/BookStoreService/getBooks
+curl -X GET  http://localhost:7503/BookStoreService/getBooks
 ```
 
 Response: 
@@ -249,7 +249,7 @@ Response:
 #### Query available books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7500/BookStoreService/inStock       
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 
@@ -260,7 +260,7 @@ false
 #### Add some books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" http://localhost:7500/BookStoreService/addToStock
+curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" http://localhost:7503/BookStoreService/addToStock
 ```
 
 Response: No output  
@@ -270,7 +270,7 @@ Response: No output
 #### Ask again if a specific book is in stock
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7500/BookStoreService/inStock       
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 

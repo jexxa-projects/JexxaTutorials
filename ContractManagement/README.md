@@ -220,7 +220,7 @@ main] INFO io.jexxa.tutorials.contractmanagement.ContractManagement - Use persis
 [main] INFO io.jexxa.core.JexxaMain - Jexxa-Core 3.1.0-SNAPSHOT; built: 2021-07-31 15:50; git: scm:git:https://github.com/repplix/Jexxa.git/jexxa-core;
 
 [main] INFO io.javalin.Javalin - Javalin started in 166ms \o/
-[main] INFO io.javalin.Javalin - OpenAPI documentation available at: http://0.0.0.0:7500/swagger-docs
+[main] INFO io.javalin.Javalin - OpenAPI documentation available at: http://0.0.0.0:7506/swagger-docs
 [main] INFO io.jexxa.core.JexxaMain - BoundedContext 'ContractManagementApplication' successfully started in 1.543 seconds
 
 ```          
@@ -253,7 +253,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"Paul"' \
-    http://localhost:7500/ContractService/createNewContract                 
+    http://localhost:7506/ContractService/createNewContract                 
 ```
 
 Response: The number of the contract
@@ -269,7 +269,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"Paul"' \
-    http://localhost:7500/ContractService/getContractsByAdvisor                 
+    http://localhost:7506/ContractService/getContractsByAdvisor                 
 ```
 Response: The contract numbers of all contracts managed by Paul. Note that we called previous method 9 times.  
 ```Console
