@@ -9,10 +9,9 @@ updates:
       interval: "daily"
 
   # Enable version updates for docker
-  updates:
-    - package-ecosystem: "docker"
-      directory: "deploy"
-      schedule:
-        interval: "daily"
-      labels:
-        - "dependencies"
+  - package-ecosystem: "docker"
+    directory: "deploy"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
