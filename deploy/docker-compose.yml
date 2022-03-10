@@ -157,7 +157,7 @@ services:
     image: rmohr/activemq
 
   Postgres:
-    image: postgres:14.0-alpine
+    image: postgres:14.2-alpine
 
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -165,7 +165,7 @@ services:
       - "5433:5432"
     environment:
       POSTGRES_PASSWORD: "admin"
-      POSTGRES_USER: "admin"
+      POSTGRES_USER: "postgres"
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
