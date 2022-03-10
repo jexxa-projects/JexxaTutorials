@@ -7,11 +7,3 @@ updates:
     # Check for updates once daily
     schedule:
       interval: "daily"
-
-  # Enable version updates for docker
-  - package-ecosystem: "docker"
-    directory: "deploy"
-    schedule:
-      interval: "daily"
-    labels:
-      - "dependencies"
