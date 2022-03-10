@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jexxatutorials</artifactId>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.8</version>
+    <version>1.0.9-SNAPSHOT</version>
   </parent>
 
   <name>ContractManagement</name>
