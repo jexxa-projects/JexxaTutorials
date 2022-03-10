@@ -1,9 +1,18 @@
 version: 2
 updates:
-  # Enable version updates for Gradle
+  # Enable version updates for maven
   - package-ecosystem: "maven"
     # Look for `pom.xml` in the `root` directory
     directory: "/"
     # Check for updates once daily
     schedule:
       interval: "daily"
+
+  # Enable version updates for docker
+  updates:
+    - package-ecosystem: "docker"
+      directory: "deploy"
+      schedule:
+        interval: "daily"
+      labels:
+        - "dependencies"
