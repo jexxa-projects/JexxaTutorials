@@ -4,7 +4,7 @@
 
     <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.8-SNAPSHOT</version>
+    <version>1.0.9-SNAPSHOT</version>
     <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
@@ -70,7 +70,7 @@
 
         <!--version of  maven plugins  -->
         <maven.clean.plugin>3.1.0</maven.clean.plugin>
-        <maven.compiler.plugin>3.10.0</maven.compiler.plugin>
+        <maven.compiler.plugin>3.10.1</maven.compiler.plugin>
         <maven.deploy.plugin>3.0.0-M2</maven.deploy.plugin>
         <maven.failsafe.plugin>3.0.0-M5</maven.failsafe.plugin>
         <maven.install.plugin>3.0.0-M1</maven.install.plugin>
