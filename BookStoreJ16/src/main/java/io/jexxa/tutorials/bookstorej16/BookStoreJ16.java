@@ -53,7 +53,6 @@ public final class BookStoreJ16
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
-
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()

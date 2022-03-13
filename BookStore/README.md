@@ -155,36 +155,41 @@ Finally, we have to write our application. As you can see in the code below ther
    
 ```java
     
-public final class BookStoreApplication
+public final class BookStore
 {
-    //...
     public static void main(String[] args)
     {
-        // Define the default strategy which is either an IMDB database or a JDBC based repository
+        // Define the default strategies.
+        // In this tutorial the Repository is either an IMDB database or a JDBC based repository.
         // In case of JDBC we use a simple key value approach which stores the key and the value as json strings.
         // Using json strings might be very inconvenient if you come from typical relational databases but in terms
         // of DDD our aggregate is responsible to ensure consistency of our data and not the database.
-        RepositoryManager.setDefaultStrategy(getDrivenAdapterStrategy(args));
-    
-        var jexxaMain = new JexxaMain(BookStoreApplication.class.getSimpleName());
-    
+        RepositoryManager.setDefaultStrategy(getRepositoryStrategy(args));
+        // The message sender is either a simple MessageLogger or a JMS sender.
+        MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
+
+        // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
+        MessageSenderManager.setDefaultStrategy(MessageLogger.class);
+
+        var jexxaMain = new JexxaMain(BookStore.class);
+
+        //print some application information
+        JexxaLogger.getLogger(BookStore.class)
+                .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
         jexxaMain
                 //Define the default packages for inbound and outbound ports
-                .addDDDPackages(BookStoreApplication.class)
-    
+                .addDDDPackages(BookStore.class)
+
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
-    
+
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
-                .bind(JMXAdapter.class).to(BookStoreService.class)
-    
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
-    
+
                 .start()
-    
+
                 .waitForShutdown()
-    
+
                 .stop();
     }
     //...

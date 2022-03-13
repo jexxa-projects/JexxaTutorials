@@ -123,14 +123,8 @@ provide a generic type factory for records. A generic implementation can be foun
 Within the main method, we have to set this special JSonConverter as you can see in the following snippet.  
 
 ```java 
-public final class BookStoreJApplication
+public final class BookStoreJ16
 {
-    //Declare the packages that should be used by Jexxa
-    private static final String DRIVEN_ADAPTER  = BookStoreJApplication.class.getPackageName() + ".infrastructure.drivenadapter";
-    private static final String OUTBOUND_PORTS  = BookStoreJApplication.class.getPackageName() + ".domainservice";
-    //Add also package name with inbound ports so that they are scanned by Jexxa
-    private static final String INBOUND_PORTS   = BookStoreJApplication.class.getPackageName() + ".applicationservice";
-
     public static void main(String[] args)
     {
         //Set a JsonConverter that support java records

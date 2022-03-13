@@ -45,7 +45,6 @@ public final class BookStoreJ
                 // In case you annotate your domain core with your pattern language,
                 // You can also bind DrivingAdapter to annotated classes.
                 .bind(RESTfulRPCAdapter.class).toAnnotation(ApplicationService.class)
-
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()

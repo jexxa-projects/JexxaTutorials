@@ -226,35 +226,25 @@ Finally, we have to write our application. As you can see in the code below ther
 ```java
 public final class TimeServiceApplication
 {
-    //Declare the packages that should be used by Jexxa
-    private static final String DRIVEN_ADAPTER  = TimeServiceApplication.class.getPackageName() + ".infrastructure.drivenadapter";
-    private static final String DRIVING_ADAPTER = TimeServiceApplication.class.getPackageName() + ".infrastructure.drivingadapter";
-    private static final String OUTBOUND_PORTS  = TimeServiceApplication.class.getPackageName() + ".domainservice";
-
     public static void main(String[] args)
     {
         // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
         MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
 
         //Create your jexxaMain for this application
-        JexxaMain jexxaMain = new JexxaMain("TimeService");
+        var jexxaMain = new JexxaMain(TimeService.class);
 
         jexxaMain
                 //Define which outbound ports should be managed by Jexxa
-                .addToApplicationCore(OUTBOUND_PORTS)
-                .addToInfrastructure(DRIVEN_ADAPTER)
-                //Note: Since we provide our own special driving adapters, we have to add it to the infrastructure
-                .addToInfrastructure(DRIVING_ADAPTER)
+                .addDDDPackages(TimeService.class)
 
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
-                .bind(RESTfulRPCAdapter.class).to(TimeService.class)
-                .bind(JMXAdapter.class).to(TimeService.class)
-
+                .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
 
                 // Conditional bind is only executed if given expression evaluates to true
-                .conditionalBind( TimeServiceApplication::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)
+                .conditionalBind( TimeService::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)
 
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()
 

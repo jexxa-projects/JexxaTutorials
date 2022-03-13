@@ -117,22 +117,24 @@ If your application core is annotated with your pattern language, you can use it
 1.  You have to bind driving adapters using method `bindToAnnotation`. In this case alle inbound ports annotated with given annotation are bind to the driving adapter.    
 
 ```java 
-public final class BookStoreJApplication
+public final class BookStoreJ
 {
     public static void main(String[] args)
     {
-        // Define the default strategy which is either an IMDB database or a JDBC based repository
+        // Define the default strategies.
+        // In this tutorial the Repository is either an IMDB database or a JDBC based repository.
         // In case of JDBC we use a simple key value approach which stores the key and the value as json strings.
         // Using json strings might be very inconvenient if you come from typical relational databases but in terms
         // of DDD our aggregate is responsible to ensure consistency of our data and not the database.
-        RepositoryManager.setDefaultStrategy(getDrivenAdapterStrategy(args));
+        RepositoryManager.setDefaultStrategy(getRepositoryStrategy(args));
+        // The message sender is either a simple MessageLogger or a JMS sender.
+        MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
 
-        var jexxaMain = new JexxaMain(BookStoreJApplication.class.getSimpleName());
+        var jexxaMain = new JexxaMain(BookStoreJ.class);
 
         jexxaMain
-                // In order to find ports by annotation we must add packages that are searched by Jexxa.
-                // Since we use the default package structure we can use following method
-                .addDDDPackages(BookStoreJApplication.class)
+                //Define the default packages for inbound and outbound ports
+                .addDDDPackages(BookStoreJ.class)
 
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
@@ -140,9 +142,7 @@ public final class BookStoreJApplication
                 // In case you annotate your domain core with your pattern language,
                 // You can also bind DrivingAdapter to annotated classes.
                 .bind(RESTfulRPCAdapter.class).toAnnotation(ApplicationService.class)
-                .bind(JMXAdapter.class).toAnnotation(ApplicationService.class)
-
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .start()
 

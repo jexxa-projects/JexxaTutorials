@@ -109,12 +109,8 @@ public final class BookStore
         return false;
     }
 
-
-
     private BookStore()
     {
         //Private constructor since we only offer main
     }
-
-
 }
