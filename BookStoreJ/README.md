@@ -164,13 +164,13 @@ java -jar target/bookstorej-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.tutorials.bookstorej.BookStoreApplication - Use persistence strategy: IMDBRepository 
-[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStoreApplication' with 2 Driving Adapter 
+[main] INFO io.jexxa.tutorials.bookstorej.BookStoreJ - Use persistence strategy: IMDBRepository 
+[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStoreJ' with 2 Driving Adapter 
 [main] INFO org.eclipse.jetty.util.log - Logging initialized @474ms to org.eclipse.jetty.util.log.Slf4jLog
 [main] INFO io.javalin.Javalin - Starting Javalin ...
 [main] INFO io.javalin.Javalin - Listening on http://localhost:7504/
 [main] INFO io.javalin.Javalin - Javalin started in 148ms \o/
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreApplication' successfully started in 0.484 seconds
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreJ' successfully started in 0.484 seconds
 ```          
 
 ### Use a Postgres database

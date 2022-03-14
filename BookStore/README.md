@@ -308,13 +308,10 @@ Following code shows a simple validation of our BookStoreService. Some additiona
 ```java
 class BookStoreServiceTest
 {
-    private static final String DRIVEN_ADAPTER = BookStoreApplication.class.getPackageName() + ".infrastructure.drivenadapter";
-    private static final String DOMAIN_SERVICE = BookStoreApplication.class.getPackageName() + ".domainservice";
-
     private static final ISBN13 ISBN_13 = new ISBN13( "978-3-86490-387-8" );
     private static JexxaMain jexxaMain;
-    
     private BookStoreService objectUnderTest;
+
     private MessageRecorder publishedDomainEvents;
     private IBookRepository bookRepository;
 
@@ -323,18 +320,16 @@ class BookStoreServiceTest
     static void initBeforeAll()
     {
         // We recommend instantiating JexxaMain only once for each test class.
-        // If you have larger tests this speeds up Jexxa's dependency injection 
-        // Note: For unit-tests you just need to bind any driving adapter  
+        // If you have larger tests this speeds up Jexxa's dependency injection
         jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
-        jexxaMain.addToInfrastructure(DRIVEN_ADAPTER)
-                .addToApplicationCore(DOMAIN_SERVICE);
+        jexxaMain.addDDDPackages(BookStore.class);
     }
 
     @BeforeEach
     void initTest()
     {
-        // JexxaTest is created for each test. It provides and cleans up stubs before each test
-        // Actually, JexxaTest provides stubs for repositories and send messages
+        // JexxaTest is created for each test. It provides stubs for running your tests so that no 
+        // mock framework is required.
         JexxaTest jexxaTest = new JexxaTest(jexxaMain);
 
         // Query a message recorder for an interface which is defines in your application core.
@@ -362,6 +357,31 @@ class BookStoreServiceTest
 
 
     @Test
+    void sellBook() throws BookNotInStockException
+    {
+        //Arrange
+        var amount = 5;
+        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
+
+        //Act
+        objectUnderTest.sell(ISBN_13);
+
+        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
+        assertEquals( amount - 1, objectUnderTest.amountInStock(ISBN_13) );
+        assertEquals( amount - 1, bookRepository.get(ISBN_13).amountInStock() );
+        assertTrue( publishedDomainEvents.isEmpty() );
+    }
+
+    @Test
+    void sellBookNotInStock()
+    {
+        //Arrange - Nothing
+
+        //Act/Assert
+        assertThrows(BookNotInStockException.class, () -> objectUnderTest.sell(ISBN_13));
+    }
+
+    @Test
     void sellLastBook() throws BookNotInStockException
     {
         //Arrange
@@ -375,6 +395,4 @@ class BookStoreServiceTest
         assertEquals( 1 , publishedDomainEvents.size() );
         assertEquals( bookSoldOut(ISBN_13), publishedDomainEvents.getMessage(BookSoldOut.class));
     }
-
-} 
 ```
