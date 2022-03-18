@@ -9,33 +9,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Updated dependencies
 
-## \[1.0.8] - 2022-03-18
+## \[1.0.8] - 2022-03-11
 ### Fixed
 - Updated dependencies
 
-## \[1.0.7] - 2022-03-18
+## \[1.0.7] - 2022-03-01
 ### Fixed
 - Updated dependencies
 
-## \[1.0.6] - 2022-03-18
+## \[1.0.6] - 2022-03-01
 ### Fixed
 - Build Scripts and auto merge
 
-## \[1.0.5] - 2022-03-18
+## \[1.0.5] - 2022-03-01
 ### Fixed
 - Build Scripts
 
-## \[1.0.4] - 2022-03-18
+## \[1.0.4] - 2022-03-01
 ### Fixed
 - Updated dependencies
 - Build Scripts
 
-## \[1.0.2] - 2022-03-18
+## \[1.0.2] - 2022-03-01
 ### Fixed
 - Updated dependencies
 - Code Cleanup
 
-## \[1.0.1] - 2022-03-18
+## \[1.0.1] - 2022-03-01
 ### Fixed
 - Updated dependencies
 - Code Cleanup
