@@ -4,7 +4,7 @@
 
 *   How to write a simple application using Jexxa
 *   How to bind different driving adapter to the `BoundedContext` object which allow to control your application from outside
-*   How to control the running application from outside via `BoundedContext` object 
+*   How to get status information from outside via `BoundedContext` object 
 *   How to use the `jexxa-application.properties` to configure the driving adapters
 *   How to build a docker image with this tutorial    
 
