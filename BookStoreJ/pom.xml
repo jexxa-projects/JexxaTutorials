@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jexxatutorials</artifactId>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.10-SNAPSHOT</version>
+    <version>1.0.11-SNAPSHOT</version>
   </parent>
 
   <name>BookStoreJ</name>
@@ -18,8 +18,8 @@
 
     <addendj.version>1.0.1</addendj.version>
     <aspectj.version>1.9.8</aspectj.version>
-    <aspectjtools.version>1.9.8</aspectjtools.version>
-    <aspectjrt.version>1.9.8</aspectjrt.version>
+    <aspectjtools.version>1.9.9</aspectjtools.version>
+    <aspectjrt.version>1.9.9</aspectjrt.version>
     <aspectj.maven.plugin.version>1.12.6</aspectj.maven.plugin.version>
   </properties>
 
