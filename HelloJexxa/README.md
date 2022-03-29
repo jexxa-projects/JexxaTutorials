@@ -3,8 +3,8 @@
 ## What You Learn ##
 
 *   How to write a simple application using Jexxa
-*   How to bind different driving adapter to the `BoundedContext` object which allow to control your application from outside
-*   How to get status information from outside via `BoundedContext` object 
+*   How to expose and access `HelloJexxa` class via RESTful-RCP 
+*   How to expose `BoundedContext` object via JMX to access status information   
 *   How to use the `jexxa-application.properties` to configure the driving adapters
 *   How to build a docker image with this tutorial    
 
@@ -13,6 +13,8 @@
 *   15 minutes
 *   JDK 11 (or higher) installed 
 *   Maven 3.6 (or higher) installed
+*   A web browser
+*   curl to access the web page via command line (optional)
 *   Docker installed (optional)
 
 ## Write the application ##
