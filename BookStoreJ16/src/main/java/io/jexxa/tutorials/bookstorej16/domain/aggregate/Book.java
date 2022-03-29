@@ -1,6 +1,7 @@
 package io.jexxa.tutorials.bookstorej16.domain.aggregate;
 
 import io.jexxa.addend.applicationcore.Aggregate;
+import io.jexxa.addend.applicationcore.AggregateFactory;
 import io.jexxa.addend.applicationcore.AggregateID;
 import io.jexxa.tutorials.bookstorej16.domain.businessexception.BookNotInStockException;
 import io.jexxa.tutorials.bookstorej16.domain.domainevent.BookSoldOut;
@@ -59,7 +60,7 @@ public final class Book
         return Optional.empty();
     }
 
-    //AggregateFactory
+    @AggregateFactory(Book.class)
     public static Book newBook(ISBN13 isbn13)
     {
         return new Book(isbn13);
