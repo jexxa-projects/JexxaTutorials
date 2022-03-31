@@ -45,7 +45,7 @@
 
         <!-- version of dependencies -->
         <jexxa-web.release.version>4.1.3</jexxa-web.release.version>
-        <addend.version>1.1.0</addend.version>
+        <addend.version>1.2.0</addend.version>
         <activemq.client.version>5.17.0</activemq.client.version>
         <postgres.version>42.3.3</postgres.version>
         <slf4j.simple.version>1.7.36</slf4j.simple.version>
@@ -86,7 +86,7 @@
         <maven.versions.plugin>2.10.0</maven.versions.plugin>
         <maven.build.helper.version>3.3.0</maven.build.helper.version>
         <maven.jib.plugin>3.2.0</maven.jib.plugin>
-        <maven.shade.plugin>3.2.4</maven.shade.plugin>
+        <maven.shade.plugin>3.3.0</maven.shade.plugin>
 
     </properties>
 
