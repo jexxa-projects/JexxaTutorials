@@ -1,6 +1,7 @@
 package io.jexxa.tutorials.bookstorej.domain.valueobject;
 
 import io.jexxa.addend.applicationcore.ValueObject;
+import io.jexxa.addend.applicationcore.ValueObjectFactory;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ import java.util.Objects;
  * IMPORTANT NOTE: This is a simplified ISBN13 number which only validates the checksum because this is sufficient for this tutorial
  */
 @ValueObject
+@SuppressWarnings("unused")
 public class ISBN13
 {
     private final String value;
@@ -19,6 +21,12 @@ public class ISBN13
         validateChecksum(value);
 
         this.value = value;
+    }
+
+    @ValueObjectFactory(ISBN13.class)
+    public static ISBN13 createISBN(String value)
+    {
+        return new ISBN13(value);
     }
 
     public String getValue()
