@@ -19,7 +19,7 @@
     <addendj.version>1.0.1</addendj.version>
     <aspectj.version>1.9.8</aspectj.version>
     <aspectjtools.version>1.9.9.1</aspectjtools.version>
-    <aspectjrt.version>1.9.9</aspectjrt.version>
+    <aspectjrt.version>1.9.9.1</aspectjrt.version>
     <aspectj.maven.plugin.version>1.12.6</aspectj.maven.plugin.version>
   </properties>
 
