@@ -32,7 +32,7 @@
     </scm>
 
     <properties>
-        <image.repository.root>ghcr.io/repplix</image.repository.root>
+        <image.repository.root>ghcr.io/jexxa-projects</image.repository.root>
         <main.class>${project.groupId}.${project.name}</main.class>
         <main.arguments>-jdbc</main.arguments>
         <main.http.port>7500</main.http.port>
