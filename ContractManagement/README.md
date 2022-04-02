@@ -217,7 +217,7 @@ You will see following (or similar) output
 ```console
 main] INFO io.jexxa.tutorials.contractmanagement.ContractManagement - Use persistence strategy: IMDBObjectStore 
 [main] INFO org.eclipse.jetty.util.log - Logging initialized @375ms to org.eclipse.jetty.util.log.Slf4jLog
-[main] INFO io.jexxa.core.JexxaMain - Jexxa-Core 3.1.0-SNAPSHOT; built: 2021-07-31 15:50; git: scm:git:https://github.com/repplix/Jexxa.git/jexxa-core;
+[main] INFO io.jexxa.core.JexxaMain - Jexxa-Core 3.1.0-SNAPSHOT; built: 2021-07-31 15:50; git: scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core;
 
 [main] INFO io.javalin.Javalin - Javalin started in 166ms \o/
 [main] INFO io.javalin.Javalin - OpenAPI documentation available at: http://0.0.0.0:7506/swagger-docs

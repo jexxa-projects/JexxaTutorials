@@ -1,4 +1,4 @@
-[![Maven Test Build](https://github.com/repplix/JexxaTutorials/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/repplix/JexxaTutorials/actions/workflows/mavenBuild.yml) [![New Release](https://github.com/repplix/JexxaTutorials/actions/workflows/newRelease.yml/badge.svg)](https://github.com/repplix/JexxaTutorials/actions/workflows/newRelease.yml)
+[![Maven Test Build](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/mavenBuild.yml) [![New Release](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/newRelease.yml/badge.svg)](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/newRelease.yml)
 # Change Log
 All notable changes to this project will be documented in this file.
  

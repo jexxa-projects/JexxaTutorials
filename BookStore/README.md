@@ -303,7 +303,7 @@ First, add the following dependency to your tests.
     </dependency>
 ```
 
-Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/repplix/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).       
+Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/jexxa-projects/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).       
 
 ```java
 class BookStoreServiceTest

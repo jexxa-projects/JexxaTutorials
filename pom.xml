@@ -25,9 +25,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/repplix/JexxaTutorials.git</connection>
-        <url>https://github.com/repplix/JexxaTutorials</url>
-        <developerConnection>scm:git:https://github.com/repplix/JexxaTutorials.git</developerConnection>
+        <connection>scm:git:https://github.com/jexxa-projects/JexxaTutorials.git</connection>
+        <url>https://github.com/jexxa-projects/JexxaTutorials</url>
+        <developerConnection>scm:git:https://github.com/jexxa-projects/JexxaTutorials.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
