@@ -1,11 +1,12 @@
 package io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSender;
-import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSenderManager;
 import io.jexxa.tutorials.timeservice.domainservice.ITimePublisher;
 
 import java.time.LocalTime;
 import java.util.Properties;
+
+import static io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSenderManager.getMessageSender;
 
 @SuppressWarnings("unused")
 public class TimePublisher implements ITimePublisher
@@ -19,7 +20,7 @@ public class TimePublisher implements ITimePublisher
     public TimePublisher(Properties properties)
     {
         //Request a default message Sender from corresponding strategy manager
-        this.messageSender = MessageSenderManager.getMessageSender(properties);
+        this.messageSender = getMessageSender(properties);
     }
 
     @Override

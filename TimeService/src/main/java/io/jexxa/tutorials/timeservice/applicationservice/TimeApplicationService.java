@@ -22,11 +22,8 @@ public class TimeApplicationService
      */
     public TimeApplicationService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
     {
-        Objects.requireNonNull(timePublisher);
-        Objects.requireNonNull(messageDisplay);
-
-        this.timePublisher = timePublisher;
-        this.messageDisplay = messageDisplay;
+        this.timePublisher = Objects.requireNonNull(timePublisher);
+        this.messageDisplay = Objects.requireNonNull(messageDisplay);
     }
 
     public LocalTime getTime()

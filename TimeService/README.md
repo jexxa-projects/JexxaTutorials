@@ -49,13 +49,10 @@ public class TimeService
      * @param timePublisher required outbound port for this application service
      * @param messageDisplay required outbound port for this application service
      */
-    public TimeService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
+    public TimeApplicationService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
     {
-        Objects.requireNonNull(timePublisher);
-        Objects.requireNonNull(messageDisplay);
-
-        this.timePublisher = timePublisher;
-        this.messageDisplay = messageDisplay;
+        this.timePublisher = Objects.requireNonNull(timePublisher);
+        this.messageDisplay = Objects.requireNonNull(messageDisplay);
     }
 
     public LocalTime getTime()
