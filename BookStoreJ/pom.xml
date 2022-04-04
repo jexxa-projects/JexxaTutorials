@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jexxatutorials</artifactId>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.11</version>
   </parent>
 
   <name>BookStoreJ</name>
