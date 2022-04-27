@@ -1,3 +1,5 @@
+[![Maven Test Build](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/mavenBuild.yml)
+
 # Tutorials 
 
 ## General notes
