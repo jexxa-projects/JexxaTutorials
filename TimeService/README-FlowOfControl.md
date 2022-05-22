@@ -31,7 +31,7 @@ Fore more details please read the article [ports and adapters](https://herbertog
            
 ## Navigate through your application ##
 
-The first way to navigate through source code that every developer learns is to follow the lines of code. This allows you to see the flow of control,
+At the beginning, every developer learns to navigate through source code by reading it line by line. This allows you to see the flow of control,
 which eventually allows you to understand the application logic. Most IDE's and debuggers support this very well. However, this only works well for a
 limited number of lines of code and/or for a few possible paths. For larger applications, you need an approach that scales independently of 
 the lines of code and excludes a large portion of possible paths directly.
