@@ -25,8 +25,6 @@ If you choose ports and adapters as the architecture of your application, you ha
     
 *   `Driven Adapter`: A `driven adapter` belongs to the infrastructure and implements a specific `outbound port` by using a concrete technology stack such as database. This building block is *driven* by the domain logic of the application.   
 
-Since this is a very high level abstraction, this architecture is often called the **macro-architecture** of an application.
-
 Fore more details please read the article [ports and adapters](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
            
 ## Navigate through your application ##
@@ -118,7 +116,7 @@ At this point, we have following additional information:
 Again, we can navigate into two different directions. Either we dive deep into the application core by checking the implementation 
 of `TimeService`. Please note that within a large application core you should use a so-called micro architecture that supports the
 navigation through your application core. Please check tutorial [BookStore](https://github.com/jexxa-projects/Jexxa/tree/master/tutorials/BookStore)
-to see a potential mapping of an onion architecture for your application core.   
+to see a potential mapping to a so called pattern language to structure your application core.   
 
 Alternatively, you can select one of the two `Outbound Ports` from your IDE to continue in the direction of `Outbound Port` &rarr; 
 `Driven Adapter`.
@@ -143,7 +141,7 @@ depend on a specific infrastructure. So the direction of the dependency must be 
 the concept of an `interface`. That's the reason, why we must declare a high-level interface that belongs to our application core. 
 
 This approach ensures that we can easily exchange the technology stack that is used by our application core. That's why the interface is so important
-from an architectural point of view and represents one of the four building blocks of our macro-architecture.   
+from an architectural point of view and represents one of the four building blocks of our architecture.   
 
 Finally, this interface is then implemented by a `Driven Adapter` which again belongs to the infrastructure. Your IDE typically provides hot-keys 
 to switch to the concrete implementation of the interface which is located in the infrastructure part again. In this application the 
