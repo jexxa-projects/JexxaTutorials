@@ -115,7 +115,7 @@ At this point, we have following additional information:
 
 Again, we can navigate into two different directions. Either we dive deep into the application core by checking the implementation 
 of `TimeService`. Please note that within a large application core you should use a so-called micro architecture that supports the
-navigation through your application core. Please check tutorial [BookStore](https://github.com/jexxa-projects/Jexxa/tree/master/tutorials/BookStore)
+navigation through your application core. Please check tutorial [BookStore](https://github.com/jexxa-projects/JexxaTutorials/blob/main/BookStore/README.md)
 to see a potential mapping to a so called pattern language to structure your application core.   
 
 Alternatively, you can select one of the two `Outbound Ports` from your IDE to continue in the direction of `Outbound Port` &rarr; 
