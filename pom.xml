@@ -59,7 +59,7 @@
         <awaitility.version>4.2.0</awaitility.version>
         <h2database.version>2.1.212</h2database.version>
         <unirest.java.version>3.13.8</unirest.java.version>
-        <jexxa-test.release.version>4.1.6</jexxa-test.release.version>
+        <jexxa-test.release.version>4.1.7</jexxa-test.release.version>
 
         <!-- server-name used in mavens settings.xml to find to your repository credentials -->
         <project.scm.id>github</project.scm.id>
