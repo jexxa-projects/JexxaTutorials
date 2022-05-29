@@ -20,10 +20,6 @@ public class ContractManagement
 
         var jexxaMain = new JexxaMain(ContractManagement.class);
 
-        //print some application information
-        JexxaLogger.getLogger(ContractManagement.class)
-                .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
-
         jexxaMain
                 //Define which outbound ports should be managed by Jexxa
                 .addDDDPackages(ContractManagement.class)

@@ -12,7 +12,6 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.jexxa.tutorials.contractmanagement.domain.aggregate.Contract.newContract;
 
@@ -51,7 +50,7 @@ public class ContractService
                 .getUnsignedContracts()
                 .stream()
                 .map(Contract::getContractNumber)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<ContractSigned> getAllSignedContracts()
@@ -75,14 +74,14 @@ public class ContractService
                 .getByAdvisor(advisor)
                 .stream()
                 .map(Contract::getContractNumber)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private ContractNumber getNextContractNumber()
     {
         return contractRepository
                 .getHighestContractNumber()
-                .map(contract -> new ContractNumber(contract.getContractNumber().getValue() + 1))
+                .map(contract -> new ContractNumber(contract.getContractNumber().value() + 1))
                 .orElseGet(() -> new ContractNumber(1));
     }
 }

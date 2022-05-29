@@ -38,9 +38,6 @@ public final class BookStore
 
         var jexxaMain = new JexxaMain(BookStore.class);
 
-        //print some application information
-        JexxaLogger.getLogger(BookStore.class)
-                .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
         jexxaMain
                 //Define the default packages for inbound and outbound ports
                 .addDDDPackages(BookStore.class)
