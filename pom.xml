@@ -537,7 +537,7 @@
   <modules>
     <module>HelloJexxa</module>
     <module>TimeService</module>
-    <module>BookStoreJ16</module>
+    <module>BookStore</module>
     <module>ContractManagement</module>
   </modules>
 
