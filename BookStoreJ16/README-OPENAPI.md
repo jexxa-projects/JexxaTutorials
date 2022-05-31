@@ -44,7 +44,7 @@ Note: In case you start Swagger UI not on the same machine as your BookStoreJ-ap
 
 As result, you should get following overview with available operations: 
 
-![OpenAPI-Docu](images/OpenAPI-Docu.png) 
+![OpenAPI-Docu](../BookStoreJ/images/OpenAPI-Docu.png) 
 
 Now, lets start execute some methods.
        
@@ -52,11 +52,11 @@ Now, lets start execute some methods.
 
 To get a list of available books, you first have to select the corresponding methods. As soon as you pressed it, you will get detailed information such as including parameters and responses. 
 
-![OpenAPI-getBooks](images/OpenAPI-getBooks.png) 
+![OpenAPI-getBooks](../BookStoreJ/images/OpenAPI-getBooks.png) 
 
 Now, you can execute the method `getBooks` and Swagger-UI will show you all available books. 
 
-![OpenAPI-getBooksResult](images/OpenAPI-getBooksResult.png) 
+![OpenAPI-getBooksResult](../BookStoreJ/images/OpenAPI-getBooksResult.png) 
 
 From these results you can play around with remaining methods provided by this application. 
 

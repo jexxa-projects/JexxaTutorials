@@ -28,16 +28,16 @@ See documentation [TimeService](TimeService/README.md)
 See documentation [TimeService - Flow of Control](TimeService/README-FlowOfControl.md)
 
 ## BookStore - Using a Repository  
-See documentation [BookStore](BookStore/README.md)
+See documentation [BookStore](BookStoreJ16/README.md)
 
 ## BookStoreJ - Pattern Language 
-See documentation [BookStoreJ](BookStoreJ/README.md)
+See documentation [BookStore](BookStoreJ16/README-PatternLanguage.md)
 
 ## BookStoreJ - OpenAPI Support 
-See documentation [BookStoreJ - With OpenAPI support](BookStoreJ/README-OPENAPI.md)
+See documentation [BookStore - With OpenAPI support](BookStoreJ16/README-OPENAPI.md)
 
 ## BookStoreJ16 - Java Records
-See documentation [BookStoreJ16](BookStoreJ16/README.md)
+See documentation [BookStoreJ](BookStoreJ16/README-JavaRecords.md)
 
 ## ContractManagement - Using an ObjectStore  
 See documentation [ContractManagement](ContractManagement/README.md)

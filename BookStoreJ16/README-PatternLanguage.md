@@ -176,7 +176,7 @@ You will see following (or similar) output
 ### Use a Postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The 
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](src/main/resources/jexxa-application.properties) 
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](../BookStoreJ/src/main/resources/jexxa-application.properties) 
 file if required.       
 
 ```console                                                          
@@ -190,8 +190,8 @@ In contrast to the above output Jexxa will state that you use JDBC persistence s
 
 Note: In case you want to use a difference database, you have to: 
 
-1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](src/main/resources/jexxa-application.properties).
+1.  Add the corresponding jdbc driver to [pom.xml](../BookStoreJ/pom.xml) to dependencies section.
+2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](../BookStoreJ/src/main/resources/jexxa-application.properties).
 
 ### Execute some commands using curl 
 

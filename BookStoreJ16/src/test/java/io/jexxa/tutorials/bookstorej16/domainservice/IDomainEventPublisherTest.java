@@ -24,7 +24,7 @@ class IDomainEventPublisherTest
     @BeforeEach
     void initTest()
     {
-        var jexxaMain = new JexxaMain(getClass().getSimpleName());
+        var jexxaMain = new JexxaMain(getClass());
         jexxaMain
                 .addToApplicationCore(OUTBOUND_PORTS)
                 .addToInfrastructure(DRIVEN_ADAPTER);

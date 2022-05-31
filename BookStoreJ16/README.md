@@ -1,180 +1,241 @@
-# BookStoreJ16 - Java Records 
+# BookStore - Using a Repository
 
 ## What You Learn
 
-*   How and why to use annotations in an application core 
-*   How to improve semantic meaning of DDD pattern elements using Java records
-*   Considerations on interface definition for outbound ports      
+*   How to provide an implementation of a specific outbound-port which is called `Repository` in terms of DDD using a database  
+*   How to initialize master data into a Repository      
+*   Default package structure for more complex applications based on DDD
+*   How to test your business logic using Jexxa     
 
 ## What you need
 
-*   __JDK 16 (or higher) installed__
-*   A basic understanding of Java records 
-*   Understand tutorial `BookStoreJ` because we explain only new aspects 
+*   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects 
 *   60 minutes
+*   JDK 11 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   curl or jconsole to trigger the application
-*   A postgres DB (if you start the application with option `-jdbc')  
+*   A postgres DB (if you start the application with option `-jdbc`)  
 
-## Implementing Application Core 
+## Requirements to the application core
+This application core should provide following super simplified functionality:
 
-### Use of Java records to improve semantic meaning
+*   Manage available books in store which means to add, sell, and query books
 
-When implementing a business application using DDD one of the most important aspects is to provide a semantically elegant and consistent 
-solution for implementing the DDD pattern elements. In previous tutorial `BookStoreJ` we saw that annotations can help to indicate a specific pattern 
-element. In addition, you should try to use the best possible syntax provided by the programming language to focus on the semantic meaning of the 
-source code.  
+*   All books should be identified by their ISBN13
 
-One of the major changes in Java 16 is the official support for Java [records](https://openjdk.java.net/jeps/359). They are especially designed for classes holding immutable data. Apart from a compact syntax they also provide valid implementations of `equals()`, `hashCode()`, and `toString()`. 
-Therefore, they are suitable for the following DDD elements. 
+*   For each book the store the umber of available copies
 
-*   `ValueObject`
-*   `DomainEvent`
+*   Publish `DomainEvent` `BookSoldOut` if last copy of a book is sold
 
-The following example shows the implementation of the domain event `BookSoldOut` using a record. Note that the static method `bookSoldOut` is not required but improves the read flow when creating the domain event.
+*   A service which gets the latest books from our reference library. For this tutorial it is sufficient that: 
+    *   Service provides a hardcoded list
+    *   Service is triggered when starting the application     
 
-```java 
-@DomainEvent
-public record BookSoldOut(ISBN13 isbn13)
-{
-    public static BookSoldOut bookSoldOut(ISBN13 isbn13)
-    {
-        return new BookSoldOut(isbn13);
-    }
-}
-```
+## Implementing application core 
 
-As you can see, all important information of a DomainEvent can be seen in thw following two lines.
+General note: There are several books, courses, tutorials available describing how to implement an application core using the patterns of DDD. 
+The approach used in this tutorial should not be considered as reference. It serves only for demonstration purpose how to realize your decisions 
+with Jexxa.       
 
-*   `@DomainEvent`: Indicates the concrete type of the pattern element.  
-*   `public record BookSoldOut(ISBN13 isbn13)`: Indicates the type name `BookSoldOut` including the provided data which is `ISBN13` 
+### 1. Mapping to DDD patterns 
 
-### `IDomainEventPublisher`: Considerations on interface definition  
+First we map the functionality of the application to DDD patterns   
 
-In large applications it is quite common that you have multiple domain events that have to published to other applications. 
-To solve this issue at least following solutions exist: 
+*   `Aggregate:` Elements that change over time and include our business logic 
+    *   `Book` which manages available copies of a book.       
 
-*   Method overloading: Provide a specific method for each type of DomainEvent in `IDomainEventPublisher`. On the one side, this ensures static type
-    safety but could flood your interface if the number of domain events is quite large. Unfortunately, I've learned that this could also lead to
-    implementations in a `DrivenAdapter` in which each domain event is treated in a slightly different way. 
+*   `ValueObject:` Elements that represent a state and are immutable
+    *   `ISBN13` which identifies a book     
 
-*   Abstract `DomainEvent` class: This allows to ensure type safety in `IDomainEventPublisher` and also providing only a single method that is
-    implemented in a generic way. This seems to solve all issues from method overloading. The problem with this approach is that you introduce an
-    interface that must be implemented by all kind of domain events for technical reason. At first glance, this seems to be a slightly esoteric 
-    problem. In the long run, I've learned that such classes can be a gate opener, allowing technology aspects to enter the application core.
+*   `DomainEvent:` Business events that happened in the past 
+    *   `BookSoldOut` when copies of a book are no longer in stock   
 
-*   Publishing an `Object`: An alternative solution is to provide a method accepting a domain event of type `Object`. This prevents entering 
-    technology aspects into the application core. The obvious drawback is that you loose type safety. In case you annotated all your classes you can
-    double-check if the domain event is annotated with `DomainEvent`. This prevents publishing arbitrary objects, but this check is performed only 
-    during runtime.
-    
-Of course, you can also combine the approaches. For example, you can use method overloading, and the implementation uses an internal method accepting
-an `Object`. Anyway, the most important aspects are: 
-*   The outbound port is an interface to ensure the separation of your application core from a technology stack.
-*   To avoid entering technology aspects into the application core, or vice versa, you should provide a clean guideline how to handle this.   
-    
-Please do not underestimate such aspects if your application runs for several decades and is maintained by different developer teams. So you should
-discuss and document such aspects with your colleagues and/or software architects. 
+*   `DomainService:` 
+    *   `IDomainEventPublisher:` We need to publish our domain events in some way. Since the implementation requires a technology stack we can only define an interface.   
+    *   `IBookRepository:` Interface to manage `Book` instances. Since the implementation requires a technology stack we can only define an interface.  
+    *   `ReferenceLibrary:` Return latest books. For simplicity, we assume that it is a service which does not relate to our domain core directly.             
 
-Finally, the following code shows how to use the annotation to add a runtime test. 
+*   `BusinessException:`
+    *   `BookNotInStockException:` In case we try to sell a book that is currently not available   
+          
+### Package structure
+
+In our tutorials we use following package structure. Please note that this package structure is just a recommendation but Jexxa offers some convenience methods if you use it. That's why we recommend to start with this structure: 
+
+*   applicationservice
+
+*   domainservice
+
+*   domain 
+    *   valueobject
+    *   aggregate
+    *   domainevent
+    *   businessexception    
+
+*   infrastructure
+    *   drivenadapter
+    *   drivingadapter 
+
+### A note on implementing DDD patterns  
+
+*   `ValueObject` and `DomainEvent`: Are immutable and compared based on their internal values
+    *   They must not have setter methods. So all fields should be final. 
+    *   They must provide a valid implementation of equals() and hashcode()
+    *   They include no business logic, but they have to validate their input data    
+
+*   `Aggregate`: Is identified by a unique `AggregateID` which is a `ValueObject`
+    *   `Book` uses an `ISBN13` object     
+
+*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you will use to implement this interface.        
+     
+## 2. Implement the infrastructure
+
+Implementation of `IDomainEventPublisher` just prints the `DomainEvent` to the console. So we can just use the implementation from tutorial `TimeService`.    
+
+### Implement the repository 
+When using Jexxa's `RepositoryManager` implementing a repository is just a mapping to the `IRepository` interface which provides typical CRUD operations.   
+  
+The requirements are: 
+
+*   The managed object provides a so called key-function which returns a key to uniquely identify the object. In case of this tutorial it is the method `getISBN`.
+*   The key itself must provide a valid implementation of method equals and hashcode to validate equality.     
+
+The following source code shows a typical implementation of a `Repository`. Within the main function you can configure the `RepositoryManager` if required. 
+
+For the sake of completeness we use a static factory method in this implementation instead of a public constructor. Here it is quite important to return the interface and not the concrete type.        
 
 ```java
-@DrivenAdapter
-public class DomainEventPublisher implements IDomainEventPublisher
+  
+@SuppressWarnings("unused")
+public final class BookRepository implements IBookRepository
 {
-private final MessageSender messageSender;
+    private final IRepository<Book, ISBN13> repository;
 
-    public DomainEventPublisher(Properties properties)
+    private BookRepository(IRepository<Book, ISBN13> repository) { this.repository = repository; }
+
+    // Factory method that requests a repository strategy from Jexxa's RepositoryManager
+    public static IBookRepository create(Properties properties)
     {
-        messageSender = MessageSenderManager.getMessageSender(properties);
+        return new BookRepository(
+                RepositoryManager.getRepository(Book.class, Book::getISBN13, properties)
+        );
+    }
+
+    @Override                    
+    public void add(Book book) { repository.add(book); }
+
+    @Override
+    public Book get(ISBN13 isbn13) { return repository.get(isbn13).orElseThrow(); }
+
+    @Override
+    public boolean isRegistered(ISBN13 isbn13)
+    {
+        return search(isbn13)
+                .isPresent();
     }
 
     @Override
-    public void publish(Object domainEvent)
-    {
-        validateDomainEvent(domainEvent);
-        messageSender
-                .send(domainEvent)
-                .toTopic("BookStoreTopic")
-                .asJson();
-    }
+    public Optional<Book> search(ISBN13 isbn13) { return repository.get(isbn13); }
 
-    private void validateDomainEvent(Object domainEvent)
-    {
-        Objects.requireNonNull(domainEvent);
-        if ( domainEvent.getClass().getAnnotation(DomainEvent.class) == null )
-        {
-            throw new IllegalArgumentException("Given object is not annotated with @DomainEvent");
-        }
-    }
+    @Override
+    public void update(Book book) { repository.update(book); }
 
+    @Override
+    public List<Book> getAll() { return repository.get(); }
 }
+
 ```
 
-## Implement the Application
+## 3. Implement the application 
+
+Finally, we have to write our application. As you can see in the code below there are two main differences compared to `HelloJexxa` and `TimeService`:
+
+*   Define a default strategy for our Repositories.
+*   Add a bootstrap service which is directly called to initialize domain-specific aspects.   
    
-Implementing the application using java records is almost the same as using standard classes. The only difference we need to take into account 
-is to ensure proper Json serialization and deserialization. Especially deserialization could be an issue due to the immutability of records and their
-final fields. 
-
-Jexxa uses Gson library for Json serialization by default which does not provide native support of java records so far. Therefore, we have to 
-provide a generic type factory for records. A generic implementation can be found [here](src/main/java/io/jexxa/tutorials/bookstorej16/infrastructure/support/J16JsonConverter.java).
-
-Within the main method, we have to set this special JSonConverter as you can see in the following snippet.  
-
-```java 
-public final class BookStoreJ16
+```java
+    
+public final class BookStore
 {
     public static void main(String[] args)
     {
-        //Set a JsonConverter that support java records
-        J16JsonConverter.registerRecordFactory();   
-        ...
-    }
+        // Define the default strategies.
+        // In this tutorial the Repository is either an IMDB database or a JDBC based repository.
+        // In case of JDBC we use a simple key value approach which stores the key and the value as json strings.
+        // Using json strings might be very inconvenient if you come from typical relational databases but in terms
+        // of DDD our aggregate is responsible to ensure consistency of our data and not the database.
+        RepositoryManager.setDefaultStrategy(getRepositoryStrategy(args));
+        // The message sender is either a simple MessageLogger or a JMS sender.
+        MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
 
-}  
+        // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
+        MessageSenderManager.setDefaultStrategy(MessageLogger.class);
+
+        var jexxaMain = new JexxaMain(BookStore.class);
+
+        //print some application information
+        JexxaLogger.getLogger(BookStore.class)
+                .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
+        jexxaMain
+                //Define the default packages for inbound and outbound ports
+                .addDDDPackages(BookStore.class)
+
+                //Get the latest books when starting the application
+                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
+
+                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+
+                .start()
+
+                .waitForShutdown()
+
+                .stop();
+    }
+    //...
+}
 ```
 
-## Run the application  
+That's it. 
 
+## Run the application
+ 
 ### Use an in memory database
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstorej16-jar-with-dependencies.jar 
+java -jar target/bookstore-jar-with-dependencies.jar 
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.tutorials.bookstorej16.BookStoreJ16 - Use persistence strategy: IMDBRepository 
-[main] INFO io.jexxa.tutorials.bookstorej16.BookStoreJ16 - Use messaging strategy: MessageLogger 
-[main] INFO org.eclipse.jetty.util.log - Logging initialized @429ms to org.eclipse.jetty.util.log.Slf4jLog
-
-[main] INFO io.javalin.Javalin - Listening on http://0.0.0.0:7505/
-[main] INFO io.javalin.Javalin - Javalin started in 92ms \o/
-[main] INFO io.javalin.Javalin - OpenAPI documentation available at: http://0.0.0.0:7505/swagger-docs
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreJ16Application' successfully started in 0.754 seconds
-
+[main] INFO io.jexxa.tutorials.bookstore.BookStore - Use persistence strategy: IMDBRepository 
+[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStoreApplication' with 2 Driving Adapter 
+[main] INFO org.eclipse.jetty.util.log - Logging initialized @474ms to org.eclipse.jetty.util.log.Slf4jLog
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO io.javalin.Javalin - Listening on http://localhost:7503/
+[main] INFO io.javalin.Javalin - Javalin started in 148ms \o/
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreApplication' successfully started in 0.484 seconds
 ```          
 
-### Use a Postgres database
+### Use a postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The 
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](src/main/resources/jexxa-application.properties) 
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](../BookStore/src/main/resources/jexxa-application.properties) 
 file if required.       
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstorej-jar-with-dependencies.jar -jdbc 
+java -jar target/bookstore-jar-with-dependencies.jar -jdbc 
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
-[main] INFO io.jexxa.tutorials.bookstorej16.BookStoreJ16 - Use persistence strategy: JDBCKeyValueRepository 
+[main] INFO io.jexxa.tutorials.bookstore.BookStore - Use persistence strategy: JDBCKeyValueRepository 
 ```
 
 Note: In case you want to use a difference database, you have to: 
 
-1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](src/main/resources/jexxa-application.properties).
+1.  Add the corresponding jdbc driver to [pom.xml](../BookStore/pom.xml) to dependencies section.
+2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](../BookStore/src/main/resources/jexxa-application.properties).
 
 ### Execute some commands using curl 
 
@@ -182,7 +243,7 @@ Note: In case you want to use a difference database, you have to:
 
 Command: 
 ```Console
-curl -X GET  http://localhost:7505/BookStoreService/getBooks
+curl -X GET  http://localhost:7503/BookStoreService/getBooks
 ```
 
 Response: 
@@ -190,13 +251,10 @@ Response:
 [{"value":"978-1-891830-85-3"},{"value":"978-1-60309-025-4"},{"value":"978-1-60309-016-2"},{"value":"978-1-60309-265-4"},{"value":"978-1-60309-047-6"},{"value":"978-1-60309-322-4"}]
 ```
 
-#### Ask if a specific book is in stock**
-
+#### Query available books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" \
-    -d '"978-1-891830-85-3"' \
-    http://localhost:7505/BookStoreService/inStock                 
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 
@@ -205,27 +263,136 @@ false
 ```
 
 #### Add some books
-
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" \
-    -d '["978-1-891830-85-3", 5]' \
-    http://localhost:7505/BookStoreService/addToStock                 
+curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" http://localhost:7503/BookStoreService/addToStock
 ```
+
 Response: No output  
 ```Console
 ```
 
 #### Ask again if a specific book is in stock
-
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" \
-    -d '"978-1-891830-85-3"' \
-    http://localhost:7505/BookStoreService/inStock                 
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 
 ```Console
 true
+```
+
+## 4. Write some tests
+Writing some tests with Jexxa is quite easy. If you implement your driven adapters using Jexxa's driven adapter strategies you can use 
+package **jexxa-test**. It automatically provides stubs so that you do not need any mock framework. Main advantages are: 
+
+*   You can focus on domain logic within your tests.
+*   You don't need to use mocks which can lead to validating execution steps within the domain core instead of validating the domain specific use cases
+*   Your tests are much easier to read and can teach new developers the use cases of your domain. 
+*   You can write your tests first without considering the infrastructure first.   
+
+First, add the following dependency to your tests. 
+
+```maven
+    <dependency>
+      <groupId>io.jexxa.jexxatest</groupId>
+      <artifactId>jexxa-test</artifactId>
+      <version>4.1.0</version>
+      <scope>test</scope>
+    </dependency>
+```
+
+Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/jexxa-projects/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).       
+
+```java
+class BookStoreServiceTest
+{
+    private static final ISBN13 ISBN_13 = new ISBN13( "978-3-86490-387-8" );
+    private static JexxaMain jexxaMain;
+    private BookStoreService objectUnderTest;
+
+    private MessageRecorder publishedDomainEvents;
+    private IBookRepository bookRepository;
+
+
+    @BeforeAll
+    static void initBeforeAll()
+    {
+        // We recommend instantiating JexxaMain only once for each test class.
+        // If you have larger tests this speeds up Jexxa's dependency injection
+        jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
+        jexxaMain.addDDDPackages(BookStore.class);
+    }
+
+    @BeforeEach
+    void initTest()
+    {
+        // JexxaTest is created for each test. It provides stubs for running your tests so that no 
+        // mock framework is required.
+        JexxaTest jexxaTest = new JexxaTest(jexxaMain);
+
+        // Query a message recorder for an interface which is defines in your application core.
+        publishedDomainEvents = jexxaTest.getMessageRecorder(IDomainEventPublisher.class);
+        // Query the repository that is internally used.
+        bookRepository = jexxaTest.getRepository(IBookRepository.class);
+        // Query the application service we want to test.
+        objectUnderTest = jexxaTest.getInstanceOfPort(BookStoreService.class);
+    }
+
+    @Test
+    void receiveBook()
+    {
+        //Arrange
+        var amount = 5;
+
+        //Act
+        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
+
+        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
+        assertEquals( amount, objectUnderTest.amountInStock(ISBN_13) );
+        assertEquals( amount, bookRepository.get( ISBN_13 ).amountInStock() );
+        assertTrue( publishedDomainEvents.isEmpty() );
+    }
+
+
+    @Test
+    void sellBook() throws BookNotInStockException
+    {
+        //Arrange
+        var amount = 5;
+        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
+
+        //Act
+        objectUnderTest.sell(ISBN_13);
+
+        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
+        assertEquals( amount - 1, objectUnderTest.amountInStock(ISBN_13) );
+        assertEquals( amount - 1, bookRepository.get(ISBN_13).amountInStock() );
+        assertTrue( publishedDomainEvents.isEmpty() );
+    }
+
+    @Test
+    void sellBookNotInStock()
+    {
+        //Arrange - Nothing
+
+        //Act/Assert
+        assertThrows(BookNotInStockException.class, () -> objectUnderTest.sell(ISBN_13));
+    }
+
+    @Test
+    void sellLastBook() throws BookNotInStockException
+    {
+        //Arrange
+        objectUnderTest.addToStock(ISBN_13.getValue(), 1);
+
+        //Act
+        objectUnderTest.sell(ISBN_13);
+
+        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
+        assertEquals( 0 , objectUnderTest.amountInStock(ISBN_13) );
+        assertEquals( 1 , publishedDomainEvents.size() );
+        assertEquals( bookSoldOut(ISBN_13), publishedDomainEvents.getMessage(BookSoldOut.class));
+    }
 ```

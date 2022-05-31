@@ -185,16 +185,6 @@
     <!-- IMPORTANT: if you should start your maven project.                     -->
     <!-- ********************************************************************** -->
     <profiles>
-        <profile>
-            <id>active-on-jdk-16</id>
-            <activation>
-                <jdk>[16,)</jdk>
-            </activation>
-            <modules>
-                <module>BookStoreJ16</module>
-            </modules>
-        </profile>
-
         <profile>     <!-- add tag developer image -->
             <id>localDockerImage</id>
             <activation>
@@ -205,8 +195,6 @@
                 <dockerMajorTag>developerImage</dockerMajorTag>
                 <dockerMajorMinorTag>developerImage</dockerMajorMinorTag>
             </properties>
-
-
         </profile>
         <profile>
             <id>dockerDeveloperTags</id>
@@ -549,8 +537,7 @@
   <modules>
     <module>HelloJexxa</module>
     <module>TimeService</module>
-    <module>BookStore</module>
-    <module>BookStoreJ</module>
+    <module>BookStoreJ16</module>
     <module>ContractManagement</module>
   </modules>
 
