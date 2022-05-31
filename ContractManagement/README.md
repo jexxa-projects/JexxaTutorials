@@ -9,7 +9,7 @@
 
 *   Understand tutorial `BookStore` because we explain only new aspects
 *   30 minutes
-*   JDK 11 (or higher) installed
+*   JDK 17  (or higher) installed
 *   Maven 3.6 (or higher) installed
 *   curl or jconsole to trigger the application
 *   A postgres DB (if you start the application with option `-jdbc')

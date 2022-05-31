@@ -11,7 +11,7 @@
 
 *   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects 
 *   60 minutes
-*   JDK 11 (or higher) installed 
+*   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   curl or jconsole to trigger the application
 *   A postgres DB (if you start the application with option `-jdbc`)  
@@ -78,10 +78,11 @@ In our tutorials we use following package structure. Please note that this packa
 
 ### A note on implementing DDD patterns  
 
-*   `ValueObject` and `DomainEvent`: Are immutable and compared based on their internal values
+*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons.  
+    *   They are immutable and compared based on their internal values.
     *   They must not have setter methods. So all fields should be final. 
-    *   They must provide a valid implementation of equals() and hashcode()
-    *   They include no business logic, but they have to validate their input data    
+    *   They must provide a valid implementation of equals() and hashcode().
+    *   They must not include any business logic, but they can validate their input data.    
 
 *   `Aggregate`: Is identified by a unique `AggregateID` which is a `ValueObject`
     *   `Book` uses an `ISBN13` object     

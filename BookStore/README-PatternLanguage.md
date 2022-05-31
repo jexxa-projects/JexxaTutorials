@@ -9,7 +9,7 @@
 
 *   Understand tutorial `BookStore` because we explain only new aspects 
 *   60 minutes
-*   JDK 11 (or higher) installed 
+*   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   curl or jconsole to trigger the application
 *   A postgres DB (if you start the application with option `-jdbc')  
@@ -19,7 +19,7 @@
 ### A pattern language for your application core 
 In the [architecture of Jexxa](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html) we describe that Jexxa does not require any special annotations. Main reason is that framework related annotations can tightly couple your application core to a specific technology stack. Therefore, framework specific annotations should not be used within the application core. 
 
-On the other side you can use annotations as pure meta-information within your developing teams, especially to make a so called __pattern language__ explicit. The pattern language is part of the micro architecture of an application and allows your developers to quickly navigate through the source code. Instead of reading and understanding the source code again and again, a developer can navigate through the code based on these patterns. For example if the application uses the pattern language of DDD, and you have to change the business logic of your application core the corresponding code must be within an `Aggregate`. So you can directly navigate to the `Aggregate` and skip all remaining elements. 
+On the other side you can use annotations as pure meta-information within your developing teams, especially to make a so-called __pattern language__ explicit. The pattern language is part of the micro architecture of an application and allows your developers to quickly navigate through the source code. Instead of reading and understanding the source code again and again, a developer can navigate through the code based on these patterns. For example if the application uses the pattern language of DDD, and you have to change the business logic of your application core the corresponding code must be within an `Aggregate`. So you can directly navigate to the `Aggregate` and skip all remaining elements. 
 
 Even if you not use the pattern language of DDD, the developers typically used some patterns to implement the application. To make these patterns explicit, I strongly recommend annotating all classes within the application core with their corresponding element of the pattern language. Classes that cannot be assigned to a specific element typically violate some design principles such as the single responsibility principle. In case of a durable software system, you will get the following advantages: 
 
@@ -64,52 +64,7 @@ public final class Book
     }
 }
 ```
- 
-### Cross-cutting concerns   
 
-When applying the tactical patterns of DDD and map the ubiquitous language into the application core, it can happen that you get a lot of small classes. Especially `ValueObject` classes are affected. For all these classes you have to implement valid cross-cutting concerns such as `equals()`, `hashCode()`, and `toString()`.
-
-Even though today's IDE's can automatically generate these methods they can bloat your source code and much worse hide the domain specific aspects. In addition, you must not forget to recreate these methods if you change the attributes of the class. 
-
-#### Java version with Record support
-In case you use a Java version with `Record` support, we strongly recommend using Java-Records. 
-Please refer to tutorial [BookSotreJ16](../BookStore/README.md). 
-
-#### Java version without `Record` support
-To resolve these issues I recommend `AspectJ` for realizing cross-cutting concerns so that they are not visible in the source code of your application core. Since we already annotated all our classes with our pattern language, we can reuse these annotations. 
-
-Important note: This decision is a trade-off between using a technology stack within the application core to make the ubiquitous language more explicit. Regardless of the outcome, you should discuss this point with your developers and software architects and document the decision.  
-
-In case you would like to use AspectJ together with pattern language of DDD we recommend project [AddendJ](https://addendj.jexxa.io/).    
-
-In the following you see the implementation of class `ISBN13` without an implementation of equals and hashcode. These methods are woven into the source code during compile time.    
- 
-```java
-@ValueObject
-public class ISBN13
-{
- private final String value;
-
- public ISBN13(String value)
- {
-     Objects.requireNonNull(value);
-     validateChecksum(value);
-
-     this.value = value;
- }
-
- public String getValue()
- {
-     return value;
- }
- 
- private void validateChecksum(String isbn13)
- {
-   //..
- }
- 
-}  
-```
 
 ## Implement the Application
 

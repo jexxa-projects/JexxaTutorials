@@ -11,7 +11,7 @@
 ## What you need ##
 
 *   15 minutes
-*   JDK 11 (or higher) installed 
+*   JDK 17  (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   A web browser
 *   curl to access the web page via command line (optional)
