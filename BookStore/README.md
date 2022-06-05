@@ -41,7 +41,7 @@ with Jexxa.
 
 First we map the functionality of the application to DDD patterns   
 
-*   `Aggregate:` Elements that change over time and include our business logic 
+*   `Aggregate:` Elements that have a life-cycle and change over time and include our business logic 
     *   `Book` which manages available copies of a book.       
 
 *   `ValueObject:` Elements that represent a state and are immutable
@@ -76,6 +76,9 @@ In our tutorials we use following package structure. Please note that this packa
     *   drivenadapter
     *   drivingadapter 
 
+Please note that there are several DDD-examples that do not add sub-packages to `domain`. This is fine but using sub-packages makes the pattern language more explicit. In addition, we can use this package structure to validate the dependencies between these objects. 
+
+If your application core grows over time, we recommend to add domain specific sub-packages to `domain` such as `book`, `customer`, ... 
 ### A note on implementing DDD patterns  
 
 *   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons.  
@@ -221,7 +224,7 @@ You will see following (or similar) output
 ### Use a postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The 
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](../BookStore/src/main/resources/jexxa-application.properties) 
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](src/main/resources/jexxa-application.properties) 
 file if required.       
 
 ```console                                                          
@@ -235,8 +238,8 @@ In contrast to the above output Jexxa will state that you use JDBC persistence s
 
 Note: In case you want to use a difference database, you have to: 
 
-1.  Add the corresponding jdbc driver to [pom.xml](../BookStore/pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](../BookStore/src/main/resources/jexxa-application.properties).
+1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
+2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](src/main/resources/jexxa-application.properties).
 
 ### Execute some commands using curl 
 
@@ -307,9 +310,8 @@ First, add the following dependency to your tests.
 Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/jexxa-projects/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).       
 
 ```java
-class BookStoreServiceTest
-{
-    private static final ISBN13 ISBN_13 = new ISBN13( "978-3-86490-387-8" );
+class BookStoreServiceTest {
+    private static final ISBN13 ISBN_13 = new ISBN13("978-3-86490-387-8");
     private static JexxaMain jexxaMain;
     private BookStoreService objectUnderTest;
 
@@ -318,8 +320,7 @@ class BookStoreServiceTest
 
 
     @BeforeAll
-    static void initBeforeAll()
-    {
+    static void initBeforeAll() {
         // We recommend instantiating JexxaMain only once for each test class.
         // If you have larger tests this speeds up Jexxa's dependency injection
         jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
@@ -327,8 +328,7 @@ class BookStoreServiceTest
     }
 
     @BeforeEach
-    void initTest()
-    {
+    void initTest() {
         // JexxaTest is created for each test. It provides stubs for running your tests so that no 
         // mock framework is required.
         JexxaTest jexxaTest = new JexxaTest(jexxaMain);
@@ -342,8 +342,7 @@ class BookStoreServiceTest
     }
 
     @Test
-    void receiveBook()
-    {
+    void receiveBook() {
         //Arrange
         var amount = 5;
 
@@ -351,15 +350,14 @@ class BookStoreServiceTest
         objectUnderTest.addToStock(ISBN_13.getValue(), amount);
 
         //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( amount, objectUnderTest.amountInStock(ISBN_13) );
-        assertEquals( amount, bookRepository.get( ISBN_13 ).amountInStock() );
-        assertTrue( publishedDomainEvents.isEmpty() );
+        assertEquals(amount, objectUnderTest.amountInStock(ISBN_13));
+        assertEquals(amount, bookRepository.get(ISBN_13).amountInStock());
+        assertTrue(publishedDomainEvents.isEmpty());
     }
 
 
     @Test
-    void sellBook() throws BookNotInStockException
-    {
+    void sellBook() throws BookNotInStockException {
         //Arrange
         var amount = 5;
         objectUnderTest.addToStock(ISBN_13.getValue(), amount);
@@ -368,14 +366,13 @@ class BookStoreServiceTest
         objectUnderTest.sell(ISBN_13);
 
         //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( amount - 1, objectUnderTest.amountInStock(ISBN_13) );
-        assertEquals( amount - 1, bookRepository.get(ISBN_13).amountInStock() );
-        assertTrue( publishedDomainEvents.isEmpty() );
+        assertEquals(amount - 1, objectUnderTest.amountInStock(ISBN_13));
+        assertEquals(amount - 1, bookRepository.get(ISBN_13).amountInStock());
+        assertTrue(publishedDomainEvents.isEmpty());
     }
 
     @Test
-    void sellBookNotInStock()
-    {
+    void sellBookNotInStock() {
         //Arrange - Nothing
 
         //Act/Assert
@@ -383,8 +380,7 @@ class BookStoreServiceTest
     }
 
     @Test
-    void sellLastBook() throws BookNotInStockException
-    {
+    void sellLastBook() throws BookNotInStockException {
         //Arrange
         objectUnderTest.addToStock(ISBN_13.getValue(), 1);
 
@@ -392,8 +388,9 @@ class BookStoreServiceTest
         objectUnderTest.sell(ISBN_13);
 
         //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( 0 , objectUnderTest.amountInStock(ISBN_13) );
-        assertEquals( 1 , publishedDomainEvents.size() );
-        assertEquals( bookSoldOut(ISBN_13), publishedDomainEvents.getMessage(BookSoldOut.class));
+        assertEquals(0, objectUnderTest.amountInStock(ISBN_13));
+        assertEquals(1, publishedDomainEvents.size());
+        assertEquals(bookSoldOut(ISBN_13), publishedDomainEvents.getMessage(BookSoldOut.class));
     }
+}
 ```
