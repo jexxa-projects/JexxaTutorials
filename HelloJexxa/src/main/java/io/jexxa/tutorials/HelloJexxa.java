@@ -1,7 +1,6 @@
 package io.jexxa.tutorials;
 
 import io.jexxa.core.JexxaMain;
-import io.jexxa.infrastructure.drivingadapter.jmx.JMXAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
 
 public final class HelloJexxa
@@ -18,25 +17,13 @@ public final class HelloJexxa
         var jexxaMain = new JexxaMain(HelloJexxa.class);
 
         jexxaMain
-                // Bind a JMX adapter to our Jexxa's BoundedContext object.
-                // It allows accessing status information about the running application via `jconsole`
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
 
                 // Bind a REST adapter to a HelloJexxa object
                .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)
-               .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
-                //Start Jexxa and all bindings
+                //Run the application until CTRL-C is pressed
                 // - Open following URL in browser to get greetings: http://localhost:7500/HelloJexxa/greetings
                 // - You can also use curl: `curl -X GET http://localhost:7500/HelloJexxa/greetings`
-                .start()
-
-                //Wait until shutdown is called by one of the following options:
-                // - Press CTRL-C
-                // - Use `jconsole` to connect to this application and invoke method shutdown
-                .waitForShutdown()
-
-                //Finally, invoke stop() for proper cleanup
-                .stop();
+                .run();
     }
 }

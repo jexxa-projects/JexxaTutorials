@@ -20,7 +20,7 @@ public class TimePublisher implements ITimePublisher
     public TimePublisher(Properties properties)
     {
         //Request a default message Sender from corresponding strategy manager
-        this.messageSender = getMessageSender(properties);
+        this.messageSender = getMessageSender(ITimePublisher.class, properties);
     }
 
     @Override
