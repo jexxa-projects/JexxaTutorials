@@ -7,11 +7,8 @@ import io.jexxa.infrastructure.drivingadapter.messaging.JMSAdapter;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
 import io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging.PublishTimeListener;
-import io.jexxa.utils.JexxaLogger;
 
 import java.util.Properties;
-
-import static io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSenderManager.getDefaultMessageSender;
 
 public final class TimeService
 {
@@ -19,8 +16,6 @@ public final class TimeService
     {
         //Create your jexxaMain for this application
         var jexxaMain = new JexxaMain(TimeService.class);
-
-        JexxaLogger.getLogger(TimeService.class).info("Used MessageSender : {}", getDefaultMessageSender(jexxaMain.getProperties()).getSimpleName());
 
         jexxaMain
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
