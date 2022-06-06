@@ -13,8 +13,8 @@
 *   60 minutes
 *   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
-*   curl or jconsole to trigger the application
-*   A postgres DB (if you start the application with option `-jdbc`)  
+*   curl to trigger the application
+*   A postgres DB (if you start the application with a real DB)  
 
 ## Requirements to the application core
 This application core should provide following super simplified functionality:
@@ -115,14 +115,9 @@ public final class BookRepository implements IBookRepository
 {
     private final IRepository<Book, ISBN13> repository;
 
-    private BookRepository(IRepository<Book, ISBN13> repository) { this.repository = repository; }
-
-    // Factory method that requests a repository strategy from Jexxa's RepositoryManager
-    public static IBookRepository create(Properties properties)
+    public BookRepository (Properties properties)
     {
-        return new BookRepository(
-                RepositoryManager.getRepository(Book.class, Book::getISBN13, properties)
-        );
+        this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }
 
     @Override                    
@@ -163,38 +158,16 @@ public final class BookStore
 {
     public static void main(String[] args)
     {
-        // Define the default strategies.
-        // In this tutorial the Repository is either an IMDB database or a JDBC based repository.
-        // In case of JDBC we use a simple key value approach which stores the key and the value as json strings.
-        // Using json strings might be very inconvenient if you come from typical relational databases but in terms
-        // of DDD our aggregate is responsible to ensure consistency of our data and not the database.
-        RepositoryManager.setDefaultStrategy(getRepositoryStrategy(args));
-        // The message sender is either a simple MessageLogger or a JMS sender.
-        MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
-
-        // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
-        MessageSenderManager.setDefaultStrategy(MessageLogger.class);
-
         var jexxaMain = new JexxaMain(BookStore.class);
 
-        //print some application information
-        JexxaLogger.getLogger(BookStore.class)
-                .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
         jexxaMain
-                //Define the default packages for inbound and outbound ports
-                .addDDDPackages(BookStore.class)
-
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
-                .start()
-
-                .waitForShutdown()
-
-                .stop();
+                .run();
     }
     //...
 }
@@ -291,112 +264,4 @@ curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http:/
 Response: 
 ```Console
 true
-```
-
-## 4. Write some tests
-Writing some tests with Jexxa is quite easy. If you implement your driven adapters using Jexxa's driven adapter strategies you can use 
-package **jexxa-test**. It automatically provides stubs so that you do not need any mock framework. Main advantages are: 
-
-*   You can focus on domain logic within your tests.
-*   You don't need to use mocks which can lead to validating execution steps within the domain core instead of validating the domain specific use cases
-*   Your tests are much easier to read and can teach new developers the use cases of your domain. 
-*   You can write your tests first without considering the infrastructure first.   
-
-First, add the following dependency to your tests. 
-
-```maven
-    <dependency>
-      <groupId>io.jexxa.jexxatest</groupId>
-      <artifactId>jexxa-test</artifactId>
-      <version>4.1.8</version>
-      <scope>test</scope>
-    </dependency>
-```
-
-Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/jexxa-projects/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).       
-
-```java
-class BookStoreServiceTest {
-    private static final ISBN13 ISBN_13 = new ISBN13("978-3-86490-387-8");
-    private static JexxaMain jexxaMain;
-    private BookStoreService objectUnderTest;
-
-    private MessageRecorder publishedDomainEvents;
-    private IBookRepository bookRepository;
-
-
-    @BeforeAll
-    static void initBeforeAll() {
-        // We recommend instantiating JexxaMain only once for each test class.
-        // If you have larger tests this speeds up Jexxa's dependency injection
-        jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
-        jexxaMain.addDDDPackages(BookStore.class);
-    }
-
-    @BeforeEach
-    void initTest() {
-        // JexxaTest is created for each test. It provides stubs for running your tests so that no 
-        // mock framework is required.
-        JexxaTest jexxaTest = new JexxaTest(jexxaMain);
-
-        // Query a message recorder for an interface which is defines in your application core.
-        publishedDomainEvents = jexxaTest.getMessageRecorder(IDomainEventPublisher.class);
-        // Query the repository that is internally used.
-        bookRepository = jexxaTest.getRepository(IBookRepository.class);
-        // Query the application service we want to test.
-        objectUnderTest = jexxaTest.getInstanceOfPort(BookStoreService.class);
-    }
-
-    @Test
-    void receiveBook() {
-        //Arrange
-        var amount = 5;
-
-        //Act
-        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
-
-        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals(amount, objectUnderTest.amountInStock(ISBN_13));
-        assertEquals(amount, bookRepository.get(ISBN_13).amountInStock());
-        assertTrue(publishedDomainEvents.isEmpty());
-    }
-
-
-    @Test
-    void sellBook() throws BookNotInStockException {
-        //Arrange
-        var amount = 5;
-        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
-
-        //Act
-        objectUnderTest.sell(ISBN_13);
-
-        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals(amount - 1, objectUnderTest.amountInStock(ISBN_13));
-        assertEquals(amount - 1, bookRepository.get(ISBN_13).amountInStock());
-        assertTrue(publishedDomainEvents.isEmpty());
-    }
-
-    @Test
-    void sellBookNotInStock() {
-        //Arrange - Nothing
-
-        //Act/Assert
-        assertThrows(BookNotInStockException.class, () -> objectUnderTest.sell(ISBN_13));
-    }
-
-    @Test
-    void sellLastBook() throws BookNotInStockException {
-        //Arrange
-        objectUnderTest.addToStock(ISBN_13.getValue(), 1);
-
-        //Act
-        objectUnderTest.sell(ISBN_13);
-
-        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals(0, objectUnderTest.amountInStock(ISBN_13));
-        assertEquals(1, publishedDomainEvents.size());
-        assertEquals(bookSoldOut(ISBN_13), publishedDomainEvents.getMessage(BookSoldOut.class));
-    }
-}
 ```
