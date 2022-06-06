@@ -181,7 +181,7 @@ That's it.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=/jexxa-local.properties" ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
@@ -207,7 +207,7 @@ file if required.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
@@ -218,7 +218,7 @@ In contrast to the above output Jexxa will state that you use JDBC persistence s
 Note: In case you want to use a difference database, you have to: 
 
 1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-test.properties](src/main/resources/jexxa-test.properties).
+2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-test.properties](src/test/resources/jexxa-test.properties).
 
 ### Execute some commands using curl 
 

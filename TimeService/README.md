@@ -250,7 +250,7 @@ Disabling of all infrastructure components can be done by property files. By con
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=/jexxa-local.properties" ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
@@ -287,11 +287,11 @@ Each time you execute curl you should see following output on the console:
 ```
 
 ## Run the Application with JMS ##
-Running the application with a locally messaging system is typically required for testing and developing purpose. Therefore, we use the file [jexxa-test.properties](src/main/resources/jexxa-test.properties). 
+Running the application with a locally messaging system is typically required for testing and developing purpose. Therefore, we use the file [jexxa-test.properties](src/test/resources/jexxa-test.properties). 
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=/jexxa-test.properties" ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console

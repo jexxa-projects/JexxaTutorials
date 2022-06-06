@@ -211,7 +211,7 @@ public class ContractRepository  implements IContractRepository
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=/jexxa-local.properties" ./target/contractmanagement-jar-with-dependencies.jar```
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/contractmanagement-jar-with-dependencies.jar```
 You will see following (or similar) output
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
@@ -225,12 +225,12 @@ You will see following (or similar) output
 ### Use a Postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/main/resources/jexxa-test.properties)
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/test/resources/jexxa-test.properties)
 file if required.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=/jexxa-test.properties" ./target/contractmanagement-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/contractmanagement-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
