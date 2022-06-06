@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager.getObjectStore;
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.*;
 import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.ContractRepository.ContractSchema.*;
 
@@ -67,7 +68,7 @@ public class ContractRepository  implements IContractRepository
 
     public ContractRepository(Properties properties)
     {
-        this.objectStore = ObjectStoreManager.getObjectStore(Contract.class, Contract::getContractNumber, ContractSchema.class, properties);
+        this.objectStore = getObjectStore(Contract.class, Contract::getContractNumber, ContractSchema.class, properties);
     }
 
     @Override

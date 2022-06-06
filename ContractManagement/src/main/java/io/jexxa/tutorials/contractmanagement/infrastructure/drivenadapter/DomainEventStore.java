@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Properties;
 
+import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager.getObjectStore;
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.instantTag;
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.numericTag;
 
@@ -52,7 +53,7 @@ public class DomainEventStore implements IDomainEventStore
 
     public DomainEventStore(Properties properties)
     {
-        this.objectStore = ObjectStoreManager.getObjectStore(ContractSigned.class, ContractSigned::contractNumber, DomainEventSchema.class, properties);
+        this.objectStore = getObjectStore(ContractSigned.class, ContractSigned::contractNumber, DomainEventSchema.class, properties);
     }
 
     @Override

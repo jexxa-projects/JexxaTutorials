@@ -13,9 +13,6 @@ public class ContractManagement
 {
     public static void main(String[] args)
     {
-        // Define the default strategies via command line.
-        // In this tutorial we use an ObjectStore which is either an IMDB database or a JDBC based repository.
-
         var jexxaMain = new JexxaMain(ContractManagement.class);
 
         JexxaLogger.getLogger(ContractManagement.class).info("Used Repository    : {}", getDefaultRepository(jexxaMain.getProperties()).getSimpleName());
