@@ -32,28 +32,15 @@ public final class HelloJexxa
     public static void main(String[] args)
     {
         //Create your jexxaMain for this application
-        var jexxaMain = new JexxaMain("HelloJexxa");
+        var jexxaMain = new JexxaMain(HelloJexxa.class);
 
         jexxaMain
-                // Bind a JMX adapter to our BoundedContext object.
-                // It allows to access the public methods of the object via `jconsole`
-                .bind(JMXAdapter.class).to(jexxaMain.getBoundedContext())
-
-                // Bind a REST adapter to a HelloJexxa object
+                // Bind a REST adapter to class HelloJexxa to expose its methods
+                // To get greetings open: http://localhost:7500/HelloJexxa/greetings
                 .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)
 
-                //Start Jexxa and all bindings
-                // - Open following URL in browser to get greetings: http://localhost:7501/HelloJexxa/greetings
-                // - You can also use curl: `curl -X GET http://localhost:7501/HelloJexxa/greetings`
-                .start()
-
-                //Wait until shutdown is called by one of the following options:
-                // - Press CTRL-C
-                // - Use `jconsole` to connect to this application and invoke method shutdown
-                .waitForShutdown()
-
-                //Finally invoke stop() for proper cleanup
-                .stop();
+                // Run Jexxa and all bindings until Ctrl-C is pressed
+                .run();
     }
 }
 ```
@@ -109,13 +96,6 @@ This tutorial provides a simple web page which performs the previous `GET`. The 
 The web page can be accessed via following link [http://localhost:7501/index.html](http://localhost:7501/index.html) and looks as follows: 
 
 ![Webpage](images/Webpage.jpg)
-    
-### Use JConsole ###
-
-*   Start jconsole and select the MBean `BoundedContext` as shown in screenshot below
-*   Now you can execute all methods of this object
-
-![JConsole](images/JConsole.png) 
 
 ## Build a docker image ##
 In order to build a docker image with this tutorial we use the maven-jib-plugin. For the sake of simplicity we assume
