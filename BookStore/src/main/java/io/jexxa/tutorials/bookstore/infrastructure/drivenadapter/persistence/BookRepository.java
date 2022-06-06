@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.RepositoryManager.getRepository;
+
 @SuppressWarnings("unused")
 @DrivenAdapter
 public class BookRepository implements IBookRepository
@@ -19,7 +21,7 @@ public class BookRepository implements IBookRepository
 
     public BookRepository (Properties properties)
     {
-        this.repository = RepositoryManager.getRepository(Book.class, Book::getISBN13, properties);
+        this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }
 
     @Override

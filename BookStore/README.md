@@ -208,17 +208,22 @@ That's it.
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstore-jar-with-dependencies.jar 
+java -jar "-Dio.jexxa.config.import=/jexxa-local.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Use persistence strategy: IMDBRepository 
-[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStoreApplication' with 2 Driving Adapter 
-[main] INFO org.eclipse.jetty.util.log - Logging initialized @474ms to org.eclipse.jetty.util.log.Slf4jLog
+[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used Repository    : IMDBRepository
+[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used MessageSender : MessageLogger
+...
+[main] INFO io.jexxa.core.JexxaMain - Jexxa Version   : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 05:08]
+[main] INFO io.jexxa.core.JexxaMain - Context Version : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/bookstore, projectName=BookStore, buildTimestamp=2022-06-06 05:32]
+[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStore' with 1 Driving Adapter 
 [main] INFO io.javalin.Javalin - Starting Javalin ...
-[main] INFO io.javalin.Javalin - Listening on http://localhost:7503/
-[main] INFO io.javalin.Javalin - Javalin started in 148ms \o/
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreApplication' successfully started in 0.484 seconds
+[main] INFO io.javalin.Javalin - You are running Javalin 4.6.0 (released May 10, 2022).
+[main] INFO io.javalin.Javalin - Listening on http://0.0.0.0:7505/
+[main] INFO io.javalin.Javalin - Javalin started in 190ms \o/
+[main] INFO io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter - OpenAPI documentation available at: http://0.0.0.0:7505/swagger-docs
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStore' successfully started in 1.016 seconds
 ```          
 
 ### Use a postgres database
@@ -229,17 +234,18 @@ file if required.
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstore-jar-with-dependencies.jar -jdbc 
+java -jar "-Dio.jexxa.config.import=/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Use persistence strategy: JDBCKeyValueRepository 
+[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used Repository    : JDBCKeyValueRepository
+[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used MessageSender : JMSSender
 ```
 
 Note: In case you want to use a difference database, you have to: 
 
 1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](src/main/resources/jexxa-application.properties).
+2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-test.properties](src/main/resources/jexxa-test.properties).
 
 ### Execute some commands using curl 
 
@@ -302,7 +308,7 @@ First, add the following dependency to your tests.
     <dependency>
       <groupId>io.jexxa.jexxatest</groupId>
       <artifactId>jexxa-test</artifactId>
-      <version>4.1.0</version>
+      <version>4.1.8</version>
       <scope>test</scope>
     </dependency>
 ```
