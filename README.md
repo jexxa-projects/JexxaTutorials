@@ -31,7 +31,7 @@ See documentation [TimeService - Flow of Control](TimeService/README-FlowOfContr
 See documentation [BookStore](BookStore/README.md)
 
 ## BookStore - Writing Tests 
-See documentation [BookStore](BookStore/README-JexxaTest)
+See documentation [BookStore](BookStore/README-JexxaTest.md)
 
 ## BookStoreJ - Pattern Language 
 See documentation [BookStore - Pattern language](BookStore/README-PatternLanguage.md)
