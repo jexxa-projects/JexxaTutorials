@@ -218,8 +218,7 @@ You will see following (or similar) output
 [main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/contractmanagement, projectName=ContractManagement, buildTimestamp=2022-06-06 07:16]
 [main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
 [main] INFO io.jexxa.utils.JexxaBanner - Used ObjectStore Strategie     : IMDBObjectStore
-
-
+...
 ```          
 
 ### Use a Postgres database

@@ -24,15 +24,14 @@ The corresponding parameter is `io.jexxa.rest.open_api_path`.
 
 ```console                                                          
 mvn clean install
-java -Dio.jexxa.rest.open_api_path=swagger-docs -jar target/bookstorej-jar-with-dependencies.jar 
-```
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" target/bookstore-jar-with-dependencies.jar```
 You will see following (or similar) output
 ```console
 ...
-[main] INFO io.javalin.Javalin - Listening on http://0.0.0.0:7504/
-[main] INFO io.javalin.Javalin - Javalin started in 188ms \o/
-[main] INFO io.javalin.Javalin - OpenAPI documentation available at: http://0.0.0.0:7504/swagger-docs
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreJApplication' successfully started in 1.299 seconds
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7505
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7505/swagger-docs
+
 
 ```          
 

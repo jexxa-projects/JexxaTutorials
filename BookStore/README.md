@@ -185,18 +185,19 @@ java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties"
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used Repository    : IMDBRepository
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used MessageSender : MessageLogger
-...
-[main] INFO io.jexxa.core.JexxaMain - Jexxa Version   : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 05:08]
-[main] INFO io.jexxa.core.JexxaMain - Context Version : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/bookstore, projectName=BookStore, buildTimestamp=2022-06-06 05:32]
-[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStore' with 1 Driving Adapter 
-[main] INFO io.javalin.Javalin - Starting Javalin ...
-[main] INFO io.javalin.Javalin - You are running Javalin 4.6.0 (released May 10, 2022).
-[main] INFO io.javalin.Javalin - Listening on http://0.0.0.0:7505/
-[main] INFO io.javalin.Javalin - Javalin started in 190ms \o/
-[main] INFO io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter - OpenAPI documentation available at: http://0.0.0.0:7505/swagger-docs
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStore' successfully started in 1.016 seconds
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-16 15:39]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/bookstore, projectName=BookStore, buildTimestamp=2022-06-16 18:07]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-local.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Repository Strategie      : [IMDBRepository]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [MessageLogger]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7505
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7505/swagger-docs
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStore' successfully started in 1.280 seconds
+
 ```          
 
 ### Use a postgres database
@@ -211,8 +212,9 @@ java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" 
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used Repository    : JDBCKeyValueRepository
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Used MessageSender : JMSSender
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-test.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Repository Strategie      : [JDBCKeyValueRepository]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [JMSSender]
 ```
 
 Note: In case you want to use a difference database, you have to: 

@@ -16,11 +16,8 @@ public final class TimeService
         jexxaMain
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
-
-                // Conditional bind is only executed if given expression evaluates to true
-                .bind( JMSAdapter.class).to(PublishTimeListener.class)
-
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(JMSAdapter.class).to(PublishTimeListener.class)
 
                 .run();
     }

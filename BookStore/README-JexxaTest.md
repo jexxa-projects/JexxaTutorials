@@ -26,7 +26,7 @@ First, add the following dependency to your tests.
     <dependency>
       <groupId>io.jexxa.jexxatest</groupId>
       <artifactId>jexxa-test</artifactId>
-      <version>4.1.8</version>
+      <version>5.0.0</version>
       <scope>test</scope>
     </dependency>
 ```
@@ -48,7 +48,6 @@ class BookStoreServiceTest {
         // We recommend instantiating JexxaMain only once for each test class.
         // If you have larger tests this speeds up Jexxa's dependency injection
         jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
-        jexxaMain.addDDDPackages(BookStore.class);
     }
 
     @BeforeEach

@@ -162,25 +162,13 @@ If your application core is annotated with your pattern language, you can use it
 1.  You have to bind driving adapters using method `bindToAnnotation`. In this case alle inbound ports annotated with given annotation are bind to the driving adapter.    
 
 ```java 
-public final class BookStoreJ
+public final class BookStore
 {
     public static void main(String[] args)
     {
-        // Define the default strategies.
-        // In this tutorial the Repository is either an IMDB database or a JDBC based repository.
-        // In case of JDBC we use a simple key value approach which stores the key and the value as json strings.
-        // Using json strings might be very inconvenient if you come from typical relational databases but in terms
-        // of DDD our aggregate is responsible to ensure consistency of our data and not the database.
-        RepositoryManager.setDefaultStrategy(getRepositoryStrategy(args));
-        // The message sender is either a simple MessageLogger or a JMS sender.
-        MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
-
-        var jexxaMain = new JexxaMain(BookStoreJ.class);
+        var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                //Define the default packages for inbound and outbound ports
-                .addDDDPackages(BookStoreJ.class)
-
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
 
@@ -189,11 +177,7 @@ public final class BookStoreJ
                 .bind(RESTfulRPCAdapter.class).toAnnotation(ApplicationService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
-                .start()
-
-                .waitForShutdown()
-
-                .stop();
+                .run();
     }
 
 }  
@@ -205,38 +189,39 @@ public final class BookStoreJ
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstorej-jar-with-dependencies.jar 
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" target/bookstore-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.tutorials.bookstorej.BookStoreJ - Use persistence strategy: IMDBRepository ^
-[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStoreJ' with 2 Driving Adapter 
-[main] INFO org.eclipse.jetty.util.log - Logging initialized @474ms to org.eclipse.jetty.util.log.Slf4jLog
-[main] INFO io.javalin.Javalin - Starting Javalin ...
-[main] INFO io.javalin.Javalin - Listening on http://localhost:7504/
-[main] INFO io.javalin.Javalin - Javalin started in 148ms \o/
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreJ' successfully started in 0.484 seconds
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-16 15:39]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/bookstore, projectName=BookStore, buildTimestamp=2022-06-16 18:07]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-local.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Repository Strategie      : [IMDBRepository]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [MessageLogger]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7505
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7505/swagger-docs
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStore' successfully started in 0.885 seconds
+
 ```          
 
 ### Use a Postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The 
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](src/main/resources/jexxa-application.properties) 
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/test/resources/jexxa-test.properties) 
 file if required.       
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstore-jar-with-dependencies.jar -jdbc 
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" target/bookstore-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
-[main] INFO io.jexxa.tutorials.bookstore.BookStoreApplication - Use persistence strategy: JDBCKeyValueRepository 
+[main] INFO io.jexxa.utils.JexxaBanner - Used Repository Strategie      : [JDBCKeyValueRepository]
 ```
-
-Note: In case you want to use a difference database, you have to: 
-
-1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](src/main/resources/jexxa-application.properties).
 
 ### Execute some commands using curl 
 
