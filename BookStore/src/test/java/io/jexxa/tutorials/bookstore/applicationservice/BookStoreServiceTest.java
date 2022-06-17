@@ -33,7 +33,8 @@ class BookStoreServiceTest
     {
         // We recommend instantiating JexxaMain only once for each test class.
         // If you have larger tests this speeds up Jexxa's dependency injection
-        jexxaMain = new JexxaMain(BookStoreServiceTest.class);
+        jexxaMain = new JexxaMain(BookStoreServiceTest.class)
+                .addDDDPackages(BookStore.class);
     }
 
     @BeforeEach
