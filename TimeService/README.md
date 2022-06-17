@@ -12,10 +12,10 @@
 
 *   Understand tutorial `HelloJexxa` because we explain only new aspects 
 *   60 minutes
-*   JDK 11 (or higher) installed 
+*   JDK 17  (or higher) installed 
 *   Maven 3.6 (or higher) installed
-*   A running ActiveMQ instance (at least if you start the application with option `-jms`)
-*   curl or jconsole to trigger the application  
+*   A running ActiveMQ instance (at least if you start the application with infrastructure)
+*   curl to trigger the application  
 
 ## Implement the Application Core ##
 
@@ -225,16 +225,10 @@ public final class TimeServiceApplication
 {
     public static void main(String[] args)
     {
-        // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
-        MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
-
         //Create your jexxaMain for this application
         var jexxaMain = new JexxaMain(TimeService.class);
 
         jexxaMain
-                //Define which outbound ports should be managed by Jexxa
-                .addDDDPackages(TimeService.class)
-
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
 
@@ -243,11 +237,7 @@ public final class TimeServiceApplication
 
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
-                .start()
-
-                .waitForShutdown()
-
-                .stop();
+                .run();
     }
 }
 ```  
@@ -256,18 +246,27 @@ That's it.
 
 ## Run the Application with console output ##
 
+Disabling of all infrastructure components can be done by property files. By convention, Jexxa tries to find a real implementation of infrastructure components such as a database or messaging system. If they are not configured, Jexxa falls back to dummy implementation that are suitable for local testing.    
+
 ```console                                                          
 mvn clean install
-java -jar target/timeservice-jar-with-dependencies.jar 
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'TimeService' with 2 Driving Adapter 
-[main] INFO org.eclipse.jetty.util.log - Logging initialized @644ms to org.eclipse.jetty.util.log.Slf4jLog
-[main] INFO io.javalin.Javalin - Starting Javalin ...
-[main] INFO io.javalin.Javalin - Listening on http://localhost:7502/
-[main] INFO io.javalin.Javalin - Javalin started in 121ms \o/
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 0.649 seconds
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-06 07:16]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : MessageLogger
+...
+[main] INFO io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter - OpenAPI documentation available at: http://0.0.0.0:7502/swagger-docs
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 1.854 seconds
+^C[Thread-9] INFO io.jexxa.core.JexxaMain - Shutdown signal received ...
+[Thread-9] INFO io.javalin.Javalin - Stopping Javalin ...
+[Thread-9] INFO io.javalin.Javalin - Javalin has stopped
+[Thread-9] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully stopped
+michael@Michaels-Mini TimeService % 
+
 ```          
 
 ### Publish the time  with console output ###
@@ -288,20 +287,23 @@ Each time you execute curl you should see following output on the console:
 ```
 
 ## Run the Application with JMS ##
+Running the application with a locally messaging system is typically required for testing and developing purpose. Therefore, we use the file [jexxa-test.properties](src/test/resources/jexxa-test.properties). 
 
 ```console                                                          
 mvn clean install
-java -jar target/timeservice-jar-with-dependencies.jar -J 
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'TimeService' with 2 Driving Adapter 
-[main] INFO org.eclipse.jetty.util.log - Logging initialized @644ms to org.eclipse.jetty.util.log.Slf4jLog
-[main] INFO io.javalin.Javalin - Starting Javalin ...
-[main] INFO io.javalin.Javalin - Listening on http://localhost:7502/
-[main] INFO io.javalin.Javalin - Javalin started in 121ms \o/
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 0.649 seconds
+...
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-06 07:16]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter, JMSAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : JMSSender
+... 
 ```          
+
+As you can see in the last two lines, we now use the `JMSSender`. 
 
 ### Publish the time with JMS ###
  

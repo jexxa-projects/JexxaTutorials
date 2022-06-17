@@ -1,5 +1,6 @@
 package io.jexxa.tutorials.bookstore.applicationservice;
 
+import io.jexxa.addend.applicationcore.ApplicationService;
 import io.jexxa.tutorials.bookstore.domain.aggregate.Book;
 import io.jexxa.tutorials.bookstore.domain.businessexception.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.valueobject.ISBN13;
@@ -8,41 +9,38 @@ import io.jexxa.tutorials.bookstore.domainservice.IDomainEventPublisher;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static io.jexxa.tutorials.bookstore.domain.aggregate.Book.newBook;
 
 @SuppressWarnings("unused")
+@ApplicationService
 public class BookStoreService
 {
-
     private final IBookRepository ibookRepository;
     private final IDomainEventPublisher domainEventPublisher;
 
-    public BookStoreService(IBookRepository ibookRepository, IDomainEventPublisher domainEventPublisher)
+    public BookStoreService (IBookRepository ibookRepository,
+                             IDomainEventPublisher domainEventPublisher)
     {
-        Objects.requireNonNull(ibookRepository);
-        Objects.requireNonNull(domainEventPublisher);
-
-        this.ibookRepository = ibookRepository;
-        this.domainEventPublisher = domainEventPublisher;
+        this.ibookRepository = Objects.requireNonNull(ibookRepository);
+        this.domainEventPublisher = Objects.requireNonNull(domainEventPublisher);
     }
 
     public void addToStock(String isbn13, int amount)
     {
         var validatedISBN = new ISBN13(isbn13);
 
-        var result = ibookRepository.search( validatedISBN );
-        if ( result.isEmpty() )
+        var result = ibookRepository.search(validatedISBN);
+        if (result.isEmpty())
         {
-            ibookRepository.add(newBook( validatedISBN ));
+            ibookRepository.add(newBook(validatedISBN));
         }
 
         var book = ibookRepository.get(validatedISBN);
 
         book.addToStock(amount);
 
-        ibookRepository.update( book );
+        ibookRepository.update(book);
     }
 
 
@@ -54,9 +52,9 @@ public class BookStoreService
     boolean inStock(ISBN13 isbn13)
     {
         return ibookRepository
-                .search( isbn13 )
-                .map( Book::inStock )
-                .orElse( false );
+                .search(isbn13)
+                .map(Book::inStock)
+                .orElse(false);
     }
 
     public int amountInStock(String isbn13)
@@ -66,7 +64,7 @@ public class BookStoreService
 
     int amountInStock(ISBN13 isbn13)
     {
-       return ibookRepository
+        return ibookRepository
                 .search(isbn13)
                 .map(Book::amountInStock)
                 .orElse(0);
@@ -95,7 +93,7 @@ public class BookStoreService
                 .getAll()
                 .stream()
                 .map(Book::getISBN13)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

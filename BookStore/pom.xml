@@ -13,7 +13,10 @@
 
   <properties>
     <main.arguments>-jdbc -jms</main.arguments>
-    <main.http.port>7503</main.http.port>
-    <main.https.port>8083</main.https.port>
+    <main.http.port>7504</main.http.port>
+    <main.https.port>8084</main.https.port>
+
+    <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
+
 </project>

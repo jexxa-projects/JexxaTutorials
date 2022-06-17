@@ -1,5 +1,6 @@
 package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.persistence;
 
+import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.IRepository;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.RepositoryManager;
 import io.jexxa.tutorials.bookstore.domain.aggregate.Book;
@@ -10,22 +11,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.RepositoryManager.getRepository;
+
 @SuppressWarnings("unused")
-public final class BookRepository implements IBookRepository
+@DrivenAdapter
+public class BookRepository implements IBookRepository
 {
     private final IRepository<Book, ISBN13> repository;
 
-    private BookRepository(IRepository<Book, ISBN13> repository)
+    public BookRepository (Properties properties)
     {
-        this.repository = repository;
-    }
-
-    // Factory method that requests a repository strategy from Jexxa's RepositoryManager
-    public static IBookRepository create(Properties properties)
-    {
-        return new BookRepository(
-                RepositoryManager.getRepository(Book.class, Book::getISBN13, properties)
-        );
+        this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }
 
     @Override

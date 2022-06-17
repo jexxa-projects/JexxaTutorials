@@ -1,6 +1,5 @@
 package io.jexxa.tutorials.bookstore.applicationservice;
 
-
 import io.jexxa.core.JexxaMain;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.jexxatest.infrastructure.drivenadapterstrategy.messaging.recording.MessageRecorder;
@@ -34,8 +33,8 @@ class BookStoreServiceTest
     {
         // We recommend instantiating JexxaMain only once for each test class.
         // If you have larger tests this speeds up Jexxa's dependency injection
-        jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
-        jexxaMain.addDDDPackages(BookStore.class);
+        jexxaMain = new JexxaMain(BookStoreServiceTest.class)
+                .addDDDPackages(BookStore.class);
     }
 
     @BeforeEach
@@ -60,7 +59,7 @@ class BookStoreServiceTest
         var amount = 5;
 
         //Act
-        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
+        objectUnderTest.addToStock(ISBN_13.value(), amount);
 
         //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
         assertEquals( amount, objectUnderTest.amountInStock(ISBN_13) );
@@ -74,7 +73,7 @@ class BookStoreServiceTest
     {
         //Arrange
         var amount = 5;
-        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
+        objectUnderTest.addToStock(ISBN_13.value(), amount);
 
         //Act
         objectUnderTest.sell(ISBN_13);
@@ -98,7 +97,7 @@ class BookStoreServiceTest
     void sellLastBook() throws BookNotInStockException
     {
         //Arrange
-        objectUnderTest.addToStock(ISBN_13.getValue(), 1);
+        objectUnderTest.addToStock(ISBN_13.value(), 1);
 
         //Act
         objectUnderTest.sell(ISBN_13);

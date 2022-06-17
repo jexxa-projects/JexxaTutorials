@@ -11,10 +11,10 @@
 
 *   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects 
 *   60 minutes
-*   JDK 11 (or higher) installed 
+*   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
-*   curl or jconsole to trigger the application
-*   A postgres DB (if you start the application with option `-jdbc`)  
+*   curl to trigger the application
+*   A postgres DB (if you start the application with a real DB)  
 
 ## Requirements to the application core
 This application core should provide following super simplified functionality:
@@ -41,7 +41,7 @@ with Jexxa.
 
 First we map the functionality of the application to DDD patterns   
 
-*   `Aggregate:` Elements that change over time and include our business logic 
+*   `Aggregate:` Elements that have a life-cycle and change over time and include our business logic 
     *   `Book` which manages available copies of a book.       
 
 *   `ValueObject:` Elements that represent a state and are immutable
@@ -76,12 +76,16 @@ In our tutorials we use following package structure. Please note that this packa
     *   drivenadapter
     *   drivingadapter 
 
+Please note that there are several DDD-examples that do not add sub-packages to `domain`. This is fine but using sub-packages makes the pattern language more explicit. In addition, we can use this package structure to validate the dependencies between these objects. 
+
+If your application core grows over time, we recommend to add domain specific sub-packages to `domain` such as `book`, `customer`, ... 
 ### A note on implementing DDD patterns  
 
-*   `ValueObject` and `DomainEvent`: Are immutable and compared based on their internal values
+*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons.  
+    *   They are immutable and compared based on their internal values.
     *   They must not have setter methods. So all fields should be final. 
-    *   They must provide a valid implementation of equals() and hashcode()
-    *   They include no business logic, but they have to validate their input data    
+    *   They must provide a valid implementation of equals() and hashcode().
+    *   They must not include any business logic, but they can validate their input data.    
 
 *   `Aggregate`: Is identified by a unique `AggregateID` which is a `ValueObject`
     *   `Book` uses an `ISBN13` object     
@@ -111,14 +115,9 @@ public final class BookRepository implements IBookRepository
 {
     private final IRepository<Book, ISBN13> repository;
 
-    private BookRepository(IRepository<Book, ISBN13> repository) { this.repository = repository; }
-
-    // Factory method that requests a repository strategy from Jexxa's RepositoryManager
-    public static IBookRepository create(Properties properties)
+    public BookRepository (Properties properties)
     {
-        return new BookRepository(
-                RepositoryManager.getRepository(Book.class, Book::getISBN13, properties)
-        );
+        this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }
 
     @Override                    
@@ -159,38 +158,16 @@ public final class BookStore
 {
     public static void main(String[] args)
     {
-        // Define the default strategies.
-        // In this tutorial the Repository is either an IMDB database or a JDBC based repository.
-        // In case of JDBC we use a simple key value approach which stores the key and the value as json strings.
-        // Using json strings might be very inconvenient if you come from typical relational databases but in terms
-        // of DDD our aggregate is responsible to ensure consistency of our data and not the database.
-        RepositoryManager.setDefaultStrategy(getRepositoryStrategy(args));
-        // The message sender is either a simple MessageLogger or a JMS sender.
-        MessageSenderManager.setDefaultStrategy(getMessagingStrategy(args));
-
-        // Define the default strategy for messaging which is either a simple logger called `MessageLogger.class` or `JMSSender.class` for JMS messages
-        MessageSenderManager.setDefaultStrategy(MessageLogger.class);
-
         var jexxaMain = new JexxaMain(BookStore.class);
 
-        //print some application information
-        JexxaLogger.getLogger(BookStore.class)
-                .info( "{}", jexxaMain.getBoundedContext().getContextVersion() );
         jexxaMain
-                //Define the default packages for inbound and outbound ports
-                .addDDDPackages(BookStore.class)
-
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
-                .start()
-
-                .waitForShutdown()
-
-                .stop();
+                .run();
     }
     //...
 }
@@ -204,17 +181,23 @@ That's it.
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstore-jar-with-dependencies.jar 
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Use persistence strategy: IMDBRepository 
-[main] INFO io.jexxa.core.JexxaMain - Start BoundedContext 'BookStoreApplication' with 2 Driving Adapter 
-[main] INFO org.eclipse.jetty.util.log - Logging initialized @474ms to org.eclipse.jetty.util.log.Slf4jLog
-[main] INFO io.javalin.Javalin - Starting Javalin ...
-[main] INFO io.javalin.Javalin - Listening on http://localhost:7503/
-[main] INFO io.javalin.Javalin - Javalin started in 148ms \o/
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStoreApplication' successfully started in 0.484 seconds
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-16 15:39]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/bookstore, projectName=BookStore, buildTimestamp=2022-06-16 18:07]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-local.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Repository Strategie      : [IMDBRepository]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [MessageLogger]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7505
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7505/swagger-docs
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStore' successfully started in 1.280 seconds
+
 ```          
 
 ### Use a postgres database
@@ -225,17 +208,19 @@ file if required.
 
 ```console                                                          
 mvn clean install
-java -jar target/bookstore-jar-with-dependencies.jar -jdbc 
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
-[main] INFO io.jexxa.tutorials.bookstore.BookStore - Use persistence strategy: JDBCKeyValueRepository 
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-test.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Repository Strategie      : [JDBCKeyValueRepository]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [JMSSender]
 ```
 
 Note: In case you want to use a difference database, you have to: 
 
 1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](src/main/resources/jexxa-application.properties).
+2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-test.properties](src/test/resources/jexxa-test.properties).
 
 ### Execute some commands using curl 
 
@@ -281,118 +266,4 @@ curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http:/
 Response: 
 ```Console
 true
-```
-
-## 4. Write some tests
-Writing some tests with Jexxa is quite easy. If you implement your driven adapters using Jexxa's driven adapter strategies you can use 
-package **jexxa-test**. It automatically provides stubs so that you do not need any mock framework. Main advantages are: 
-
-*   You can focus on domain logic within your tests.
-*   You don't need to use mocks which can lead to validating execution steps within the domain core instead of validating the domain specific use cases
-*   Your tests are much easier to read and can teach new developers the use cases of your domain. 
-*   You can write your tests first without considering the infrastructure first.   
-
-First, add the following dependency to your tests. 
-
-```maven
-    <dependency>
-      <groupId>io.jexxa.jexxatest</groupId>
-      <artifactId>jexxa-test</artifactId>
-      <version>4.1.0</version>
-      <scope>test</scope>
-    </dependency>
-```
-
-Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/jexxa-projects/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).       
-
-```java
-class BookStoreServiceTest
-{
-    private static final ISBN13 ISBN_13 = new ISBN13( "978-3-86490-387-8" );
-    private static JexxaMain jexxaMain;
-    private BookStoreService objectUnderTest;
-
-    private MessageRecorder publishedDomainEvents;
-    private IBookRepository bookRepository;
-
-
-    @BeforeAll
-    static void initBeforeAll()
-    {
-        // We recommend instantiating JexxaMain only once for each test class.
-        // If you have larger tests this speeds up Jexxa's dependency injection
-        jexxaMain = new JexxaMain(BookStoreServiceTest.class.getSimpleName());
-        jexxaMain.addDDDPackages(BookStore.class);
-    }
-
-    @BeforeEach
-    void initTest()
-    {
-        // JexxaTest is created for each test. It provides stubs for running your tests so that no 
-        // mock framework is required.
-        JexxaTest jexxaTest = new JexxaTest(jexxaMain);
-
-        // Query a message recorder for an interface which is defines in your application core.
-        publishedDomainEvents = jexxaTest.getMessageRecorder(IDomainEventPublisher.class);
-        // Query the repository that is internally used.
-        bookRepository = jexxaTest.getRepository(IBookRepository.class);
-        // Query the application service we want to test.
-        objectUnderTest = jexxaTest.getInstanceOfPort(BookStoreService.class);
-    }
-
-    @Test
-    void receiveBook()
-    {
-        //Arrange
-        var amount = 5;
-
-        //Act
-        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
-
-        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( amount, objectUnderTest.amountInStock(ISBN_13) );
-        assertEquals( amount, bookRepository.get( ISBN_13 ).amountInStock() );
-        assertTrue( publishedDomainEvents.isEmpty() );
-    }
-
-
-    @Test
-    void sellBook() throws BookNotInStockException
-    {
-        //Arrange
-        var amount = 5;
-        objectUnderTest.addToStock(ISBN_13.getValue(), amount);
-
-        //Act
-        objectUnderTest.sell(ISBN_13);
-
-        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( amount - 1, objectUnderTest.amountInStock(ISBN_13) );
-        assertEquals( amount - 1, bookRepository.get(ISBN_13).amountInStock() );
-        assertTrue( publishedDomainEvents.isEmpty() );
-    }
-
-    @Test
-    void sellBookNotInStock()
-    {
-        //Arrange - Nothing
-
-        //Act/Assert
-        assertThrows(BookNotInStockException.class, () -> objectUnderTest.sell(ISBN_13));
-    }
-
-    @Test
-    void sellLastBook() throws BookNotInStockException
-    {
-        //Arrange
-        objectUnderTest.addToStock(ISBN_13.getValue(), 1);
-
-        //Act
-        objectUnderTest.sell(ISBN_13);
-
-        //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( 0 , objectUnderTest.amountInStock(ISBN_13) );
-        assertEquals( 1 , publishedDomainEvents.size() );
-        assertEquals( bookSoldOut(ISBN_13), publishedDomainEvents.getMessage(BookSoldOut.class));
-    }
 ```

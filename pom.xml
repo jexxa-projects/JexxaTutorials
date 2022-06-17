@@ -41,10 +41,10 @@
 
         <!-- target/compiler configuration  -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa-web.release.version>4.1.8</jexxa-web.release.version>
+        <jexxa-web.release.version>5.0.0</jexxa-web.release.version>
         <addend.version>1.2.0</addend.version>
         <activemq.client.version>5.17.1</activemq.client.version>
         <postgres.version>42.4.0</postgres.version>
@@ -59,7 +59,7 @@
         <awaitility.version>4.2.0</awaitility.version>
         <h2database.version>2.1.214</h2database.version>
         <unirest.java.version>3.13.10</unirest.java.version>
-        <jexxa-test.release.version>4.1.8</jexxa-test.release.version>
+        <jexxa-test.release.version>5.0.0</jexxa-test.release.version>
 
         <!-- server-name used in mavens settings.xml to find to your repository credentials -->
         <project.scm.id>github</project.scm.id>
@@ -185,16 +185,6 @@
     <!-- IMPORTANT: if you should start your maven project.                     -->
     <!-- ********************************************************************** -->
     <profiles>
-        <profile>
-            <id>active-on-jdk-16</id>
-            <activation>
-                <jdk>[16,)</jdk>
-            </activation>
-            <modules>
-                <module>BookStoreJ16</module>
-            </modules>
-        </profile>
-
         <profile>     <!-- add tag developer image -->
             <id>localDockerImage</id>
             <activation>
@@ -205,8 +195,6 @@
                 <dockerMajorTag>developerImage</dockerMajorTag>
                 <dockerMajorMinorTag>developerImage</dockerMajorMinorTag>
             </properties>
-
-
         </profile>
         <profile>
             <id>dockerDeveloperTags</id>
@@ -550,7 +538,6 @@
     <module>HelloJexxa</module>
     <module>TimeService</module>
     <module>BookStore</module>
-    <module>BookStoreJ</module>
     <module>ContractManagement</module>
   </modules>
 

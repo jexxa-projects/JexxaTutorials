@@ -1,8 +1,9 @@
 package io.jexxa.tutorials.bookstore.domainservice;
 
-import io.jexxa.tutorials.bookstore.domain.domainevent.BookSoldOut;
+import io.jexxa.addend.applicationcore.InfrastructureService;
 
+@InfrastructureService
 public interface IDomainEventPublisher
 {
-    void publish(BookSoldOut domainEvent);
+    void publish(Object domainEvent);
 }

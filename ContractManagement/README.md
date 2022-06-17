@@ -9,10 +9,10 @@
 
 *   Understand tutorial `BookStore` because we explain only new aspects
 *   30 minutes
-*   JDK 11 (or higher) installed
+*   JDK 17  (or higher) installed
 *   Maven 3.6 (or higher) installed
-*   curl or jconsole to trigger the application
-*   A postgres DB (if you start the application with option `-jdbc')
+*   curl to trigger the application
+*   A postgres DB (if you start the application with a real DB)
 
 ## Motivation 
 
@@ -211,29 +211,25 @@ public class ContractRepository  implements IContractRepository
 
 ```console                                                          
 mvn clean install
-java -jar target/contractmanagement-jar-with-dependencies.jar 
-```
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/contractmanagement-jar-with-dependencies.jar```
 You will see following (or similar) output
 ```console
-main] INFO io.jexxa.tutorials.contractmanagement.ContractManagement - Use persistence strategy: IMDBObjectStore 
-[main] INFO org.eclipse.jetty.util.log - Logging initialized @375ms to org.eclipse.jetty.util.log.Slf4jLog
-[main] INFO io.jexxa.core.JexxaMain - Jexxa-Core 3.1.0-SNAPSHOT; built: 2021-07-31 15:50; git: scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core;
-
-[main] INFO io.javalin.Javalin - Javalin started in 166ms \o/
-[main] INFO io.javalin.Javalin - OpenAPI documentation available at: http://0.0.0.0:7506/swagger-docs
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'ContractManagementApplication' successfully started in 1.543 seconds
-
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/contractmanagement, projectName=ContractManagement, buildTimestamp=2022-06-06 07:16]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used ObjectStore Strategie     : IMDBObjectStore
+...
 ```          
 
 ### Use a Postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](src/main/resources/jexxa-application.properties)
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/test/resources/jexxa-test.properties)
 file if required.
 
 ```console                                                          
 mvn clean install
-java -jar target/contractmanagement-jar-with-dependencies.jar  -jdbc 
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/contractmanagement-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
