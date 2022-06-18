@@ -4,7 +4,7 @@
 
     <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.17-SNAPSHOT</version>
+    <version>1.0.18-SNAPSHOT</version>
     <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
