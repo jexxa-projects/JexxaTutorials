@@ -4,7 +4,7 @@
 
     <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.19-SNAPSHOT</version>
+    <version>1.0.19</version>
     <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
@@ -28,7 +28,7 @@
         <connection>scm:git:https://github.com/jexxa-projects/JexxaTutorials.git</connection>
         <url>https://github.com/jexxa-projects/JexxaTutorials</url>
         <developerConnection>scm:git:https://github.com/jexxa-projects/JexxaTutorials.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>jexxatutorials-1.0.19</tag>
     </scm>
 
     <properties>
