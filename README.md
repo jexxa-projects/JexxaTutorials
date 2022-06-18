@@ -33,10 +33,10 @@ See documentation [BookStore](BookStore/README.md)
 ## BookStore - Writing Tests 
 See documentation [BookStore](BookStore/README-JexxaTest.md)
 
-## BookStoreJ - Pattern Language 
+## BookStore - Pattern Language 
 See documentation [BookStore - Pattern language](BookStore/README-PatternLanguage.md)
 
-## BookStoreJ - OpenAPI Support 
+## BookStore - OpenAPI Support 
 See documentation [BookStore - With OpenAPI support](BookStore/README-OPENAPI.md)
 
 ## ContractManagement - Using an ObjectStore  
