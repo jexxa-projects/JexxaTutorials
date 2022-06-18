@@ -20,6 +20,7 @@ public final class HelloJexxa
                 // Bind a REST adapter to class HelloJexxa to expose its methods
                 // To get greetings open: http://localhost:7500/HelloJexxa/greetings
                 .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 // Run Jexxa and all bindings until Ctrl-C is pressed
                 .run();
