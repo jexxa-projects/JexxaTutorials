@@ -31,13 +31,13 @@ See documentation [TimeService - Flow of Control](TimeService/README-FlowOfContr
 See documentation [BookStore](BookStore/README.md)
 
 ## BookStore - Writing Tests 
-See documentation [BookStore](BookStore/README-JexxaTest.md)
+See documentation [BookStore - Writing Tests](BookStore/README-JexxaTest.md)
 
 ## BookStore - Pattern Language 
-See documentation [BookStore - Pattern language](BookStore/README-PatternLanguage.md)
+See documentation [BookStore - Pattern Language](BookStore/README-PatternLanguage.md)
 
 ## BookStore - OpenAPI Support 
-See documentation [BookStore - With OpenAPI support](BookStore/README-OPENAPI.md)
+See documentation [BookStore - With OpenAPI Support](BookStore/README-OPENAPI.md)
 
 ## ContractManagement - Using an ObjectStore  
 See documentation [ContractManagement](ContractManagement/README.md)
