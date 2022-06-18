@@ -38,6 +38,8 @@ public final class HelloJexxa
                 // Bind a REST adapter to class HelloJexxa to expose its methods
                 // To get greetings open: http://localhost:7500/HelloJexxa/greetings
                 .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)
+                //Get status information from the application
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 // Run Jexxa and all bindings until Ctrl-C is pressed
                 .run();
@@ -97,20 +99,23 @@ The web page can be accessed via following link [http://localhost:7501/index.htm
 
 ![Webpage](images/Webpage.jpg)
 
-## Build a docker image ##
+## Build a docker image from release version##
+In order to build a docker image and a new release, we recommend to use the GitHub action [newRelease.yml](../.github/workflows/newRelease.yml). This action script can be executed directly on GitHub and uploads a docker image to the GitHub registry ghcr.io. 
+
+## Build a docker image from snapshot release ##
 In order to build a docker image with this tutorial we use the maven-jib-plugin. For the sake of simplicity we assume
 that docker is installed on your local machine so that we do not need to configure any external docker registry.
 
 Note: All tutorials can be build as docker image with the following steps.      
 
-*   Within a container, we have to define URLs to external infrastructure such as ActiveMQ or the database. As described in [reference guide](https://jexxa-projects.github.io/Jexxa/jexxa_reference.html#_application_configuration) you have to adjust either jexxa-application.properties, or you can use java system properties which can be set as JVM flags in [pom.xml](pom.xml) (see section `jvmFlags`). 
+* Within a container, we have to define URLs to external infrastructure such as ActiveMQ or the database. As described in [reference guide](https://jexxa-projects.github.io/Jexxa/jexxa_reference.html#_application_configuration) you have to adjust either jexxa-application.properties, or you can use java system properties which can be set as JVM flags in [pom.xml](pom.xml) (see section `jvmFlags`). 
 
-*   Create the docker image with `maven` enter: 
+* Create the docker image with `maven` enter: 
     ```console                                                          
     mvn jib:dockerBuild -PlocalDockerImage
     ``` 
 
-*   Check available docker images:                                                
+* Check available docker images:                                                
     ```console                                                          
     docker images
     ``` 
@@ -122,5 +127,6 @@ Note: All tutorials can be build as docker image with the following steps.
     ...
     ``` 
 
-*   In order to create a container from the image please refer [docker manual](https://docs.docker.com/)               
+* In order to create a container from the image please refer [docker manual](https://docs.docker.com/)        
+
               
