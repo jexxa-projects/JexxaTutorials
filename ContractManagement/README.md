@@ -249,7 +249,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"Paul"' \
-    http://localhost:7503/ContractService/createNewContract                 
+    http://localhost:7504/ContractService/createNewContract                 
 ```
 
 Response: The number of the contract
@@ -265,7 +265,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"Paul"' \
-    http://localhost:7503/ContractService/getContractsByAdvisor                 
+    http://localhost:7504/ContractService/getContractsByAdvisor                 
 ```
 Response: The contract numbers of all contracts managed by Paul. Note that we called previous method 9 times.  
 ```Console
