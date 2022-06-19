@@ -1,5 +1,5 @@
 [![Maven Test Build](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/mavenBuild.yml)
-
+[![New Release](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/newRelease.yml/badge.svg)](https://github.com/jexxa-projects/JexxaTutorials/actions/workflows/newRelease.yml)
 # Tutorials 
 
 ## General notes
