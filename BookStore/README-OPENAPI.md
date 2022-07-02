@@ -12,7 +12,7 @@
 *   JDK 17 (or higher) installed
 *   [Swagger UI](https://swagger.io/tools/swagger-ui/)    
 *   Maven 3.6 (or higher) installed
-*   A postgres DB (if you start the application with option `-jdbc')  
+*   A postgres DB (if you start the application with running infrastructure)  
 
 ## Run the application  
 
