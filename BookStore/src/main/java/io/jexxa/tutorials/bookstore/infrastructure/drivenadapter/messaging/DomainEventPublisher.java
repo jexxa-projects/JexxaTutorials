@@ -28,6 +28,7 @@ public class DomainEventPublisher implements IDomainEventPublisher
         messageSender
                 .send(domainEvent)
                 .toTopic("BookStoreTopic")
+                .addHeader("Type", domainEvent.getClass().getSimpleName())
                 .asJson();
     }
 
