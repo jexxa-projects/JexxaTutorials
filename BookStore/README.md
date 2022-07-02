@@ -14,7 +14,7 @@
 *   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   curl to trigger the application
-*   A postgres DB (if you start the application with a real DB)  
+*   Optional: A postgres DB   
 
 ## Requirements to the application core
 This application core should provide following super simplified functionality:
@@ -203,7 +203,7 @@ You will see following (or similar) output
 ### Use a postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The 
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](src/main/resources/jexxa-application.properties) 
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/test/resources/jexxa-test.properties) 
 file if required.       
 
 ```console                                                          

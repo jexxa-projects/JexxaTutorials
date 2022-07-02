@@ -11,8 +11,8 @@
 *   60 minutes
 *   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
-*   curl or jconsole to trigger the application
-*   A postgres DB (if you start the application with option `-jdbc')  
+*   curl to trigger the application
+*   Optional: A postgres DB   
 
 ## A pattern language for your application core 
 In the [architecture of Jexxa](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html) we describe that Jexxa does not require any special annotations. Main reason is that framework related annotations can tightly couple your application core to a specific technology stack. Therefore, framework specific annotations should not be used within the application core.
