@@ -162,6 +162,7 @@ public class TimePublisher implements ITimePublisher
         // Send the message to the topic in JSON format.
         messageSender.send(localTime)
                 .toTopic(TIME_TOPIC)
+                .addHeader("Type", localTime.getClass().getSimpleName())
                 .asJson();
     }
 }
