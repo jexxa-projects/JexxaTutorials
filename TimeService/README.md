@@ -253,18 +253,21 @@ java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties"
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
-[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-06 07:16]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : MessageLogger
-...
-[main] INFO io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter - OpenAPI documentation available at: http://0.0.0.0:7502/swagger-docs
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 1.854 seconds
-^C[Thread-9] INFO io.jexxa.core.JexxaMain - Shutdown signal received ...
-[Thread-9] INFO io.javalin.Javalin - Stopping Javalin ...
-[Thread-9] INFO io.javalin.Javalin - Javalin has stopped
-[Thread-9] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully stopped
-michael@Michaels-Mini TimeService % 
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.1-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-24 05:10]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.20-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-24 16:53]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [JMSAdapter, RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-local.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [MessageLogger]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7502
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7502/swagger-docs
+[main] INFO io.jexxa.utils.JexxaBanner - JMS Listening on  : tcp://ActiveMQ:61616
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Topics   : []
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Queues   : []
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 1.964 seconds
+
 
 ```          
 
