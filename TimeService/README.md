@@ -299,14 +299,25 @@ java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" 
 You will see following (or similar) output
 ```console
 ...
-[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
-[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-06 07:16]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter, JMSAdapter]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : JMSSender
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.1-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-24 05:10]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.20-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-24 16:53]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [JMSAdapter, RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-test.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [JMSSender]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7502
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7502/swagger-docs
+[main] INFO io.jexxa.utils.JexxaBanner - JMS Listening on  : tcp://localhost:61616
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Topics   : [TimeService]
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Queues   : []
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 2.223 seconds
+
 ... 
 ```          
 
-As you can see in the last two lines, we now use the `JMSSender`. 
+As you can see in the last two lines, we now use the `JMSSender` which is listening on Topic TimeService. 
 
 ### Publish the time with JMS ###
  
