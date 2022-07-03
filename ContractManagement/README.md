@@ -229,7 +229,8 @@ file if required.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/contractmanagement-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
+     ./target/contractmanagement-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console

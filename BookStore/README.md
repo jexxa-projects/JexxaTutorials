@@ -181,7 +181,8 @@ That's it.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" \
+          ./target/bookstore-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
@@ -208,7 +209,8 @@ file if required.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
+          ./target/bookstore-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
@@ -239,7 +241,8 @@ Response:
 #### Query available books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+     http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 
@@ -250,7 +253,8 @@ false
 #### Add some books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" http://localhost:7503/BookStoreService/addToStock
+curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" \
+     http://localhost:7503/BookStoreService/addToStock
 ```
 
 Response: No output  
@@ -260,7 +264,8 @@ Response: No output
 #### Ask again if a specific book is in stock
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+     http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 
