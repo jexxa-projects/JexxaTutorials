@@ -248,7 +248,8 @@ Disabling of all infrastructure components can be done by property files. By con
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" \
+     ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
