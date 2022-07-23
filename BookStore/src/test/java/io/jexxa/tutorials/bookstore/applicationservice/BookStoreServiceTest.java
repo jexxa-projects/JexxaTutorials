@@ -8,6 +8,7 @@ import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstore.domain.book.IBookRepository;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventService;
 import io.jexxa.tutorials.bookstore.domainservice.IDomainEventPublisher;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,8 @@ class BookStoreServiceTest
         // JexxaTest is created for each test. It provides stubs for running your tests so that no
         // mock framework is required.
         JexxaTest jexxaTest = new JexxaTest(jexxaMain);
+
+        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::init);
 
         // Query a message recorder for an interface which is defines in your application core.
         publishedDomainEvents = jexxaTest.getMessageRecorder(IDomainEventPublisher.class);

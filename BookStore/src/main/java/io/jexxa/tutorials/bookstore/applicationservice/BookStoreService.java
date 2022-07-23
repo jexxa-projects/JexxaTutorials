@@ -3,9 +3,8 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.addend.applicationcore.ApplicationService;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
-import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstore.domain.book.IBookRepository;
-import io.jexxa.tutorials.bookstore.domainservice.IDomainEventPublisher;
+import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,13 +16,10 @@ import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 public class BookStoreService
 {
     private final IBookRepository ibookRepository;
-    private final IDomainEventPublisher domainEventPublisher;
 
-    public BookStoreService (IBookRepository ibookRepository,
-                             IDomainEventPublisher domainEventPublisher)
+    public BookStoreService (IBookRepository ibookRepository)
     {
         this.ibookRepository = Objects.requireNonNull(ibookRepository);
-        this.domainEventPublisher = Objects.requireNonNull(domainEventPublisher);
     }
 
     public void addToStock(String isbn13, int amount)
@@ -81,8 +77,7 @@ public class BookStoreService
                 .search(isbn13)
                 .orElseThrow(BookNotInStockException::new);
 
-        var lastBookSold = book.sell();
-        lastBookSold.ifPresent(domainEventPublisher::publish);
+        book.sell();
 
         ibookRepository.update(book);
     }

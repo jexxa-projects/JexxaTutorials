@@ -4,6 +4,7 @@ package io.jexxa.tutorials.bookstore;
 import io.jexxa.core.JexxaMain;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventService;
 import io.jexxa.tutorials.bookstore.domainservice.ReferenceLibrary;
 
 public final class BookStore
@@ -15,6 +16,7 @@ public final class BookStore
         jexxaMain
                 //Get the latest books when starting the application
                 .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
+                .bootstrap(DomainEventService.class).with(DomainEventService::init)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
