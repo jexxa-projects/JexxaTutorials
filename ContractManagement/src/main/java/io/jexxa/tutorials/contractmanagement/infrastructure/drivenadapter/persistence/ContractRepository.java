@@ -1,12 +1,11 @@
-package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter;
+package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence;
 
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.IObjectStore;
-import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
-import io.jexxa.tutorials.contractmanagement.domain.aggregate.Contract;
-import io.jexxa.tutorials.contractmanagement.domain.valueobject.ContractNumber;
-import io.jexxa.tutorials.contractmanagement.domainservice.IContractRepository;
+import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
+import io.jexxa.tutorials.contractmanagement.domain.contract.IContractRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,7 @@ import java.util.Properties;
 
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager.getObjectStore;
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.*;
-import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.ContractRepository.ContractSchema.*;
+import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepository.ContractSchema.*;
 
 @SuppressWarnings("unused")
 public class ContractRepository  implements IContractRepository
