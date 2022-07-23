@@ -1,9 +1,12 @@
 package io.jexxa.tutorials.bookstore.domainservice;
 
+import io.jexxa.addend.applicationcore.DomainService;
+import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.common.DomainEventPublisher;
 import io.jexxa.tutorials.bookstore.domain.common.DomainEventSubscriber;
 
-public class DomainEventService implements DomainEventSubscriber<Object> {
+@DomainService
+public class DomainEventService implements DomainEventSubscriber<BookSoldOut> {
 
     private final IDomainEventPublisher iDomainEventPublisher;
 
@@ -24,7 +27,7 @@ public class DomainEventService implements DomainEventSubscriber<Object> {
     }
 
     @Override
-    public Class<Object> subscribedToEventType() {
-        return Object.class;
+    public Class<BookSoldOut> subscribedToEventType() {
+        return BookSoldOut.class;
     }
 }
