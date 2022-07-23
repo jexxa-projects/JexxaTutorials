@@ -3,9 +3,9 @@ package io.jexxa.tutorials.bookstore.domain.book;
 import io.jexxa.addend.applicationcore.Aggregate;
 import io.jexxa.addend.applicationcore.AggregateFactory;
 import io.jexxa.addend.applicationcore.AggregateID;
-import io.jexxa.tutorials.bookstore.domain.common.DomainEventPublisher;
 
 import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
+import static io.jexxa.tutorials.bookstore.domain.common.DomainEventPublisher.publish;
 
 @Aggregate
 public final class Book
@@ -50,7 +50,7 @@ public final class Book
 
         if ( ! inStock() )
         {
-            DomainEventPublisher.instance().publish(bookSoldOut(isbn13));
+            publish(bookSoldOut(isbn13));
         }
     }
 

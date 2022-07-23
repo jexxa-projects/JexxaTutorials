@@ -12,8 +12,9 @@ public class DomainEventPublisher {
         return instance;
     }
 
-    public <T> void publish(final T aDomainEvent) {
-        subscribers
+    public static <T> void publish(final T aDomainEvent) {
+        instance()
+                .subscribers
                 .stream()
                 .filter(element -> element.subscribedToEventType().isAssignableFrom(aDomainEvent.getClass()))
                 .forEach(element -> element.handleEvent(aDomainEvent));
