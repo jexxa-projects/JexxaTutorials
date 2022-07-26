@@ -275,7 +275,7 @@ You will see following (or similar) output
 
 You can use curl to publish the time.  
 ```Console
-curl -X POST http://localhost:7502/TimeService/publishTime
+curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 ```
 
 Each time you execute curl you should see following output on the console: 
@@ -323,7 +323,7 @@ As you can see in the last two lines, we now use the `JMSSender` which is listen
  
 You can use curl to publish the time.  
 ```Console
-curl -X POST http://localhost:7502/TimeService/publishTime
+curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 ```
 
 Each time you execute curl you should see following output on the console: 
