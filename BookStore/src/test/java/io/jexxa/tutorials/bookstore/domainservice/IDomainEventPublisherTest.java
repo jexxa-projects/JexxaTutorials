@@ -3,6 +3,7 @@ package io.jexxa.tutorials.bookstore.domainservice;
 import io.jexxa.core.JexxaMain;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
+import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,6 @@ class IDomainEventPublisherTest
     private static final String OUTBOUND_PORTS  = BookStore.class.getPackageName() + ".domainservice";
 
     private JexxaTest jexxaTest;
-    private IDomainEventPublisher objectUnderTest;
 
     @BeforeEach
     void initTest()
@@ -30,18 +30,19 @@ class IDomainEventPublisherTest
                 .addToInfrastructure(DRIVEN_ADAPTER);
 
         jexxaTest = new JexxaTest(jexxaMain);
-        objectUnderTest = jexxaTest.getInstanceOfPort(IDomainEventPublisher.class);
+        //TODO: Check this
+        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::init);
     }
 
     @Test
     void testDomainEvent()
     {
         // Arrange
-        var messageRecorder = jexxaTest.getMessageRecorder(IDomainEventPublisher.class);
+        var messageRecorder = jexxaTest.getMessageRecorder(IDomainEventSender.class);
         var isbn13 = new ISBN13("978-3-86490-387-8");
 
         // Act
-        objectUnderTest.publish(bookSoldOut(isbn13));
+        DomainEventPublisher.publish(bookSoldOut(isbn13));
 
         // Assert
         assertDoesNotThrow(() -> messageRecorder.getMessage(BookSoldOut.class));
@@ -54,7 +55,7 @@ class IDomainEventPublisherTest
         var isbn13 = new ISBN13("978-3-86490-387-8");
 
         // Act / Assert
-        assertThrows(IllegalArgumentException.class, () -> objectUnderTest.publish(isbn13));
+        assertThrows(IllegalArgumentException.class, () -> DomainEventPublisher.publish(isbn13));
     }
 
 }

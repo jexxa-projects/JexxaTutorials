@@ -5,7 +5,7 @@ import io.jexxa.addend.applicationcore.AggregateFactory;
 import io.jexxa.addend.applicationcore.AggregateID;
 
 import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
-import static io.jexxa.tutorials.bookstore.domain.common.DomainEventPublisher.publish;
+import static io.jexxa.tutorials.bookstore.domain.DomainEventPublisher.publish;
 
 @Aggregate
 public final class Book

@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 import io.jexxa.addend.applicationcore.DomainEvent;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSender;
-import io.jexxa.tutorials.bookstore.domainservice.IDomainEventPublisher;
+import io.jexxa.tutorials.bookstore.domainservice.IDomainEventSender;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -12,24 +12,14 @@ import static io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSen
 
 @SuppressWarnings("unused")
 @DrivenAdapter
-public class DomainEventPublisher implements IDomainEventPublisher
-{
+public class DomainEventSender implements IDomainEventSender {
     private final MessageSender messageSender;
 
-    public DomainEventPublisher(Properties properties)
+    public DomainEventSender(Properties properties)
     {
-        messageSender = getMessageSender(IDomainEventPublisher.class, properties);
+        messageSender = getMessageSender(IDomainEventSender.class, properties);
     }
 
-    @Override
-    public void publish(Object domainEvent)
-    {
-        validateDomainEvent(domainEvent);
-        messageSender
-                .send(domainEvent)
-                .toTopic("BookStoreTopic")
-                .asJson();
-    }
 
     private void validateDomainEvent(Object domainEvent)
     {
@@ -40,4 +30,13 @@ public class DomainEventPublisher implements IDomainEventPublisher
         }
     }
 
+    @Override
+    public void handleEvent(Object domainEvent)
+    {
+        validateDomainEvent(domainEvent);
+        messageSender
+                .send(domainEvent)
+                .toTopic("BookStoreTopic")
+                .asJson();
+    }
 }

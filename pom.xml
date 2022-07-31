@@ -44,7 +44,7 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa-web.release.version>5.0.0</jexxa-web.release.version>
+        <jexxa-web.release.version>5.1.0-SNAPSHOT</jexxa-web.release.version>
         <addend.version>1.2.0</addend.version>
         <activemq.client.version>5.17.1</activemq.client.version>
         <postgres.version>42.4.0</postgres.version>
@@ -280,6 +280,7 @@
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>${maven.versions.plugin}</version>
                     <configuration>
+                        <!--suppress UnresolvedMavenProperty -->
                         <rulesUri>file:///${session.executionRootDirectory}/mavenVersionRules.xml</rulesUri>
                     </configuration>
                 </plugin>
@@ -347,6 +348,7 @@
                             <name>dockerMajorTag</name>
                             <value>${project.version} snapshot latest</value>
                             <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+                            <!--suppress UnresolvedMavenProperty -->
                             <replacement>${parsedVersion.majorVersion}.$1$2</replacement>
                             <failIfNoMatch>false</failIfNoMatch>
                         </configuration>
@@ -363,6 +365,7 @@
                             <name>dockerMajorMinorTag</name>
                             <value>${project.version} snapshot latest</value>
                             <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+                            <!--suppress UnresolvedMavenProperty -->
                             <replacement>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.$1$2</replacement>
                             <failIfNoMatch>false</failIfNoMatch>
                         </configuration>
@@ -501,8 +504,11 @@
                     <to>
                         <image>${image.repository.root}/${project.artifactId}:${project.version}</image>
                         <tags>
+                            <!--suppress UnresolvedMavenProperty -->
                             <tag>${dockerTag}</tag>
+                            <!--suppress UnresolvedMavenProperty -->
                             <tag>${dockerMajorTag}</tag>
+                            <!--suppress UnresolvedMavenProperty -->
                             <tag>${dockerMajorMinorTag}</tag>
                         </tags>
                     </to>
