@@ -4,8 +4,8 @@ import io.jexxa.addend.applicationcore.ApplicationService;
 import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
-import io.jexxa.tutorials.contractmanagement.domain.contract.IContractRepository;
-import io.jexxa.tutorials.contractmanagement.domainservice.IDomainEventStore;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository;
+import io.jexxa.tutorials.contractmanagement.domainservice.DomainEventStore;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,10 +19,10 @@ import static io.jexxa.tutorials.contractmanagement.domain.contract.Contract.new
 @ApplicationService
 public class ContractService
 {
-    private final IContractRepository contractRepository;
-    private final IDomainEventStore domainEventStore;
+    private final ContractRepository contractRepository;
+    private final DomainEventStore domainEventStore;
 
-    public ContractService(IContractRepository contractRepository, IDomainEventStore domainEventStore)
+    public ContractService(ContractRepository contractRepository, DomainEventStore domainEventStore)
     {
         this.contractRepository = contractRepository;
         this.domainEventStore = domainEventStore;
@@ -38,10 +38,8 @@ public class ContractService
     public void signContract( ContractNumber contractNumber )
     {
         var contract = contractRepository.get(contractNumber);
-        var domainEvent= contract.sign();
-
+        contract.sign();
         contractRepository.update(contract);
-        domainEventStore.add(domainEvent);
     }
 
     public List<ContractNumber> getUnsignedContracts()

@@ -3,6 +3,6 @@ package io.jexxa.tutorials.bookstore.domainservice;
 import io.jexxa.addend.applicationcore.InfrastructureService;
 
 @InfrastructureService
-public interface IDomainEventSender {
+public interface DomainEventSender {
     void handleEvent(Object domainEvent);
 }

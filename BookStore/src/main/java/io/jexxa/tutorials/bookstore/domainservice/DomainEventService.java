@@ -7,8 +7,8 @@ import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 @DomainService
 public class DomainEventService
 {
-    private final IDomainEventSender domainEventSender;
-    public DomainEventService(IDomainEventSender domainEventSender)
+    private final DomainEventSender domainEventSender;
+    public DomainEventService(DomainEventSender domainEventSender)
     {
         this.domainEventSender = domainEventSender;
     }

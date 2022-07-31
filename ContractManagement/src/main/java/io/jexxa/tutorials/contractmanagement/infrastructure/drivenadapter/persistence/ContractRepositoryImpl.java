@@ -5,7 +5,6 @@ import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.met
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
 import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
-import io.jexxa.tutorials.contractmanagement.domain.contract.IContractRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +12,10 @@ import java.util.Properties;
 
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager.getObjectStore;
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.*;
-import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepository.ContractSchema.*;
+import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.*;
 
 @SuppressWarnings("unused")
-public class ContractRepository  implements IContractRepository
+public class ContractRepositoryImpl implements io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository
 {
     /**
      * Here we define the values to query contracts. Apart from their key, elements should be queried by following information: <br>
@@ -65,7 +64,7 @@ public class ContractRepository  implements IContractRepository
 
     private final IObjectStore<Contract, ContractNumber, ContractSchema> objectStore;
 
-    public ContractRepository(Properties properties)
+    public ContractRepositoryImpl(Properties properties)
     {
         this.objectStore = getObjectStore(Contract.class, Contract::getContractNumber, ContractSchema.class, properties);
     }

@@ -10,7 +10,7 @@ import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.book.IBookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstore.domainservice.DomainEventService;
-import io.jexxa.tutorials.bookstore.domainservice.IDomainEventSender;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventSender;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ class BookStoreServiceTest
         jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::init);
 
         // Query a message recorder for an interface which is defines in your application core.
-        publishedDomainEvents = jexxaTest.getMessageRecorder(IDomainEventSender.class);
+        publishedDomainEvents = jexxaTest.getMessageRecorder(DomainEventSender.class);
         // Query the repository that is internally used.
         bookRepository = jexxaTest.getRepository(IBookRepository.class);
         // Query the application service we want to test.

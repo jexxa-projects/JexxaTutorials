@@ -2,7 +2,7 @@ package io.jexxa.tutorials.timeservice.domainservice;
 
 import java.time.LocalTime;
 
-public interface ITimePublisher
+public interface TimePublisher
 {
     void publish(LocalTime localTime);
 }

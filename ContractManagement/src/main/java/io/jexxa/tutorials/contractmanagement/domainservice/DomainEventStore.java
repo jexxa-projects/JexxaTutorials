@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 
 @InfrastructureService
-public interface IDomainEventStore
+public interface DomainEventStore
 {
     void add(ContractSigned domainEvent);
 

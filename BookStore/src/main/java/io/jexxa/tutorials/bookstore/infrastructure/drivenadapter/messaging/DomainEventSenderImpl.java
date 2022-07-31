@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 import io.jexxa.addend.applicationcore.DomainEvent;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSender;
-import io.jexxa.tutorials.bookstore.domainservice.IDomainEventSender;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventSender;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -12,12 +12,12 @@ import static io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSen
 
 @SuppressWarnings("unused")
 @DrivenAdapter
-public class DomainEventSender implements IDomainEventSender {
+public class DomainEventSenderImpl implements DomainEventSender {
     private final MessageSender messageSender;
 
-    public DomainEventSender(Properties properties)
+    public DomainEventSenderImpl(Properties properties)
     {
-        messageSender = getMessageSender(IDomainEventSender.class, properties);
+        messageSender = getMessageSender(DomainEventSender.class, properties);
     }
 
 

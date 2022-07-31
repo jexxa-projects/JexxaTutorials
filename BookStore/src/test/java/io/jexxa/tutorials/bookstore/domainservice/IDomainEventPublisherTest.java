@@ -38,7 +38,7 @@ class IDomainEventPublisherTest
     void testDomainEvent()
     {
         // Arrange
-        var messageRecorder = jexxaTest.getMessageRecorder(IDomainEventSender.class);
+        var messageRecorder = jexxaTest.getMessageRecorder(DomainEventSender.class);
         var isbn13 = new ISBN13("978-3-86490-387-8");
 
         // Act
