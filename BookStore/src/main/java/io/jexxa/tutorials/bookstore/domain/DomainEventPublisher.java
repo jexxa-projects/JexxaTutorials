@@ -37,6 +37,11 @@ public class DomainEventPublisher {
         instance().subscribers.get(domainEvent).add(subscriber);
     }
 
+    public static void subscribe(Consumer<Object> subscriber)
+    {
+        subscribe(Object.class, subscriber);
+    }
+
     private DomainEventPublisher()
     {
         //Private constructor

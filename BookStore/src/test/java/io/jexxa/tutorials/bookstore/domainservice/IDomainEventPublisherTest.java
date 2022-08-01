@@ -31,14 +31,14 @@ class IDomainEventPublisherTest
 
         jexxaTest = new JexxaTest(jexxaMain);
         //TODO: Check this
-        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::init);
+        jexxaMain.bootstrap(IntegrationEventService.class).with(IntegrationEventService::init);
     }
 
     @Test
     void testDomainEvent()
     {
         // Arrange
-        var messageRecorder = jexxaTest.getMessageRecorder(DomainEventSender.class);
+        var messageRecorder = jexxaTest.getMessageRecorder(IntegrationEventSender.class);
         var isbn13 = new ISBN13("978-3-86490-387-8");
 
         // Act
