@@ -7,7 +7,7 @@ import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
-import io.jexxa.tutorials.bookstore.domain.book.IBookRepository;
+import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventService;
 import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
@@ -27,7 +27,7 @@ class BookStoreServiceTest
     private BookStoreService objectUnderTest;
 
     private MessageRecorder publishedDomainEvents;
-    private IBookRepository bookRepository;
+    private BookRepository bookRepository;
 
 
     @BeforeAll
@@ -53,7 +53,7 @@ class BookStoreServiceTest
         // Query a message recorder for an interface which is defines in your application core.
         publishedDomainEvents = jexxaTest.getMessageRecorder(IntegrationEventSender.class);
         // Query the repository that is internally used.
-        bookRepository = jexxaTest.getRepository(IBookRepository.class);
+        bookRepository = jexxaTest.getRepository(BookRepository.class);
         // Query the application service we want to test.
         objectUnderTest = jexxaTest.getInstanceOfPort(BookStoreService.class);
     }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IBookRepository
+public interface BookRepository
 {
     void add(Book book);
 

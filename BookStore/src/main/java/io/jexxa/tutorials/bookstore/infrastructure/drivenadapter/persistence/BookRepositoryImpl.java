@@ -4,7 +4,7 @@ import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.IRepository;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstore.domain.book.IBookRepository;
+import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,11 +14,11 @@ import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.reposito
 
 @SuppressWarnings("unused")
 @DrivenAdapter
-public class BookRepository implements IBookRepository
+public class BookRepositoryImpl implements BookRepository
 {
     private final IRepository<Book, ISBN13> repository;
 
-    public BookRepository (Properties properties)
+    public BookRepositoryImpl(Properties properties)
     {
         this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }

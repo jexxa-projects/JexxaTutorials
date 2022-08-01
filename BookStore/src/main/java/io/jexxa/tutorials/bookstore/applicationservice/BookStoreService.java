@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.addend.applicationcore.ApplicationService;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
-import io.jexxa.tutorials.bookstore.domain.book.IBookRepository;
+import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 @ApplicationService
 public class BookStoreService
 {
-    private final IBookRepository ibookRepository;
+    private final BookRepository ibookRepository;
 
-    public BookStoreService (IBookRepository ibookRepository)
+    public BookStoreService (BookRepository ibookRepository)
     {
         this.ibookRepository = Objects.requireNonNull(ibookRepository);
     }
