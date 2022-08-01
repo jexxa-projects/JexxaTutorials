@@ -144,7 +144,7 @@ following code shows how to publish a LocalTime in JSON format.
 @SuppressWarnings("unused")
 public class TimePublisher implements ITimePublisher
 {
-    public static final String TIME_TOPIC = "TimeApplicationService";
+    public static final String TIME_TOPIC = "TimeService";
 
     private final MessageSender messageSender;
 
