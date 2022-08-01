@@ -21,11 +21,11 @@
 
 The application core consists of following two classes:
 
-*   `TimeService:` Provides use cases of the domain and is a `ApplicationService` in terms of the pattern language of DDD
+*   `TimeApplicationService:` Provides use cases of the domain and is a `ApplicationService` in terms of the pattern language of DDD
 *   `ITimePublisher:` Allows for publishing current time and is a `DomainService` in terms of the pattern language of DDD
 *   `IMessageDisplay:` Shows a message and is a `DomainService` in terms of the pattern language of DDD        
   
-### Implement class `TimeService` ###
+### Implement class `TimeApplicationService` ###
 
 This class provides the supports the main two very simple use cases of this application: 
 *   Provide current time
@@ -37,7 +37,7 @@ we must define an interface `ITimePublisher` that provides us the possibility to
 Since Jexxa only supports implicit constructor injection, we have to declare all required interfaces in the constructor.    
 
 ```java
-public class TimeService
+public class TimeApplicationService
 {
     private final ITimePublisher timePublisher;
     private final IMessageDisplay messageDisplay;
@@ -144,7 +144,7 @@ following code shows how to publish a LocalTime in JSON format.
 @SuppressWarnings("unused")
 public class TimePublisher implements ITimePublisher
 {
-    public static final String TIME_TOPIC = "TimeService";
+    public static final String TIME_TOPIC = "TimeApplicationService";
 
     private final MessageSender messageSender;
 
@@ -191,11 +191,11 @@ Implementing a port adapter for JMS is quite easy.
 @SuppressWarnings("unused")
 public final class PublishTimeListener extends TypedMessageListener<LocalTime>
 {
-    private final TimeService timeApplicationService;
+    private final TimeApplicationService timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
 
     //To implement a so called PortAdapter we need a public constructor which expects a single argument that must be a InboundPort.
-    public PublishTimeListener(TimeService timeApplicationService)
+    public PublishTimeListener(TimeApplicationService timeApplicationService)
     {
         super(LocalTime.class);
         this.timeApplicationService = timeApplicationService;
