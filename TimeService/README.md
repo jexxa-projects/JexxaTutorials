@@ -185,27 +185,27 @@ When receiving asynchronous messages we have to convert it into business data wh
 Implementing a port adapter for JMS is quite easy.
 *   Within the constructor we define our class from the application core that will be called. Jexxa automatically injects this object when creating the port adapter. By convention, this is the only object defined in the constructor.  
 *   In case of JMS we have to implement the JMS specific `MessageListener` interface. To facilitate this, Jexxa offers convenience classes which perform JSON deserialization.  
-*   Finally, we have to pass the configuration parameter the specific driving adapter. In this case it is called `JMSConfiguration` and allows to define all JMS related information, such as destination, messaging type, and a messaging selector if required.            
-  
+*   Finally, we have to pass the configuration parameter the specific driving adapter. In this case it is called `JMSConfiguration` and allows to define all JMS related information, such as destination, messaging type, and a messaging selector if required.
+
 ```java
+import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
+
 @SuppressWarnings("unused")
-public final class PublishTimeListener extends TypedMessageListener<LocalTime>
-{
-    private final TimeService timeApplicationService;
+public final class PublishTimeListener extends TypedMessageListener<LocalTime> {
+    private final TimeApplicationService
+    timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
 
     //To implement a so called PortAdapter we need a public constructor which expects a single argument that must be a InboundPort.
-    public PublishTimeListener(TimeService timeApplicationService)
-    {
+    public PublishTimeListener(TimeApplicationService timeApplicationService) {
         super(LocalTime.class);
         this.timeApplicationService = timeApplicationService;
     }
 
     @Override
     // The JMS specific configuration is defined via annotation.
-    @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC)
-    public void onMessage(LocalTime localTime)
-    {
+    @JMSConfiguration(destination = TIME_TOPIC, messagingType = TOPIC)
+    public void onMessage(LocalTime localTime) {
         // Forward this information to corresponding application service.
         timeApplicationService.displayPublishedTime(localTime);
     }
@@ -222,7 +222,7 @@ Finally, we have to write our application. As you can see in the code below ther
 *   The rest of the main method is similar to `HelloJexxa` tutorial.   
    
 ```java
-public final class TimeServiceApplication
+public final class TimeService
 {
     public static void main(String[] args)
     {
