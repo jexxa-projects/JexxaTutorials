@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IContractRepository
+public interface ContractRepository
 {
     void add(Contract contract);
 

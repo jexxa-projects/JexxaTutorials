@@ -12,14 +12,14 @@ import static io.jexxa.tutorials.bookstore.domain.domainevent.BookSoldOut.bookSo
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class IDomainEventPublisherTest
+class DomainEventPublisherImplTest
 {
     //Declare the packages that should be used by Jexxa
     private static final String DRIVEN_ADAPTER  = BookStore.class.getPackageName() + ".infrastructure.drivenadapter";
     private static final String OUTBOUND_PORTS  = BookStore.class.getPackageName() + ".domainservice";
 
     private JexxaTest jexxaTest;
-    private IDomainEventPublisher objectUnderTest;
+    private DomainEventPublisher objectUnderTest;
 
     @BeforeEach
     void initTest()
@@ -30,14 +30,14 @@ class IDomainEventPublisherTest
                 .addToInfrastructure(DRIVEN_ADAPTER);
 
         jexxaTest = new JexxaTest(jexxaMain);
-        objectUnderTest = jexxaTest.getInstanceOfPort(IDomainEventPublisher.class);
+        objectUnderTest = jexxaTest.getInstanceOfPort(DomainEventPublisher.class);
     }
 
     @Test
     void testDomainEvent()
     {
         // Arrange
-        var messageRecorder = jexxaTest.getMessageRecorder(IDomainEventPublisher.class);
+        var messageRecorder = jexxaTest.getMessageRecorder(DomainEventPublisher.class);
         var isbn13 = new ISBN13("978-3-86490-387-8");
 
         // Act

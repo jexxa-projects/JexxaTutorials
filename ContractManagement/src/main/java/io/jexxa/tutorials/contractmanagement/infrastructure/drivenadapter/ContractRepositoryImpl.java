@@ -1,12 +1,11 @@
 package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter;
 
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.IObjectStore;
-import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
 import io.jexxa.tutorials.contractmanagement.domain.aggregate.Contract;
 import io.jexxa.tutorials.contractmanagement.domain.valueobject.ContractNumber;
-import io.jexxa.tutorials.contractmanagement.domainservice.IContractRepository;
+import io.jexxa.tutorials.contractmanagement.domainservice.ContractRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +13,10 @@ import java.util.Properties;
 
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager.getObjectStore;
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.*;
-import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.ContractRepository.ContractSchema.*;
+import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.ContractRepositoryImpl.ContractSchema.*;
 
 @SuppressWarnings("unused")
-public class ContractRepository  implements IContractRepository
+public class ContractRepositoryImpl implements ContractRepository
 {
     /**
      * Here we define the values to query contracts. Apart from their key, elements should be queried by following information: <br>
@@ -66,7 +65,7 @@ public class ContractRepository  implements IContractRepository
 
     private final IObjectStore<Contract, ContractNumber, ContractSchema> objectStore;
 
-    public ContractRepository(Properties properties)
+    public ContractRepositoryImpl(Properties properties)
     {
         this.objectStore = getObjectStore(Contract.class, Contract::getContractNumber, ContractSchema.class, properties);
     }

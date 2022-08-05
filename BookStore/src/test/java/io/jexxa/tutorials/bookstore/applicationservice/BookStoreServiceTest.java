@@ -7,8 +7,8 @@ import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.domain.businessexception.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.domainevent.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.valueobject.ISBN13;
-import io.jexxa.tutorials.bookstore.domainservice.IBookRepository;
-import io.jexxa.tutorials.bookstore.domainservice.IDomainEventPublisher;
+import io.jexxa.tutorials.bookstore.domainservice.BookRepository;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventPublisher;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class BookStoreServiceTest
     private BookStoreService objectUnderTest;
 
     private MessageRecorder publishedDomainEvents;
-    private IBookRepository bookRepository;
+    private BookRepository bookRepository;
 
 
     @BeforeAll
@@ -45,9 +45,9 @@ class BookStoreServiceTest
         JexxaTest jexxaTest = new JexxaTest(jexxaMain);
 
         // Query a message recorder for an interface which is defines in your application core.
-        publishedDomainEvents = jexxaTest.getMessageRecorder(IDomainEventPublisher.class);
+        publishedDomainEvents = jexxaTest.getMessageRecorder(DomainEventPublisher.class);
         // Query the repository that is internally used.
-        bookRepository = jexxaTest.getRepository(IBookRepository.class);
+        bookRepository = jexxaTest.getRepository(BookRepository.class);
         // Query the application service we want to test.
         objectUnderTest = jexxaTest.getInstanceOfPort(BookStoreService.class);
     }

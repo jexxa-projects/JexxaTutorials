@@ -1,12 +1,11 @@
 package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter;
 
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.IObjectStore;
-import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
 import io.jexxa.tutorials.contractmanagement.domain.domainevent.ContractSigned;
 import io.jexxa.tutorials.contractmanagement.domain.valueobject.ContractNumber;
-import io.jexxa.tutorials.contractmanagement.domainservice.IDomainEventStore;
+import io.jexxa.tutorials.contractmanagement.domainservice.DomainEventStore;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,7 +16,7 @@ import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectst
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.numericTag;
 
 @SuppressWarnings("unused")
-public class DomainEventStore implements IDomainEventStore
+public class DomainEventStoreImpl implements DomainEventStore
 {
     /**
      * Here we define the values to query DomainEvents. The domain events should be queried by following information:
@@ -51,7 +50,7 @@ public class DomainEventStore implements IDomainEventStore
     private final IObjectStore<ContractSigned, ContractNumber, DomainEventSchema> objectStore;
 
 
-    public DomainEventStore(Properties properties)
+    public DomainEventStoreImpl(Properties properties)
     {
         this.objectStore = getObjectStore(ContractSigned.class, ContractSigned::contractNumber, DomainEventSchema.class, properties);
     }

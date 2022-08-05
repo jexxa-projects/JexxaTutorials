@@ -11,9 +11,9 @@ import static io.jexxa.tutorials.bookstore.domain.aggregate.Book.newBook;
 @DomainService
 public class ReferenceLibrary
 {
-    private final IBookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    public ReferenceLibrary(IBookRepository bookRepository)
+    public ReferenceLibrary(BookRepository bookRepository)
     {
         this.bookRepository = Objects.requireNonNull(bookRepository);
     }
