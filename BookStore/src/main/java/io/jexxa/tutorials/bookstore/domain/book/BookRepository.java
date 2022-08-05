@@ -1,8 +1,6 @@
-package io.jexxa.tutorials.bookstore.domainservice;
+package io.jexxa.tutorials.bookstore.domain.book;
 
 import io.jexxa.addend.applicationcore.Repository;
-import io.jexxa.tutorials.bookstore.domain.aggregate.Book;
-import io.jexxa.tutorials.bookstore.domain.valueobject.ISBN13;
 
 import java.util.List;
 import java.util.Optional;

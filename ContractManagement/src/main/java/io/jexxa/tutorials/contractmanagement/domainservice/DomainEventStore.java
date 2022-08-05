@@ -1,7 +1,7 @@
 package io.jexxa.tutorials.contractmanagement.domainservice;
 
 import io.jexxa.addend.applicationcore.InfrastructureService;
-import io.jexxa.tutorials.contractmanagement.domain.domainevent.ContractSigned;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
 
 import java.time.Instant;
 import java.util.List;

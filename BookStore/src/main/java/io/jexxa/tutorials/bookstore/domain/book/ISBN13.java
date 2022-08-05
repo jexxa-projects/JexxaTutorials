@@ -1,4 +1,4 @@
-package io.jexxa.tutorials.bookstore.domain.valueobject;
+package io.jexxa.tutorials.bookstore.domain.book;
 
 import io.jexxa.addend.applicationcore.ValueObject;
 import org.apache.commons.lang3.Validate;

@@ -3,12 +3,12 @@ package io.jexxa.tutorials.bookstore.domainservice;
 import io.jexxa.core.JexxaMain;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.domain.domainevent.BookSoldOut;
-import io.jexxa.tutorials.bookstore.domain.valueobject.ISBN13;
+import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
+import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.tutorials.bookstore.domain.domainevent.BookSoldOut.bookSoldOut;
+import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

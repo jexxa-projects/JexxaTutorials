@@ -3,9 +3,9 @@ package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.IObjectStore;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
-import io.jexxa.tutorials.contractmanagement.domain.aggregate.Contract;
-import io.jexxa.tutorials.contractmanagement.domain.valueobject.ContractNumber;
-import io.jexxa.tutorials.contractmanagement.domainservice.ContractRepository;
+import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository;
 
 import java.util.List;
 import java.util.Optional;

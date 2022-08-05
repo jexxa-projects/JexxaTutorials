@@ -1,10 +1,8 @@
-package io.jexxa.tutorials.contractmanagement.domain.aggregate;
+package io.jexxa.tutorials.contractmanagement.domain.contract;
 
 import io.jexxa.addend.applicationcore.Aggregate;
 import io.jexxa.addend.applicationcore.AggregateFactory;
 import io.jexxa.addend.applicationcore.AggregateID;
-import io.jexxa.tutorials.contractmanagement.domain.domainevent.ContractSigned;
-import io.jexxa.tutorials.contractmanagement.domain.valueobject.ContractNumber;
 
 import java.time.Instant;
 import java.util.Objects;

@@ -1,10 +1,10 @@
 package io.jexxa.tutorials.contractmanagement.applicationservice;
 
 import io.jexxa.addend.applicationcore.ApplicationService;
-import io.jexxa.tutorials.contractmanagement.domain.aggregate.Contract;
-import io.jexxa.tutorials.contractmanagement.domain.domainevent.ContractSigned;
-import io.jexxa.tutorials.contractmanagement.domain.valueobject.ContractNumber;
-import io.jexxa.tutorials.contractmanagement.domainservice.ContractRepository;
+import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository;
 import io.jexxa.tutorials.contractmanagement.domainservice.DomainEventStore;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-import static io.jexxa.tutorials.contractmanagement.domain.aggregate.Contract.newContract;
+import static io.jexxa.tutorials.contractmanagement.domain.contract.Contract.newContract;
 
 @SuppressWarnings("unused")
 @ApplicationService

@@ -2,9 +2,9 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.persistence;
 
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.repository.IRepository;
-import io.jexxa.tutorials.bookstore.domain.aggregate.Book;
-import io.jexxa.tutorials.bookstore.domain.valueobject.ISBN13;
-import io.jexxa.tutorials.bookstore.domainservice.BookRepository;
+import io.jexxa.tutorials.bookstore.domain.book.Book;
+import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
+import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 
 import java.util.List;
 import java.util.Optional;
