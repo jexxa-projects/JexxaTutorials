@@ -1,7 +1,7 @@
 package io.jexxa.tutorials.timeservice.applicationservice;
 
-import io.jexxa.tutorials.timeservice.domainservice.IMessageDisplay;
-import io.jexxa.tutorials.timeservice.domainservice.ITimePublisher;
+import io.jexxa.tutorials.timeservice.domainservice.MessageDisplay;
+import io.jexxa.tutorials.timeservice.domainservice.TimePublisher;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -10,8 +10,8 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class TimeApplicationService
 {
-    private final ITimePublisher timePublisher;
-    private final IMessageDisplay messageDisplay;
+    private final TimePublisher timePublisher;
+    private final MessageDisplay messageDisplay;
 
     /**
      * Note: Jexxa supports only implicit constructor injection. Therefore, we must
@@ -20,7 +20,7 @@ public class TimeApplicationService
      * @param timePublisher required outbound port for this application service
      * @param messageDisplay required outbound port for this application service
      */
-    public TimeApplicationService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
+    public TimeApplicationService(TimePublisher timePublisher, MessageDisplay messageDisplay)
     {
         this.timePublisher = Objects.requireNonNull(timePublisher);
         this.messageDisplay = Objects.requireNonNull(messageDisplay);

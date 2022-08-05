@@ -329,5 +329,5 @@ curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 Each time you execute curl you should see following output on the console: 
 
 ```console                                                          
-[ActiveMQ Session Task-1] INFO io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.display.MessageDisplay - New Time was published, time: 17:15:18.743772
+[ActiveMQ Session Task-1] INFO io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.display.MessageDisplayImpl - New Time was published, time: 17:15:18.743772
 ```

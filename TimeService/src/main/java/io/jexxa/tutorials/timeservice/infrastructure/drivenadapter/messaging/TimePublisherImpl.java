@@ -1,7 +1,7 @@
 package io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSender;
-import io.jexxa.tutorials.timeservice.domainservice.ITimePublisher;
+import io.jexxa.tutorials.timeservice.domainservice.TimePublisher;
 
 import java.time.LocalTime;
 import java.util.Properties;
@@ -9,7 +9,7 @@ import java.util.Properties;
 import static io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSenderManager.getMessageSender;
 
 @SuppressWarnings("unused")
-public class TimePublisher implements ITimePublisher
+public class TimePublisherImpl implements TimePublisher
 {
     public static final String TIME_TOPIC = "TimeService";
 
@@ -17,10 +17,10 @@ public class TimePublisher implements ITimePublisher
 
     // For all driven adapter we have to provide either a static factory or a public constructor to
     // enable implicit constructor injection
-    public TimePublisher(Properties properties)
+    public TimePublisherImpl(Properties properties)
     {
         //Request a default message Sender from corresponding strategy manager
-        this.messageSender = getMessageSender(ITimePublisher.class, properties);
+        this.messageSender = getMessageSender(TimePublisher.class, properties);
     }
 
     @Override
