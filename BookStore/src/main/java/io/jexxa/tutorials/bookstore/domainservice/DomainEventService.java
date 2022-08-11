@@ -6,10 +6,10 @@ import io.jexxa.addend.applicationcore.DomainService;
 import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 
 @DomainService
-public class IntegrationEventService
+public class DomainEventService
 {
-    private final IntegrationEventSender integrationEventSender;
-    public IntegrationEventService(IntegrationEventSender integrationEventSender)
+    private final DomainEventSender integrationEventSender;
+    public DomainEventService(DomainEventSender integrationEventSender)
     {
         this.integrationEventSender = integrationEventSender;
     }

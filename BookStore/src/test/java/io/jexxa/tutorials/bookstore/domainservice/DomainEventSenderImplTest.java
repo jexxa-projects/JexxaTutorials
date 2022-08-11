@@ -13,7 +13,7 @@ import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class IntegrationEventSenderImplTest
+class DomainEventSenderImplTest
 {
     //Declare the packages that should be used by Jexxa
     private static final String DRIVEN_ADAPTER  = BookStore.class.getPackageName() + ".infrastructure.drivenadapter";
@@ -31,14 +31,14 @@ class IntegrationEventSenderImplTest
 
         jexxaTest = new JexxaTest(jexxaMain);
         //TODO: Check this
-        jexxaMain.bootstrap(IntegrationEventService.class).with(IntegrationEventService::init);
+        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::init);
     }
 
     @Test
     void testDomainEvent()
     {
         // Arrange
-        var messageRecorder = jexxaTest.getMessageRecorder(IntegrationEventSender.class);
+        var messageRecorder = jexxaTest.getMessageRecorder(DomainEventSender.class);
         var isbn13 = new ISBN13("978-3-86490-387-8");
 
         // Act

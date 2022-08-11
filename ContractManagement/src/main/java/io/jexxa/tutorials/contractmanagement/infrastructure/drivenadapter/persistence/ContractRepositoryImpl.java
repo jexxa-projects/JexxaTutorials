@@ -5,17 +5,22 @@ import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.met
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
 import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.ObjectStoreManager.getObjectStore;
-import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.*;
-import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.*;
+import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.booleanTag;
+import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.numericTag;
+import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.stringTag;
+import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.ADVISOR;
+import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.CONTRACT_NUMBER;
+import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.CONTRACT_SIGNED;
 
 @SuppressWarnings("unused")
-public class ContractRepositoryImpl implements io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository
+public class ContractRepositoryImpl implements ContractRepository
 {
     /**
      * Here we define the values to query contracts. Apart from their key, elements should be queried by following information: <br>
