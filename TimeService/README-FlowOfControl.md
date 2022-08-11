@@ -178,8 +178,8 @@ void main(String[] args)
     jexxaMain
 
         ///...
-        // Conditional bind is only executed if given expression evaluates to true
-        .conditionalBind( TimeServiceApplication::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)
+        .bind(JMSAdapter.class).to(PublishTimeListener.class)
+        ///...
 } 
 ```
 

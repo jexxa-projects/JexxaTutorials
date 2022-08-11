@@ -12,7 +12,7 @@
 *   JDK 17 (or higher) installed
 *   [Swagger UI](https://swagger.io/tools/swagger-ui/)    
 *   Maven 3.6 (or higher) installed
-*   A postgres DB (if you start the application with option `-jdbc')  
+*   A postgres DB (if you start the application with running infrastructure)  
 
 ## Run the application  
 
@@ -29,8 +29,8 @@ You will see following (or similar) output
 ```console
 ...
 [main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
-[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7505
-[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7505/swagger-docs
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7503
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7503/swagger-docs
 
 
 ```          

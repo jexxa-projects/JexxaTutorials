@@ -229,7 +229,8 @@ file if required.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/contractmanagement-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
+     ./target/contractmanagement-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
@@ -249,7 +250,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"Paul"' \
-    http://localhost:7506/ContractService/createNewContract                 
+    http://localhost:7504/ContractService/createNewContract                 
 ```
 
 Response: The number of the contract
@@ -265,7 +266,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"Paul"' \
-    http://localhost:7506/ContractService/getContractsByAdvisor                 
+    http://localhost:7504/ContractService/getContractsByAdvisor                 
 ```
 Response: The contract numbers of all contracts managed by Paul. Note that we called previous method 9 times.  
 ```Console

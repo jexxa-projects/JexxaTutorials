@@ -1,4 +1,4 @@
-package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence;
+package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter;
 
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.IObjectStore;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTag;

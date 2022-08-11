@@ -4,7 +4,7 @@
 
     <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>1.0.16-SNAPSHOT</version>
+    <version>1.0.23-SNAPSHOT</version>
     <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
@@ -44,22 +44,21 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa-web.release.version>5.0.1</jexxa-web.release.version>
-        <addend.version>1.2.0</addend.version>
+        <jexxa-web.release.version>5.0.2</jexxa-web.release.version>
+        <addend.version>1.3.0</addend.version>
         <activemq.client.version>5.17.1</activemq.client.version>
-        <postgres.version>42.4.0</postgres.version>
+        <postgres.version>42.4.1</postgres.version>
         <slf4j.simple.version>1.7.36</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
-        <commons.cli.version>1.5.0</commons.cli.version>
 
         <!-- version of test dependencies -->
-        <junit.platform.launcher.version>1.8.2</junit.platform.launcher.version>
-        <junit.jupiter.engine.version>5.8.2</junit.jupiter.engine.version>
-        <junit.jupiter.params.version>5.8.2</junit.jupiter.params.version>
+        <junit.platform.launcher.version>1.9.0</junit.platform.launcher.version>
+        <junit.jupiter.engine.version>5.9.0</junit.jupiter.engine.version>
+        <junit.jupiter.params.version>5.9.0</junit.jupiter.params.version>
         <awaitility.version>4.2.0</awaitility.version>
         <h2database.version>2.1.214</h2database.version>
         <unirest.java.version>3.13.10</unirest.java.version>
-        <jexxa-test.release.version>5.0.0</jexxa-test.release.version>
+        <jexxa-test.release.version>5.0.2</jexxa-test.release.version>
 
         <!-- server-name used in mavens settings.xml to find to your repository credentials -->
         <project.scm.id>github</project.scm.id>
@@ -71,16 +70,16 @@
         <!--version of  maven plugins  -->
         <maven.clean.plugin>3.2.0</maven.clean.plugin>
         <maven.compiler.plugin>3.10.1</maven.compiler.plugin>
-        <maven.deploy.plugin>3.0.0-M2</maven.deploy.plugin>
+        <maven.deploy.plugin>3.0.0</maven.deploy.plugin>
         <maven.failsafe.plugin>3.0.0-M7</maven.failsafe.plugin>
-        <maven.install.plugin>3.0.0-M1</maven.install.plugin>
+        <maven.install.plugin>3.0.1</maven.install.plugin>
         <maven.jar.plugin>3.2.2</maven.jar.plugin>
-        <maven.resources.plugin>3.2.0</maven.resources.plugin>
-        <maven.site.plugin>3.12.0</maven.site.plugin>
+        <maven.resources.plugin>3.3.0</maven.resources.plugin>
+        <maven.site.plugin>3.12.1</maven.site.plugin>
         <maven.surefire.plugin>3.0.0-M7</maven.surefire.plugin>
         <maven.release.plugin>3.0.0-M1</maven.release.plugin>
         <maven.jacoco.plugin>0.8.7</maven.jacoco.plugin>
-        <maven.reports.plugin>3.3.0</maven.reports.plugin>
+        <maven.reports.plugin>3.4.0</maven.reports.plugin>
         <maven.enforcer.plugin>3.1.0</maven.enforcer.plugin>
         <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
         <maven.versions.plugin>2.11.0</maven.versions.plugin>
@@ -120,12 +119,6 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
             <version>${activemq.client.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-            <version>${commons.cli.version}</version>
         </dependency>
 
         <dependency>

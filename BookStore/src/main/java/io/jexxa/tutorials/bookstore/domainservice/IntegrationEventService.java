@@ -22,6 +22,6 @@ public class IntegrationEventService
     @DomainEventHandler
     public void handleEvent(Object domainEvent)
     {
-        integrationEventSender.sendEvent(domainEvent);
+        integrationEventSender.publish(domainEvent);
     }
 }

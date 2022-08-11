@@ -6,11 +6,11 @@ import io.jexxa.jexxatest.infrastructure.drivenadapterstrategy.messaging.recordi
 import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
-import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
+import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventService;
 import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
+import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

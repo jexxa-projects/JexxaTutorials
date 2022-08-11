@@ -11,8 +11,8 @@
 *   60 minutes
 *   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
-*   curl or jconsole to trigger the application
-*   A postgres DB (if you start the application with option `-jdbc')  
+*   curl to trigger the application
+*   Optional: A postgres DB   
 
 ## A pattern language for your application core 
 In the [architecture of Jexxa](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html) we describe that Jexxa does not require any special annotations. Main reason is that framework related annotations can tightly couple your application core to a specific technology stack. Therefore, framework specific annotations should not be used within the application core.
@@ -202,8 +202,8 @@ You will see following (or similar) output
 [main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [MessageLogger]
 [main] INFO io.jexxa.utils.JexxaBanner - 
 [main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
-[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7505
-[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7505/swagger-docs
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7503
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7503/swagger-docs
 [main] INFO io.jexxa.core.JexxaMain - BoundedContext 'BookStore' successfully started in 0.885 seconds
 
 ```          
@@ -229,7 +229,7 @@ In contrast to the above output Jexxa will state that you use JDBC persistence s
 
 Command: 
 ```Console
-curl -X GET  http://localhost:7504/BookStoreService/getBooks
+curl -X GET  http://localhost:7503/BookStoreService/getBooks
 ```
 
 Response: 
@@ -243,7 +243,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"978-1-891830-85-3"' \
-    http://localhost:7504/BookStoreService/inStock                 
+    http://localhost:7503/BookStoreService/inStock                 
 ```
 
 Response: 
@@ -257,7 +257,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '["978-1-891830-85-3", 5]' \
-    http://localhost:7504/BookStoreService/addToStock                 
+    http://localhost:7503/BookStoreService/addToStock                 
 ```
 Response: No output  
 ```Console
@@ -269,7 +269,7 @@ Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
     -d '"978-1-891830-85-3"' \
-    http://localhost:7504/BookStoreService/inStock                 
+    http://localhost:7503/BookStoreService/inStock                 
 ```
 
 Response: 

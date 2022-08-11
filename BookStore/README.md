@@ -14,7 +14,7 @@
 *   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   curl to trigger the application
-*   A postgres DB (if you start the application with a real DB)  
+*   Optional: A postgres DB   
 
 ## Requirements to the application core
 This application core should provide following super simplified functionality:
@@ -44,6 +44,9 @@ First we map the functionality of the application to DDD patterns
 *   `Aggregate:` Elements that have a life-cycle and change over time and include our business logic 
     *   `Book` which manages available copies of a book.       
 
+*   `Repository`: Provide access to repositories 
+   *    `BookRepository:` Interface to manage `Book` instances. Since the implementation requires a technology stack we can only define an interface.  
+
 *   `ValueObject:` Elements that represent a state and are immutable
     *   `ISBN13` which identifies a book     
 
@@ -51,8 +54,7 @@ First we map the functionality of the application to DDD patterns
     *   `BookSoldOut` when copies of a book are no longer in stock   
 
 *   `DomainService:` 
-    *   `IDomainEventPublisher:` We need to publish our domain events in some way. Since the implementation requires a technology stack we can only define an interface.   
-    *   `IBookRepository:` Interface to manage `Book` instances. Since the implementation requires a technology stack we can only define an interface.  
+    *   `DomainEventPublisher:` We need to publish our domain events in some way. Since the implementation requires a technology stack we can only define an interface.   
     *   `ReferenceLibrary:` Return latest books. For simplicity, we assume that it is a service which does not relate to our domain core directly.             
 
 *   `BusinessException:`
@@ -67,18 +69,25 @@ In our tutorials we use following package structure. Please note that this packa
 *   domainservice
 
 *   domain 
-    *   valueobject
-    *   aggregate
-    *   domainevent
-    *   businessexception    
+    *   <use case 1>
+    *   ...
+    *   \<use case n>
 
 *   infrastructure
     *   drivenadapter
     *   drivingadapter 
 
-Please note that there are several DDD-examples that do not add sub-packages to `domain`. This is fine but using sub-packages makes the pattern language more explicit. In addition, we can use this package structure to validate the dependencies between these objects. 
+Please note that a package for a specific use case includes all required domain classes. As you can see in the examples these are typically the corresponding of type `Aggregate`,`ValueObject`, `DomainEvent`, `BusinessException`, and `Repository`. The reason for this is that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) so that changing classes within such a package is a change in the use case. 
 
-If your application core grows over time, we recommend to add domain specific sub-packages to `domain` such as `book`, `customer`, ... 
+Structuring your domain-package this way provides following benefits: 
+*   Use cases are represented explicitly which allows a clear view into the application
+*   Use cases remain strictly separated which simplifies adding, removing or changing use cases 
+*   When designing your application this approach supports discussing what kind of functionality belongs to a use case or not
+
+As soon as your domain logic and thus the number of use cases grows, it will happen that ValueObjects will be used by multiple use cases. This is quite normal. The challenge is to group these ValueObjects and find a domain specific main term which is not `common` or something like this. As soon as you have this name, create a corresponding package within `domain`.   
+
+   
+
 ### A note on implementing DDD patterns  
 
 *   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons.  
@@ -90,7 +99,7 @@ If your application core grows over time, we recommend to add domain specific su
 *   `Aggregate`: Is identified by a unique `AggregateID` which is a `ValueObject`
     *   `Book` uses an `ISBN13` object     
 
-*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you will use to implement this interface.        
+*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.        
      
 ## 2. Implement the infrastructure
 
@@ -181,7 +190,8 @@ That's it.
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" \
+          ./target/bookstore-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
@@ -203,12 +213,13 @@ You will see following (or similar) output
 ### Use a postgres database
 
 You can run this application using a Postgres database because the corresponding driver is included in the pom file. The 
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-application.properties](src/main/resources/jexxa-application.properties) 
+configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/test/resources/jexxa-test.properties) 
 file if required.       
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
+          ./target/bookstore-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
@@ -239,7 +250,8 @@ Response:
 #### Query available books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+     http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 
@@ -250,7 +262,8 @@ false
 #### Add some books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" http://localhost:7503/BookStoreService/addToStock
+curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" \
+     http://localhost:7503/BookStoreService/addToStock
 ```
 
 Response: No output  
@@ -260,7 +273,8 @@ Response: No output
 #### Ask again if a specific book is in stock
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' http://localhost:7503/BookStoreService/inStock       
+curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+     http://localhost:7503/BookStoreService/inStock       
 ```
 
 Response: 

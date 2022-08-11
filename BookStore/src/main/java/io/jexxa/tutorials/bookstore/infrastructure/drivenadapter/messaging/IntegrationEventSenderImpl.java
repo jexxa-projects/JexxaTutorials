@@ -20,6 +20,16 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
         messageSender = getMessageSender(IntegrationEventSender.class, properties);
     }
 
+    @Override
+    public void publish(Object domainEvent)
+    {
+        validateDomainEvent(domainEvent);
+        messageSender
+                .send(domainEvent)
+                .toTopic("BookStoreTopic")
+                .addHeader("Type", domainEvent.getClass().getSimpleName())
+                .asJson();
+    }
 
     private void validateDomainEvent(Object domainEvent)
     {
@@ -30,13 +40,4 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
         }
     }
 
-    @Override
-    public void sendEvent(Object domainEvent)
-    {
-        validateDomainEvent(domainEvent);
-        messageSender
-                .send(domainEvent)
-                .toTopic("BookStoreTopic")
-                .asJson();
-    }
 }

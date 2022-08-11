@@ -27,8 +27,10 @@ public class TimePublisherImpl implements TimePublisher
     public void publish(LocalTime localTime)
     {
         // Send the message to the topic.
-        messageSender.send(localTime)
+        messageSender
+                .send(localTime)
                 .toTopic(TIME_TOPIC)
+                .addHeader("Type", localTime.getClass().getSimpleName())
                 .asJson();
     }
 }

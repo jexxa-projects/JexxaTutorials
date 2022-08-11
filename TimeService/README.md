@@ -162,6 +162,7 @@ public class TimePublisher implements ITimePublisher
         // Send the message to the topic in JSON format.
         messageSender.send(localTime)
                 .toTopic(TIME_TOPIC)
+                .addHeader("Type", localTime.getClass().getSimpleName())
                 .asJson();
     }
 }
@@ -184,27 +185,27 @@ When receiving asynchronous messages we have to convert it into business data wh
 Implementing a port adapter for JMS is quite easy.
 *   Within the constructor we define our class from the application core that will be called. Jexxa automatically injects this object when creating the port adapter. By convention, this is the only object defined in the constructor.  
 *   In case of JMS we have to implement the JMS specific `MessageListener` interface. To facilitate this, Jexxa offers convenience classes which perform JSON deserialization.  
-*   Finally, we have to pass the configuration parameter the specific driving adapter. In this case it is called `JMSConfiguration` and allows to define all JMS related information, such as destination, messaging type, and a messaging selector if required.            
-  
+*   Finally, we have to pass the configuration parameter the specific driving adapter. In this case it is called `JMSConfiguration` and allows to define all JMS related information, such as destination, messaging type, and a messaging selector if required.
+
 ```java
+import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
+
 @SuppressWarnings("unused")
-public final class PublishTimeListener extends TypedMessageListener<LocalTime>
-{
-    private final TimeService timeApplicationService;
+public final class PublishTimeListener extends TypedMessageListener<LocalTime> {
+    private final TimeApplicationService
+    timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
 
     //To implement a so called PortAdapter we need a public constructor which expects a single argument that must be a InboundPort.
-    public PublishTimeListener(TimeService timeApplicationService)
-    {
+    public PublishTimeListener(TimeApplicationService timeApplicationService) {
         super(LocalTime.class);
         this.timeApplicationService = timeApplicationService;
     }
 
     @Override
     // The JMS specific configuration is defined via annotation.
-    @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC)
-    public void onMessage(LocalTime localTime)
-    {
+    @JMSConfiguration(destination = TIME_TOPIC, messagingType = TOPIC)
+    public void onMessage(LocalTime localTime) {
         // Forward this information to corresponding application service.
         timeApplicationService.displayPublishedTime(localTime);
     }
@@ -221,7 +222,7 @@ Finally, we have to write our application. As you can see in the code below ther
 *   The rest of the main method is similar to `HelloJexxa` tutorial.   
    
 ```java
-public final class TimeServiceApplication
+public final class TimeService
 {
     public static void main(String[] args)
     {
@@ -231,11 +232,8 @@ public final class TimeServiceApplication
         jexxaMain
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
-
-                // Conditional bind is only executed if given expression evaluates to true
-                .conditionalBind( TimeService::isJMSEnabled, JMSAdapter.class).to(PublishTimeListener.class)
-
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(JMSAdapter.class).to(PublishTimeListener.class)
 
                 .run();
     }
@@ -250,22 +248,26 @@ Disabling of all infrastructure components can be done by property files. By con
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" \
+     ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
-[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
-[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-06 07:16]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : MessageLogger
-...
-[main] INFO io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter - OpenAPI documentation available at: http://0.0.0.0:7502/swagger-docs
-[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 1.854 seconds
-^C[Thread-9] INFO io.jexxa.core.JexxaMain - Shutdown signal received ...
-[Thread-9] INFO io.javalin.Javalin - Stopping Javalin ...
-[Thread-9] INFO io.javalin.Javalin - Javalin has stopped
-[Thread-9] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully stopped
-michael@Michaels-Mini TimeService % 
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.1-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-24 05:10]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.20-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-24 16:53]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [JMSAdapter, RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-local.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [MessageLogger]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7502
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7502/swagger-docs
+[main] INFO io.jexxa.utils.JexxaBanner - JMS Listening on  : tcp://ActiveMQ:61616
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Topics   : []
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Queues   : []
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 1.964 seconds
+
 
 ```          
 
@@ -273,7 +275,7 @@ michael@Michaels-Mini TimeService %
 
 You can use curl to publish the time.  
 ```Console
-curl -X POST http://localhost:7502/TimeService/publishTime
+curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 ```
 
 Each time you execute curl you should see following output on the console: 
@@ -291,25 +293,37 @@ Running the application with a locally messaging system is typically required fo
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
+          ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
 ...
-[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
-[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-06 07:16]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter, JMSAdapter]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : JMSSender
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.1-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-24 05:10]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.20-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/timeservice, projectName=TimeService, buildTimestamp=2022-06-24 16:53]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [JMSAdapter, RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-test.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [JMSSender]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7502
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7502/swagger-docs
+[main] INFO io.jexxa.utils.JexxaBanner - JMS Listening on  : tcp://localhost:61616
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Topics   : [TimeService]
+[main] INFO io.jexxa.utils.JexxaBanner -    * JMS-Queues   : []
+[main] INFO io.jexxa.core.JexxaMain - BoundedContext 'TimeService' successfully started in 2.223 seconds
+
 ... 
 ```          
 
-As you can see in the last two lines, we now use the `JMSSender`. 
+As you can see in the last two lines, we now use the `JMSSender` which is listening on Topic TimeService. 
 
 ### Publish the time with JMS ###
  
 You can use curl to publish the time.  
 ```Console
-curl -X POST http://localhost:7502/TimeService/publishTime
+curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 ```
 
 Each time you execute curl you should see following output on the console: 

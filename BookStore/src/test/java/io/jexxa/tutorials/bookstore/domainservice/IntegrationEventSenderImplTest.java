@@ -13,7 +13,7 @@ import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class IDomainEventPublisherTest
+class IntegrationEventSenderImplTest
 {
     //Declare the packages that should be used by Jexxa
     private static final String DRIVEN_ADAPTER  = BookStore.class.getPackageName() + ".infrastructure.drivenadapter";

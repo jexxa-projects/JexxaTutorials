@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class DomainEventPublisher {
+public final class DomainEventPublisher {
     private final Map<Class<?>, Set<Consumer<?>>> subscribers = new HashMap<>();
     private static final DomainEventPublisher instance = new DomainEventPublisher();
 

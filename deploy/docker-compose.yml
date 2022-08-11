@@ -77,63 +77,13 @@ services:
       restart_policy:
         condition: on-failure
 
-
-  BookStoreJ:
-    image: ghcr.io/jexxa-projects/bookstorej:latest
+  ContractManagement:
+    image: ghcr.io/jexxa-projects/contractmanagement:latest
     ports:
       - "7504:7504"
 
     healthcheck:
-      test: ["CMD-SHELL", "wget -nv -t1 --spider 'http://localhost:7504/BoundedContext/isRunning/'"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
-
-    deploy:
-      replicas: 2
-      update_config:
-        order: start-first        # Configure rolling updates
-        failure_action: rollback
-
-      rollback_config:
-        parallelism: 1            # Rollback config
-        order: start-first
-
-      restart_policy:
-        condition: on-failure
-
-
-  BookStoreJ16:
-    image: ghcr.io/jexxa-projects/bookstorej16:latest
-    ports:
-      - "7505:7505"
-
-    healthcheck:
-      test: ["CMD-SHELL", "wget -nv -t1 --spider 'http://localhost:7505/BoundedContext/isRunning/'"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
-
-    deploy:
-      replicas: 2
-      update_config:
-        order: start-first        # Configure rolling updates
-        failure_action: rollback
-
-      rollback_config:
-        parallelism: 1            # Rollback config
-        order: start-first
-
-      restart_policy:
-        condition: on-failure
-
-  ContractManagement:
-    image: ghcr.io/jexxa-projects/contractmanagement:latest
-    ports:
-      - "7506:7506"
-
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -nv -t1 --spider 'http://localhost:7506/BoundedContext/isRunning/'" ]
+      test: [ "CMD-SHELL", "wget -nv -t1 --spider 'http://localhost:7504/BoundedContext/isRunning/'" ]
       interval: 10s
       timeout: 10s
       retries: 3
