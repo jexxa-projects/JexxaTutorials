@@ -16,13 +16,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
+import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookStoreServiceTest
 {
-    private static final ISBN13 ISBN_13 = new ISBN13( "978-3-86490-387-8" );
+    private static final ISBN13 ISBN_13 = createISBN( "978-3-86490-387-8" );
     private static JexxaMain jexxaMain;
     private BookStoreService objectUnderTest;
 
@@ -48,7 +49,7 @@ class BookStoreServiceTest
 
         //TODO: Check this and refactor API!
         DomainEventPublisher.reset();
-        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::init);
+        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::publishDomainEvents);
 
         // Query a message recorder for an interface which is defines in your application core.
         publishedDomainEvents = jexxaTest.getMessageRecorder(DomainEventSender.class);

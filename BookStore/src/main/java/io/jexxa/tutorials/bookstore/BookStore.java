@@ -14,9 +14,8 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                //Get the latest books when starting the application
-                .bootstrap(DomainEventService.class).with(DomainEventService::init)
-                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
+                .bootstrap(DomainEventService.class).with(DomainEventService::publishDomainEvents) //Publish all domain events to a message bus
+                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)          //Get the latest books when starting the application
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())

@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
+import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 
 @DomainService
 public class ReferenceLibrary
@@ -32,13 +33,12 @@ public class ReferenceLibrary
     private Stream<ISBN13> getLatestBooks()
     {
         return Stream.of(
-                new ISBN13("978-1-60309-025-4"),
-                new ISBN13("978-1-60309-025-4"),
-                new ISBN13("978-1-60309-047-6"),
-                new ISBN13("978-1-60309-322-4"),
-                new ISBN13("978-1-891830-85-3"),
-                new ISBN13("978-1-60309-016-2"),
-                new ISBN13("978-1-60309-265-4")
+                createISBN("978-1-60309-025-4"),
+                createISBN("978-1-60309-047-6"),
+                createISBN("978-1-60309-322-4"),
+                createISBN("978-1-891830-85-3"),
+                createISBN("978-1-60309-016-2"),
+                createISBN("978-1-60309-265-4")
         );
     }
 }

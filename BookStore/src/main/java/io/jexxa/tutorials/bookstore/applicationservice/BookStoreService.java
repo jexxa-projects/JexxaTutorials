@@ -7,47 +7,47 @@ import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 
 import java.util.List;
-import java.util.Objects;
 
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
+import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 
 @SuppressWarnings("unused")
 @ApplicationService
 public class BookStoreService
 {
-    private final BookRepository ibookRepository;
+    private final BookRepository bookRepository;
 
-    public BookStoreService (BookRepository ibookRepository)
+    public BookStoreService (BookRepository bookRepository)
     {
-        this.ibookRepository = Objects.requireNonNull(ibookRepository);
+        this.bookRepository = bookRepository;
     }
 
     public void addToStock(String isbn13, int amount)
     {
-        var validatedISBN = new ISBN13(isbn13);
+        var validatedISBN = createISBN(isbn13);
 
-        var result = ibookRepository.search(validatedISBN);
+        var result = bookRepository.search(validatedISBN);
         if (result.isEmpty())
         {
-            ibookRepository.add(newBook(validatedISBN));
+            bookRepository.add(newBook(validatedISBN));
         }
 
-        var book = ibookRepository.get(validatedISBN);
+        var book = bookRepository.get(validatedISBN);
 
         book.addToStock(amount);
 
-        ibookRepository.update(book);
+        bookRepository.update(book);
     }
 
 
     public boolean inStock(String isbn13)
     {
-        return inStock(new ISBN13(isbn13));
+        return inStock(createISBN(isbn13));
     }
 
     boolean inStock(ISBN13 isbn13)
     {
-        return ibookRepository
+        return bookRepository
                 .search(isbn13)
                 .map(Book::inStock)
                 .orElse(false);
@@ -55,12 +55,12 @@ public class BookStoreService
 
     public int amountInStock(String isbn13)
     {
-        return amountInStock(new ISBN13(isbn13));
+        return amountInStock(createISBN(isbn13));
     }
 
     int amountInStock(ISBN13 isbn13)
     {
-        return ibookRepository
+        return bookRepository
                 .search(isbn13)
                 .map(Book::amountInStock)
                 .orElse(0);
@@ -68,23 +68,23 @@ public class BookStoreService
 
     public void sell(String isbn13) throws BookNotInStockException
     {
-        sell(new ISBN13(isbn13));
+        sell(createISBN(isbn13));
     }
 
     void sell(ISBN13 isbn13) throws BookNotInStockException
     {
-        var book = ibookRepository
+        var book = bookRepository
                 .search(isbn13)
                 .orElseThrow(BookNotInStockException::new);
 
         book.sell();
 
-        ibookRepository.update(book);
+        bookRepository.update(book);
     }
 
     public List<ISBN13> getBooks()
     {
-        return ibookRepository
+        return bookRepository
                 .getAll()
                 .stream()
                 .map(Book::getISBN13)

@@ -5,11 +5,11 @@ import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
-import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
+import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -31,7 +31,7 @@ class DomainEventSenderImplTest
 
         jexxaTest = new JexxaTest(jexxaMain);
         //TODO: Check this
-        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::init);
+        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::publishDomainEvents);
     }
 
     @Test
@@ -39,7 +39,7 @@ class DomainEventSenderImplTest
     {
         // Arrange
         var messageRecorder = jexxaTest.getMessageRecorder(DomainEventSender.class);
-        var isbn13 = new ISBN13("978-3-86490-387-8");
+        var isbn13 = createISBN("978-3-86490-387-8");
 
         // Act
         DomainEventPublisher.publish(bookSoldOut(isbn13));
@@ -52,7 +52,7 @@ class DomainEventSenderImplTest
     void testInvalidDomainEvent()
     {
         // Arrange
-        var isbn13 = new ISBN13("978-3-86490-387-8");
+        var isbn13 = createISBN("978-3-86490-387-8");
 
         // Act / Assert
         assertThrows(IllegalArgumentException.class, () -> DomainEventPublisher.publish(isbn13));

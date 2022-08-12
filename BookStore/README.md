@@ -77,7 +77,7 @@ In our tutorials we use following package structure. Please note that this packa
     *   drivenadapter
     *   drivingadapter 
 
-Please note that a package for a specific use case includes all required domain classes. As you can see in the examples these are typically the corresponding of type `Aggregate`,`ValueObject`, `DomainEvent`, `BusinessException`, and `Repository`. The reason for this is that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) so that changing classes within such a package is a change in the use case. 
+Please note that a package for a specific use case includes all required domain classes. As you can see in the examples these are typically the corresponding of type `Aggregate`,`ValueObject`, `DomainEvent`, `BusinessException`, and `Repository`. The reason for this is that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) so that changing classes within such a package is a change in the use case. In addition, it should not affect any other use cases.  
 
 Structuring your domain-package this way provides following benefits: 
 *   Use cases are represented explicitly which allows a clear view into the application
@@ -100,10 +100,23 @@ As soon as your domain logic and thus the number of use cases grows, it will hap
     *   `Book` uses an `ISBN13` object     
 
 *   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.        
-     
-## 2. Implement the infrastructure
 
-Implementation of `IDomainEventPublisher` just prints the `DomainEvent` to the console. So we can just use the implementation from tutorial `TimeService`.    
+## 2. Sending DomainEvents
+When sending DomainEvents we should distinguish between two separate scenarios.
+*   `DomainEvent`: Used to inform the application core that something happened which is then typically handled by an `ApplicationService` or a `DomainEventService`. 
+*   `IntegrationEvent`: Used to inform other contexts that something happened. These events are typically forwarded by an `InfrastructureService`. 
+
+Within the DDD community, there are essentially three different approaches on how to implement sending DomainEvents. 
+An overview and discussion of these approaches can be found [here](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/).
+
+Jexxa itself supports all of these approaches. In these tutorials the approach with static methods is used, because it 
+is also used in the book and described in great detail. It therefore forms a very good basis for the initial 
+implementation of a DDD application, from which teams can then work out for their own approach.
+
+     
+## 3. Implement the infrastructure
+
+Implementation of `DomainEventSender` just prints the `DomainEvent` to the console. So we can just use the implementation from tutorial `TimeService`.    
 
 ### Implement the repository 
 When using Jexxa's `RepositoryManager` implementing a repository is just a mapping to the `IRepository` interface which provides typical CRUD operations.   
@@ -120,38 +133,33 @@ For the sake of completeness we use a static factory method in this implementati
 ```java
   
 @SuppressWarnings("unused")
-public final class BookRepository implements IBookRepository
+public class BookRepositoryImpl implements BookRepository
 {
     private final IRepository<Book, ISBN13> repository;
 
-    public BookRepository (Properties properties)
+    public BookRepositoryImpl(Properties properties)
     {
         this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }
 
-    @Override                    
-    public void add(Book book) { repository.add(book); }
+    @Override
+    public void add(Book book)                  { repository.add(book); }
 
     @Override
-    public Book get(ISBN13 isbn13) { return repository.get(isbn13).orElseThrow(); }
+    public Book get(ISBN13 isbn13)              { return repository.get(isbn13).orElseThrow(); }
 
     @Override
-    public boolean isRegistered(ISBN13 isbn13)
-    {
-        return search(isbn13)
-                .isPresent();
-    }
+    public boolean isRegistered(ISBN13 isbn13)  { return search(isbn13).isPresent(); }
 
     @Override
     public Optional<Book> search(ISBN13 isbn13) { return repository.get(isbn13); }
 
     @Override
-    public void update(Book book) { repository.update(book); }
+    public void update(Book book)               { repository.update(book); }
 
     @Override
-    public List<Book> getAll() { return repository.get(); }
+    public List<Book> getAll()                  { return repository.get(); }
 }
-
 ```
 
 ## 3. Implement the application 

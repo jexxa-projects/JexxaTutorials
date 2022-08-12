@@ -8,13 +8,13 @@ import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 @DomainService
 public class DomainEventService
 {
-    private final DomainEventSender integrationEventSender;
-    public DomainEventService(DomainEventSender integrationEventSender)
+    private final DomainEventSender domainEventSender;
+    public DomainEventService(DomainEventSender domainEventSender)
     {
-        this.integrationEventSender = integrationEventSender;
+        this.domainEventSender = domainEventSender;
     }
 
-    public void init()
+    public void publishDomainEvents()
     {
         DomainEventPublisher.subscribe(this::handleEvent);
     }
@@ -22,6 +22,6 @@ public class DomainEventService
     @DomainEventHandler
     public void handleEvent(Object domainEvent)
     {
-        integrationEventSender.publish(domainEvent);
+        domainEventSender.publish(domainEvent);
     }
 }

@@ -26,7 +26,7 @@ public class DomainEventSenderImpl implements DomainEventSender {
         validateDomainEvent(domainEvent);
         messageSender
                 .send(domainEvent)
-                .toTopic("BookStoreTopic")
+                .toTopic("BookStore")
                 .addHeader("Type", domainEvent.getClass().getSimpleName())
                 .asJson();
     }
