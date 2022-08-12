@@ -1,5 +1,6 @@
 package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence;
 
+import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.IObjectStore;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
@@ -20,6 +21,7 @@ import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter
 import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.CONTRACT_SIGNED;
 
 @SuppressWarnings("unused")
+@DrivenAdapter
 public class ContractRepositoryImpl implements ContractRepository
 {
     /**

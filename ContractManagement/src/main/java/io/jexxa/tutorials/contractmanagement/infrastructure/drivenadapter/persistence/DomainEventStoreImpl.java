@@ -1,5 +1,6 @@
 package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence;
 
+import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.IObjectStore;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetadataSchema;
@@ -16,6 +17,7 @@ import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectst
 import static io.jexxa.infrastructure.drivenadapterstrategy.persistence.objectstore.metadata.MetaTags.numericTag;
 
 @SuppressWarnings("unused")
+@DrivenAdapter
 public class DomainEventStoreImpl implements DomainEventStore
 {
     /**

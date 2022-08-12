@@ -1,11 +1,13 @@
 package io.jexxa.tutorials.contractmanagement.domain;
 
+import io.jexxa.addend.applicationcore.Observer;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-
+@Observer
 public final class DomainEventPublisher {
     private final Map<Class<?>, Set<Consumer<?>>> subscribers = new HashMap<>();
     private static final DomainEventPublisher instance = new DomainEventPublisher();
