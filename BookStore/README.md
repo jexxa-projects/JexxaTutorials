@@ -86,7 +86,6 @@ Structuring your domain-package this way provides following benefits:
 
 As soon as your domain logic and thus the number of use cases grows, it will happen that ValueObjects will be used by multiple use cases. This is quite normal. The challenge is to group these ValueObjects and find a domain specific main term which is not `common` or something like this. As soon as you have this name, create a corresponding package within `domain`.   
 
-   
 
 ### A note on implementing DDD patterns  
 

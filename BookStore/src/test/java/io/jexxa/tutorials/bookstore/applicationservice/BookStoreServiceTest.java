@@ -47,9 +47,8 @@ class BookStoreServiceTest
         // mock framework is required.
         JexxaTest jexxaTest = new JexxaTest(jexxaMain);
 
-        //TODO: Check this and refactor API!
         DomainEventPublisher.reset();
-        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::publishDomainEvents);
+        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::registerListener);
 
         // Query a message recorder for an interface which is defines in your application core.
         publishedDomainEvents = jexxaTest.getMessageRecorder(DomainEventSender.class);

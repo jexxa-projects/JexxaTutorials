@@ -30,8 +30,7 @@ class DomainEventSenderImplTest
                 .addToInfrastructure(DRIVEN_ADAPTER);
 
         jexxaTest = new JexxaTest(jexxaMain);
-        //TODO: Check this
-        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::publishDomainEvents);
+        jexxaMain.bootstrap(DomainEventService.class).with(DomainEventService::registerListener);
     }
 
     @Test

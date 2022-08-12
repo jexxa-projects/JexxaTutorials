@@ -14,7 +14,7 @@ public class DomainEventService
         this.domainEventSender = domainEventSender;
     }
 
-    public void publishDomainEvents()
+    public void registerListener()
     {
         DomainEventPublisher.subscribe(this::handleEvent);
     }

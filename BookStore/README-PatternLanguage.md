@@ -169,8 +169,8 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                //Get the latest books when starting the application
-                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
+                .bootstrap(DomainEventService.class).with(DomainEventService::registerListener) //Publish all domain events to a message bus              
+                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)          //Get the latest books when starting the application
 
                 // In case you annotate your domain core with your pattern language,
                 // You can also bind DrivingAdapter to annotated classes.
