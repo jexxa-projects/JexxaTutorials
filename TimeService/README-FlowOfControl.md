@@ -58,15 +58,16 @@ Each application starts with the `main` method. Since it is our starting point, 
 `Driving Adapter` &rarr; `Inbound Port`. For this purpose Jexxa's API offers methods to represent this binding explicitly in the main method.
 
 ```java
-void main(String[] args)
-{   
-    ///...
-    jexxaMain
-        // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
-        .bind(RESTfulRPCAdapter.class).to(TimeService.class)
-        .bind(JMXAdapter.class).to(TimeService.class);
+public final class TimeService {
+    void main(String[] args) {
+        ///...
+        jexxaMain
+                // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
+                .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
+                .bind(JMXAdapter.class).to(TimeService.class);
 
         ///...
+    }
 }
 ```
 Now, we know following parts of our application: 
@@ -88,7 +89,7 @@ the application core.
 If we select an inbound port such as `TimeService`, the constructor looks as follows. 
 
 ```java
-public TimeService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
+public class TimeApplicationService(TimePublisher timePublisher, MessageDisplay messageDisplay)
 {
   // ...
 }
@@ -110,23 +111,23 @@ a large application, the constructor should take only a few parameters. Otherwis
 Especially for a large application, you automatically hide a lot of source code and can focus on the source code for a specific use case.
 
 At this point, we have following additional information:
-*   Current `inbound port`: `TimeService`
-*   Required `outbound ports`: `ITimePublisher` and `IMessageDisplay`
+*   Current `inbound port`: `TimeApplicationService`
+*   Required `outbound ports`: `TimePublisher` and `MessageDisplay`
 
 Again, we can navigate into two different directions. Either we dive deep into the application core by checking the implementation 
 of `TimeService`. Please note that within a large application core you should use a so-called micro architecture that supports the
 navigation through your application core. Please check tutorial [BookStore](https://github.com/jexxa-projects/JexxaTutorials/blob/main/BookStore/README.md)
-to see a potential mapping to a so called pattern language to structure your application core.   
+to see a potential mapping to a so-called pattern language to structure your application core.   
 
 Alternatively, you can select one of the two `Outbound Ports` from your IDE to continue in the direction of `Outbound Port` &rarr; 
 `Driven Adapter`.
    
 ### Leave the application core ###
 
-If we select `IMessageDisplay` we just see the following interface: 
+If we select `MessageDisplay` we just see the following interface: 
 
 ```java
-public interface IMessageDisplay
+public interface MessageDisplay
 {                                       
   void show(String message);
 }
@@ -148,7 +149,7 @@ to switch to the concrete implementation of the interface which is located in th
 implementation is quite simple. 
 
 ```java
-public class MessageDisplay implements IMessageDisplay
+public class MessageDisplayImpl implements MessageDisplay
 {
     @Override
     public void show(String message)
@@ -172,15 +173,16 @@ In case we can not apply a convention, Jexxa represents the flow of control as f
 You can see this in our tutorial as well: 
 
 ```java
-void main(String[] args)
-{   
-    ///...
-    jexxaMain
+public final class TimeService {
+    void main(String[] args) {
+        ///...
+        jexxaMain
 
+                ///...
+                .bind(JMSAdapter.class).to(PublishTimeListener.class);
         ///...
-        .bind(JMSAdapter.class).to(PublishTimeListener.class)
-        ///...
-} 
+    }
+}
 ```
 
 Here, a JMS message should be handled by our application core. The `port adapter` belongs to the infrastructure and performs the specific mapping. 
@@ -193,7 +195,7 @@ Jexxa this constructor must take exactly one parameter which must be an `Inbound
 following code.          
 
 ```java
-public PublishTimeListener(TimeService timeApplicationService)
+public class PublishTimeListener(TimeService timeApplicationService)
 {
     //...
 }
