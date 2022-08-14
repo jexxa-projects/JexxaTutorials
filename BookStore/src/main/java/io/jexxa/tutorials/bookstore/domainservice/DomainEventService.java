@@ -6,16 +6,13 @@ import io.jexxa.addend.applicationcore.DomainService;
 import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 
 @DomainService
+@SuppressWarnings("unused")
 public class DomainEventService
 {
     private final DomainEventSender domainEventSender;
     public DomainEventService(DomainEventSender domainEventSender)
     {
         this.domainEventSender = domainEventSender;
-    }
-
-    public void registerListener()
-    {
         DomainEventPublisher.subscribe(this::handleEvent);
     }
 

@@ -16,11 +16,6 @@ public final class DomainEventPublisher {
         return instance;
     }
 
-    public static void reset()
-    {
-        instance().subscribers.clear();
-    }
-
     @SuppressWarnings("unchecked") // we check whether the given domainEvent is assignable to listener, or not. Therefore, the unchecked cast is safe
     public static <T> void publish(final T domainEvent)
     {

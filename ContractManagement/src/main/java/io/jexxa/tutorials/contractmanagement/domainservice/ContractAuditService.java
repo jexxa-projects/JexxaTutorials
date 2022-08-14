@@ -7,6 +7,7 @@ import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
 import static io.jexxa.tutorials.contractmanagement.domain.DomainEventPublisher.subscribe;
 
 @DomainService
+@SuppressWarnings("unused")
 public class ContractAuditService
 {
     private final DomainEventStore domainEventStore;
@@ -14,10 +15,6 @@ public class ContractAuditService
     public ContractAuditService(DomainEventStore domainEventStore)
     {
         this.domainEventStore = domainEventStore;
-    }
-
-    public void init()
-    {
         subscribe(ContractSigned.class, this::storeAuditEvent);
     }
 

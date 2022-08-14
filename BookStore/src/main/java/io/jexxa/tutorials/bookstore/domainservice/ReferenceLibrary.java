@@ -11,6 +11,7 @@ import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 
 @DomainService
+@SuppressWarnings("unused")
 public class ReferenceLibrary
 {
     private final BookRepository bookRepository;
@@ -18,6 +19,7 @@ public class ReferenceLibrary
     public ReferenceLibrary(BookRepository bookRepository)
     {
         this.bookRepository = Objects.requireNonNull(bookRepository);
+        addLatestBooks();
     }
 
     public void addLatestBooks()
