@@ -9,7 +9,6 @@ import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import java.util.List;
 
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
-import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 
 @SuppressWarnings("unused")
 @ApplicationService
@@ -22,17 +21,14 @@ public class BookStoreService
         this.bookRepository = bookRepository;
     }
 
-    public void addToStock(String isbn13, int amount)
+    public void addToStock(ISBN13 isbn13, int amount)
     {
-        var validatedISBN = createISBN(isbn13);
-
-        var result = bookRepository.search(validatedISBN);
-        if (result.isEmpty())
+        if (bookRepository.search(isbn13).isEmpty())
         {
-            bookRepository.add(newBook(validatedISBN));
+            bookRepository.add(newBook(isbn13));
         }
 
-        var book = bookRepository.get(validatedISBN);
+        var book = bookRepository.get(isbn13);
 
         book.addToStock(amount);
 
@@ -40,12 +36,7 @@ public class BookStoreService
     }
 
 
-    public boolean inStock(String isbn13)
-    {
-        return inStock(createISBN(isbn13));
-    }
-
-    boolean inStock(ISBN13 isbn13)
+    public boolean inStock(ISBN13 isbn13)
     {
         return bookRepository
                 .search(isbn13)
@@ -53,12 +44,7 @@ public class BookStoreService
                 .orElse(false);
     }
 
-    public int amountInStock(String isbn13)
-    {
-        return amountInStock(createISBN(isbn13));
-    }
-
-    int amountInStock(ISBN13 isbn13)
+    public int amountInStock(ISBN13 isbn13)
     {
         return bookRepository
                 .search(isbn13)
@@ -66,12 +52,7 @@ public class BookStoreService
                 .orElse(0);
     }
 
-    public void sell(String isbn13) throws BookNotInStockException
-    {
-        sell(createISBN(isbn13));
-    }
-
-    void sell(ISBN13 isbn13) throws BookNotInStockException
+    public void sell(ISBN13 isbn13) throws BookNotInStockException
     {
         var book = bookRepository
                 .search(isbn13)

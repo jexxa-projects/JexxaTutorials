@@ -9,12 +9,12 @@ import java.util.Objects;
  * IMPORTANT NOTE: This is a simplified ISBN13 number which only validates the checksum because this is sufficient for this tutorial
  */
 @ValueObject
-public record ISBN13(String value)
+public record ISBN13(String isbn13)
 {
     public ISBN13
     {
-        Objects.requireNonNull(value);
-        validateChecksum(value);
+        Objects.requireNonNull(isbn13);
+        validateChecksum(isbn13);
     }
 
     @ValueObjectFactory(ISBN13.class)
@@ -28,6 +28,12 @@ public record ISBN13(String value)
         var digits = isbn13
                 .replace("-","")
                 .toCharArray();
+
+        if (digits.length != 13)
+        {
+            throw new IllegalArgumentException(
+                    "Invalid ISBN number: Expected number of digits is 13. Given value for ISBN number " + isbn13 + " is " + digits.length);
+        }
 
         var digitSum = 0;
 

@@ -13,6 +13,8 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
+                // Bootstrap all classes annotated with @DomainService. In this application this causes to get
+                // the latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
                 .bootstrapAnnotation(DomainService.class)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)

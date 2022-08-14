@@ -30,6 +30,12 @@ public class BookRepositoryImpl implements BookRepository
     }
 
     @Override
+    public void update(Book book)
+    {
+        repository.update(book);
+    }
+
+    @Override
     public Book get(ISBN13 isbn13)
     {
         return repository.get(isbn13).orElseThrow();
@@ -38,20 +44,13 @@ public class BookRepositoryImpl implements BookRepository
     @Override
     public boolean isRegistered(ISBN13 isbn13)
     {
-        return search(isbn13)
-                .isPresent();
+        return search(isbn13).isPresent();
     }
 
     @Override
     public Optional<Book> search(ISBN13 isbn13)
     {
         return repository.get(isbn13);
-    }
-
-    @Override
-    public void update(Book book)
-    {
-        repository.update(book);
     }
 
     @Override
