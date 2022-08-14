@@ -54,8 +54,11 @@ First we map the functionality of the application to DDD patterns
     *   `BookSoldOut` when copies of a book are no longer in stock   
 
 *   `DomainService:` 
-    *   `DomainEventPublisher:` We need to publish our domain events in some way. Since the implementation requires a technology stack we can only define an interface.   
-    *   `ReferenceLibrary:` Return latest books. For simplicity, we assume that it is a service which does not relate to our domain core directly.             
+    *   `DomainEventPublisher:` Registers for `DomainEvents` and forwards them to an external message bus.   
+    *   `ReferenceLibrary:` Master data for our bookstore which returns the latest books. For simplicity, we assume that it is a service which does not relate to our domain core directly.             
+
+*   `InfrastructureService:`
+    *   `DomainEventSender:` Interface to send `DomainEvents` to a message bus.
 
 *   `BusinessException:`
     *   `BookNotInStockException:` In case we try to sell a book that is currently not available   
@@ -89,16 +92,20 @@ As soon as your domain logic and thus the number of use cases grows, it will hap
 
 ### A note on implementing DDD patterns  
 
-*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons.  
+*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons:  
     *   They are immutable and compared based on their internal values.
-    *   They must not have setter methods. So all fields should be final. 
+    *   They must not have setter methods. So all fields are final. 
     *   They must provide a valid implementation of equals() and hashcode().
-    *   They must not include any business logic, but they can validate their input data.    
+    *   They must not include any business logic, but they can validate their input data.
+    *   Using records ensures that the canonical constructor is called, even if they are de-serialized. So you can validate given values in constructor without considering serialization methods.   
 
 *   `Aggregate`: Is identified by a unique `AggregateID` which is a `ValueObject`
     *   `Book` uses an `ISBN13` object     
 
-*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.        
+*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.     
+
+As you can see in the source code, all classes are annotated with the pattern language of DDD. 
+This is not required but strongly recommended. The explanation for this can be found in tutorial [pattern language](README-PatternLanguage.md). 
 
 ## 2. Sending DomainEvents
 When sending DomainEvents we should distinguish between two separate scenarios.
@@ -145,6 +152,9 @@ public class BookRepositoryImpl implements BookRepository
     public void add(Book book)                  { repository.add(book); }
 
     @Override
+    public void update(Book book)               { repository.update(book); }
+
+    @Override
     public Book get(ISBN13 isbn13)              { return repository.get(isbn13).orElseThrow(); }
 
     @Override
@@ -152,20 +162,19 @@ public class BookRepositoryImpl implements BookRepository
 
     @Override
     public Optional<Book> search(ISBN13 isbn13) { return repository.get(isbn13); }
-
-    @Override
-    public void update(Book book)               { repository.update(book); }
-
+    
     @Override
     public List<Book> getAll()                  { return repository.get(); }
 }
 ```
 
+**Important**: 
+As you can see, the implementation of a repository is straight forward. So it is a good starting point junior developers. See [here](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html#_strategy_pattern_for_driven_adapters) how you can use it to develop your junior developers.     
+
 ## 3. Implement the application 
 
-Finally, we have to write our application. As you can see in the code below there are two main differences compared to `HelloJexxa` and `TimeService`:
+Finally, we have to write our application. As you can see in the code below there is one difference compared to `HelloJexxa` and `TimeService`:
 
-*   Define a default strategy for our Repositories.
 *   Add a bootstrap service which is directly called to initialize domain-specific aspects.   
    
 ```java
@@ -177,8 +186,9 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                //Get the latest books when starting the application
-                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
+                // Bootstrap all classes annotated with @DomainService. In this application this causes to get the 
+                // latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
+                .bootstrapAnnotation(DomainService.class)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
@@ -257,7 +267,7 @@ Response:
 #### Query available books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
      http://localhost:7503/BookStoreService/inStock       
 ```
 
@@ -269,7 +279,7 @@ false
 #### Add some books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" \
+curl -X POST -H "Content-Type: application/json" -d "[{isbn13: "978-1-891830-85-3"}, 5]" \
      http://localhost:7503/BookStoreService/addToStock
 ```
 
@@ -280,7 +290,7 @@ Response: No output
 #### Ask again if a specific book is in stock
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
      http://localhost:7503/BookStoreService/inStock       
 ```
 

@@ -30,7 +30,7 @@ bounded context, it gives you the time to learn which query interface you really
 In general, you should use an `IRepository` in following scenarios: 
 
 *   You query the managed objects only be their unique key.
-*   In case you need more advanced query operations, the lifetime of the managed objects is short, so that the amount of managed objects is relatively small.
+*   In case you need more advanced query operations, the lifetime of the managed objects should be short, so that the amount of managed objects is relatively small. This allows you to read all data from the database. 
 
 Especially the second case happens quite often in production systems, especially in batch systems. Here, it is quite common that software controlling 
 a specific manufacturing unit requires only to know the batches that are currently processed. As soon as the processing step is finished, a corresponding 
@@ -44,7 +44,7 @@ The `IObjectStore` provides more sophisticated interfaces to query managed objec
 of optimization mechanism of the underlying technology so that the performance depends on chosen technology stack. This kind of repository should 
 be your second choice. As soon as you see that an `IRepository` is not sufficient, you should switch the implementation of the driven adapter to an 
 `IObjectStore`. Please note that this step should be transparent to your application core because it uses a single interface which is not affected. 
-Only the underlying strategy is changed.   
+Only the underlying strategy is changed.
 
 In general, you should use an `IObjectStore` in following scenarios:
 
@@ -60,7 +60,7 @@ without using a specific strategy or to provide your own strategy using technolo
 
 Typical use cases to select an `IObjectStore` are:
 *   An archive of the domain events.
-*   A bounded context managing objects with a very long lifetime such as contracts.
+*   A bounded context managing objects with a very long lifetime, which mostly happens within a DomainService. 
 
 ### Strategies for `IRepository` and `IObjectStore`
 
@@ -92,7 +92,7 @@ string representation. In the following example, we define the three different v
 to the infrastructure of your application which means that your application just sees the `IContractRepository` and not the schema specification:
 
 ```java
-public class ContractRepository  implements IContractRepository
+public class ContractRepositoryImpl implements ContractRepository
 {
     /**
      * Here we define the values to query contracts. Apart from their key, elements should be queried by following information: <br>
@@ -108,7 +108,7 @@ public class ContractRepository  implements IContractRepository
          * This MetaTag represents the contract number. Since contract number is a  numeric value we use a numberTag. As most
          * predefined {@link MetaTag} class, we just provide an accessor function to get the value from the managed object.
          */
-        CONTRACT_NUMBER(numberTag(element -> element.getContractNumber().getValue())),
+        CONTRACT_NUMBER(numericTag(element -> element.getContractNumber().value())),
 
         /**
          * This MetaTag represents a boolean if the contract is signed or not.  Here, we use booleanTag together with the
@@ -145,13 +145,13 @@ public class ContractRepository  implements IContractRepository
 After defining the metadata, we can implement the interface.
 
 ```java
-public class ContractRepository  implements IContractRepository
+public class ContractRepositoryImpl  implements ContractRepository
 {
     // ...
 
     private final IObjectStore<Contract, ContractNumber, ContractMetadata> objectStore;
 
-    public ContractRepository(Properties properties)
+    public ContractRepositoryImpl(Properties properties)
     {
         // To request an ObjectStore strategy we need to pass following information to the manager: 
         // 1. Type information of the managed object

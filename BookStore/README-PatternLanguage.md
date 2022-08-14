@@ -169,12 +169,11 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                .bootstrap(DomainEventService.class).with(DomainEventService::registerListener) //Publish all domain events to a message bus              
-                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)          //Get the latest books when starting the application
+                // Bootstrap all classes annotated with @DomainService. In this application this causes to get the 
+                // latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
+                .bootstrapAnnotation(DomainService.class)
 
-                // In case you annotate your domain core with your pattern language,
-                // You can also bind DrivingAdapter to annotated classes.
-                .bind(RESTfulRPCAdapter.class).toAnnotation(ApplicationService.class)
+                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .run();
