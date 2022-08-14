@@ -37,19 +37,19 @@ we must define an interface `ITimePublisher` that provides us the possibility to
 Since Jexxa only supports implicit constructor injection, we have to declare all required interfaces in the constructor.    
 
 ```java
-public class TimeService
+public class TimeApplicationService
 {
-    private final ITimePublisher timePublisher;
-    private final IMessageDisplay messageDisplay;
+    private final TimePublisher timePublisher;
+    private final MessageDisplay messageDisplay;
 
     /**
      * Note: Jexxa supports only implicit constructor injection. Therefore, we must
-     * declare all required interfaces in the constructor.  
+     * declare all required interfaces in the constructor.
      *
      * @param timePublisher required outbound port for this application service
      * @param messageDisplay required outbound port for this application service
      */
-    public TimeApplicationService(ITimePublisher timePublisher, IMessageDisplay messageDisplay)
+    public TimeApplicationService(TimePublisher timePublisher, MessageDisplay messageDisplay)
     {
         this.timePublisher = Objects.requireNonNull(timePublisher);
         this.messageDisplay = Objects.requireNonNull(messageDisplay);
@@ -70,21 +70,20 @@ public class TimeService
      * This method shows the previously published time.
      * @param localTime the previously published time
      */
-    public void displayPublishedTimed(LocalTime localTime)
+    public void displayPublishedTime(LocalTime localTime)
     {
         var messageWithPublishedTime = "New Time was published, time: " + localTime.format(DateTimeFormatter.ISO_TIME);
         messageDisplay.show(messageWithPublishedTime);
     }
-
 }
 ```                  
 
-### Declare interface `ITimePublisher` ###
+### Declare interface `TimePublisher` ###
 
 The interface is quite simple since we need just a single method to publish a time. 
 
 ```java
-public interface ITimePublisher
+public interface TimePublisher
 {
     void publish(LocalTime localTime);
 }
@@ -93,7 +92,7 @@ public interface ITimePublisher
 ### Declare interface `IMessageDisplay` ###
 
 ```java
-public interface IMessageDisplay
+public interface MessageDisplay
 {
     void show(String message);
 }
@@ -119,7 +118,7 @@ Note: In case you use any static code analysis tools such as SonarCube you can a
 
 ```java
 @SuppressWarnings("unused")
-public class MessageDisplay implements IMessageDisplay
+public class MessageDisplayImpl implements MessageDisplay
 {
     @Override
     public void show(String message)
@@ -142,7 +141,7 @@ following code shows how to publish a LocalTime in JSON format.
 
 ```java
 @SuppressWarnings("unused")
-public class TimePublisher implements ITimePublisher
+public class TimePublisherImpl implements TimePublisher
 {
     public static final String TIME_TOPIC = "TimeService";
 
