@@ -20,8 +20,8 @@
 The application core consists of following two classes:
 
 *   `TimeApplicationService:` As an inbound port, it provides use cases of the domain. In terms of pattern language of DDD it is an `ApplicationService`
-*   `TimePublisher:` As an outbound port, it allows for publishing current time and is a `InfrastrucureService` in terms of the pattern language of DDD
-*   `MessageDisplay:` As an outbound port, is shows a message and is a `InfrastructureService` in terms of the pattern language of DDD        
+*   `TimePublisher:` As an outbound port, it allows for publishing current time and is an `InfrastrucureService` in terms of the pattern language of DDD
+*   `MessageDisplay:` As an outbound port, is shows a message and is an `InfrastructureService` in terms of the pattern language of DDD        
 
 ### Declare interfaces for the outbound ports
 
