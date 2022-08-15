@@ -17,13 +17,17 @@ public class DomainEventSenderImpl implements DomainEventSender {
 
     public DomainEventSenderImpl(Properties properties)
     {
+        // Request a MessageSender from the framework, so that we can configure it in our properties file
         messageSender = getMessageSender(DomainEventSender.class, properties);
     }
 
     @Override
     public void publish(Object domainEvent)
     {
+        // We just allow sending DomainEvents
         validateDomainEvent(domainEvent);
+
+        // For publishing a DomainEvent we use a fluent API in Jexxa
         messageSender
                 .send(domainEvent)
                 .toTopic("BookStore")
@@ -39,5 +43,4 @@ public class DomainEventSenderImpl implements DomainEventSender {
             throw new IllegalArgumentException("Given object is not annotated with @DomainEvent");
         }
     }
-
 }

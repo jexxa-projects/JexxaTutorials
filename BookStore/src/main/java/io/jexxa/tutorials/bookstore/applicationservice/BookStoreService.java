@@ -23,7 +23,7 @@ public class BookStoreService
 
     public void addToStock(ISBN13 isbn13, int amount)
     {
-        if (bookRepository.search(isbn13).isEmpty())
+        if (!bookRepository.isRegistered(isbn13))
         {
             bookRepository.add(newBook(isbn13));
         }
@@ -71,5 +71,4 @@ public class BookStoreService
                 .map(Book::getISBN13)
                 .toList();
     }
-
 }

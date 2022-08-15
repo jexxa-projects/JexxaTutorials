@@ -2,28 +2,24 @@ package io.jexxa.tutorials.bookstore.domain;
 
 import io.jexxa.addend.applicationcore.Observer;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @Observer
 public final class DomainEventPublisher {
-    private final Map<Class<?>, Set<Consumer<?>>> subscribers = new HashMap<>();
+    private final Map<Class<?>, Set<Consumer<?>>> subscribers = new ConcurrentHashMap<>();
     private static final DomainEventPublisher instance = new DomainEventPublisher();
 
-    public static DomainEventPublisher instance() {
+    public static DomainEventPublisher instance()
+    {
         return instance;
     }
 
-    public static void reset()
-    {
-        instance().subscribers.clear();
-    }
-
-    @SuppressWarnings("unchecked") // we check whether the given domainEvent is assignable to listener, or not. Therefore, the unchecked cast is safe
-    public static <T> void publish(final T domainEvent)
+    @SuppressWarnings("unchecked") // we check if the given domainEvent is assignable to a listener. Therefore, the unchecked cast is safe
+    public static synchronized <T> void publish(final T domainEvent)
     {
         instance()
                 .subscribers
@@ -34,13 +30,13 @@ public final class DomainEventPublisher {
                 .forEach(element -> ((Consumer<T>) element).accept(domainEvent));
     }
 
-    public static <T> void subscribe(Class<T> domainEvent, Consumer<T> subscriber)
+    public static synchronized <T> void subscribe(Class<T> domainEvent, Consumer<T> subscriber)
     {
         instance().subscribers.putIfAbsent(domainEvent, new HashSet<>());
         instance().subscribers.get(domainEvent).add(subscriber);
     }
 
-    public static void subscribe(Consumer<Object> subscriber)
+    public static synchronized void subscribe(Consumer<Object> subscriber)
     {
         subscribe(Object.class, subscriber);
     }

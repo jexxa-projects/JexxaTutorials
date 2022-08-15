@@ -13,7 +13,8 @@ public record ISBN13(String isbn13)
 {
     public ISBN13
     {
-        Objects.requireNonNull(isbn13);
+        // The canonical constructor must be called in all cases.
+        // So we put the validation of our attributes here.
         validateChecksum(isbn13);
     }
 
@@ -25,6 +26,8 @@ public record ISBN13(String isbn13)
 
     private static void validateChecksum(String isbn13)
     {
+        Objects.requireNonNull(isbn13);
+
         var digits = isbn13
                 .replace("-","")
                 .toCharArray();

@@ -44,28 +44,30 @@ As a first step, you need to initialize the tests within a test class. This is d
 the following steps: 
 *    Initialize JexxaTest before each test. This ensures that you have same initial situation for all your tests 
 *    Initialize all members you need for testing and validation. 
-*    Bootstrap all services as in your main method to ensure the same initial situation as in production 
+*    Bootstrap all services as in your main method to ensure the same initial situation as in production
 
 ```java
-class BookStoreServiceTest {
-    private static final ISBN13 ISBN_13 = createISBN("978-3-86490-387-8");
+class BookStoreServiceTest
+{
+    private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
 
     private BookStoreService objectUnderTest;       // Object we want to test
-    private MessageRecorder publishedDomainEvents;  // Message recorder to validate published DomainEvents
-    private BookRepository bookRepository;          // Repository to validate results in the tests
+    private MessageRecorder  publishedDomainEvents; // Message recorder to validate published DomainEvents
+    private BookRepository   bookRepository;        // Repository to validate results in the tests
 
 
     @BeforeEach
-    void initTest() {
+    void initTest()
+    {
         // JexxaTest is created for each test. It provides stubs for running your tests so that no
-        // mock framework is required. It expects the class name your application! 
-        JexxaTest jexxaTest = getJexxaTest(BookStoreService.class);
+        // mock framework is required. It expects the class name your application!
+        JexxaTest jexxaTest = getJexxaTest(BookStore.class);
 
-        objectUnderTest = jexxaTest.getInstanceOfPort(BookStoreService.class);
+        objectUnderTest       = jexxaTest.getInstanceOfPort(BookStoreService.class);
         publishedDomainEvents = jexxaTest.getMessageRecorder(DomainEventSender.class);
-        bookRepository = jexxaTest.getRepository(BookRepository.class);
+        bookRepository        = jexxaTest.getRepository(BookRepository.class);
 
-        // Invoke all bootstrapping services from main to ensure same starting point  
+        // Invoke all bootstrapping services from main to ensure same starting point
         jexxaTest.getJexxaMain().bootstrapAnnotation(DomainService.class);
     }
 
@@ -73,25 +75,25 @@ class BookStoreServiceTest {
 }
 ```
 ### Write tests 
-For all tests we use the arrange-act-assert pattern because it is simple and forces tests to focus on independent, 
-individual behaviors.
+For all tests we use the arrange-act-assert pattern because it is simple and forces tests to focus on independent, individual behaviors.
 
 #### A simple test to add books into stock 
 ```java
 class BookStoreServiceTest {
     // ... initialization of tests 
     @Test
-    void addBooksToStock() {
+    void addBooksToStock()
+    {
         //Arrange
         var amount = 5;
 
         //Act
-        objectUnderTest.addToStock(ISBN_13.value(), amount);
+        objectUnderTest.addToStock(ANY_BOOK, amount);
 
         //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals(amount, objectUnderTest.amountInStock(ISBN_13));
-        assertEquals(amount, bookRepository.get(ISBN_13).amountInStock());
-        assertTrue(publishedDomainEvents.isEmpty());
+        assertEquals( amount, objectUnderTest.amountInStock(ANY_BOOK) );
+        assertEquals( amount, bookRepository.get(ANY_BOOK).amountInStock() );
+        assertTrue( publishedDomainEvents.isEmpty() );
     }
     // ... further tests 
 }
@@ -106,14 +108,14 @@ class BookStoreServiceTest {
     {
         //Arrange
         var amount = 5;
-        objectUnderTest.addToStock(ISBN_13.value(), amount);
+        objectUnderTest.addToStock(ANY_BOOK, amount);
 
         //Act
-        objectUnderTest.sell(ISBN_13);
+        objectUnderTest.sell(ANY_BOOK);
 
         //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( amount - 1, objectUnderTest.amountInStock(ISBN_13) );
-        assertEquals( amount - 1, bookRepository.get(ISBN_13).amountInStock() );
+        assertEquals( amount - 1, objectUnderTest.amountInStock(ANY_BOOK) );
+        assertEquals( amount - 1, bookRepository.get(ANY_BOOK).amountInStock() );
         assertTrue( publishedDomainEvents.isEmpty() );
     }
     // ... further tests 
@@ -128,15 +130,15 @@ class BookStoreServiceTest {
     void sellLastBook() throws BookNotInStockException
     {
         //Arrange
-        objectUnderTest.addToStock(ISBN_13.value(), 1);
+        objectUnderTest.addToStock(ANY_BOOK, 1);
 
         //Act
-        objectUnderTest.sell(ISBN_13);
+        objectUnderTest.sell(ANY_BOOK);
 
         //Assert - Here you can also use all the interfaces for driven adapters defined in your application without running the infrastructure
-        assertEquals( 0 , objectUnderTest.amountInStock(ISBN_13) );
+        assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );
         assertEquals( 1 , publishedDomainEvents.size() );
-        assertEquals( bookSoldOut(ISBN_13), publishedDomainEvents.getMessage(BookSoldOut.class));
+        assertEquals( bookSoldOut(ANY_BOOK), publishedDomainEvents.getMessage(BookSoldOut.class));
     }
 
 }

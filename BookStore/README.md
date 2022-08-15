@@ -109,20 +109,61 @@ This is not required but strongly recommended. The explanation for this can be f
 
 ## 2. Sending DomainEvents
 When sending DomainEvents we should distinguish between two separate scenarios.
-*   `DomainEvent`: Used to inform the application core that something happened which is then typically handled by an `ApplicationService` or a `DomainEventService`. 
+*   `DomainEvent`: Used to inform the application core that something happened which is then typically handled by an `ApplicationService` or a `DomainService`. 
 *   `IntegrationEvent`: Used to inform other contexts that something happened. These events are typically forwarded by an `InfrastructureService`. 
 
 Within the DDD community, there are essentially three different approaches on how to implement sending DomainEvents. 
 An overview and discussion of these approaches can be found [here](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/).
 
 Jexxa itself supports all of these approaches. In these tutorials the approach with static methods is used, because it 
-is also used in the book and described in great detail. It therefore forms a very good basis for the initial 
+is also used in the book ___Implementing Domain-Driven Design___ and described in great detail. It therefore forms a very good basis for the initial 
 implementation of a DDD application, from which teams can then work out for their own approach.
 
      
 ## 3. Implement the infrastructure
 
-Implementation of `DomainEventSender` just prints the `DomainEvent` to the console. So we can just use the implementation from tutorial `TimeService`.    
+### Implement the DomainEventSender
+Our implementation of `DomainEventSender` just prints the `DomainEvent` to the console. So we could use the 
+implementation from tutorial `TimeService`.
+
+In order to show the advantage of the strategy pattern, we request a message sender from Jexxa. The concrete 
+implementation is then configured in a properties file, so that we can exchange the implementation when starting 
+the application.
+
+```java
+public class DomainEventSenderImpl implements DomainEventSender {
+    private final MessageSender messageSender;
+
+    public DomainEventSenderImpl(Properties properties)
+    {
+        // Request a MessageSender from the framework, so that we can configure it in our properties file
+        messageSender = getMessageSender(DomainEventSender.class, properties);
+    }
+
+    @Override
+    public void publish(Object domainEvent)
+    {
+        // We just allow sending DomainEvents
+        validateDomainEvent(domainEvent);
+
+        // For publishing a DomainEvent we use a fluent API in Jexxa 
+        messageSender
+                .send(domainEvent)
+                .toTopic("BookStore")
+                .addHeader("Type", domainEvent.getClass().getSimpleName())
+                .asJson();
+    }
+
+    private void validateDomainEvent(Object domainEvent)
+    {
+        Objects.requireNonNull(domainEvent);
+        if ( domainEvent.getClass().getAnnotation(DomainEvent.class) == null )
+        {
+            throw new IllegalArgumentException("Given object is not annotated with @DomainEvent");
+        }
+    }
+}
+```
 
 ### Implement the repository 
 When using Jexxa's `RepositoryManager` implementing a repository is just a mapping to the `IRepository` interface which provides typical CRUD operations.   
@@ -134,7 +175,6 @@ The requirements are:
 
 The following source code shows a typical implementation of a `Repository`. Within the main function you can configure the `RepositoryManager` if required. 
 
-For the sake of completeness we use a static factory method in this implementation instead of a public constructor. Here it is quite important to return the interface and not the concrete type.        
 
 ```java
   
@@ -155,10 +195,10 @@ public class BookRepositoryImpl implements BookRepository
     public void update(Book book)               { repository.update(book); }
 
     @Override
-    public Book get(ISBN13 isbn13)              { return repository.get(isbn13).orElseThrow(); }
+    public boolean isRegistered(ISBN13 isbn13)  { return search(isbn13).isPresent(); }
 
     @Override
-    public boolean isRegistered(ISBN13 isbn13)  { return search(isbn13).isPresent(); }
+    public Book get(ISBN13 isbn13)              { return repository.get(isbn13).orElseThrow(); }
 
     @Override
     public Optional<Book> search(ISBN13 isbn13) { return repository.get(isbn13); }
@@ -169,7 +209,7 @@ public class BookRepositoryImpl implements BookRepository
 ```
 
 **Important**: 
-As you can see, the implementation of a repository is straight forward. So it is a good starting point junior developers. See [here](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html#_strategy_pattern_for_driven_adapters) how you can use it to develop your junior developers.     
+As you can see, the implementation of a repository and a message sender is straight forward. So it is a good starting point for junior developers. See [here](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html#_strategy_pattern_for_driven_adapters) how you can use it to develop your junior developers.     
 
 ## 3. Implement the application 
 
@@ -195,7 +235,6 @@ public final class BookStore
 
                 .run();
     }
-    //...
 }
 ```
 
@@ -261,7 +300,11 @@ curl -X GET  http://localhost:7503/BookStoreService/getBooks
 
 Response: 
 ```Console
-[{"value":"978-1-891830-85-3"},{"value":"978-1-60309-025-4"},{"value":"978-1-60309-016-2"},{"value":"978-1-60309-265-4"},{"value":"978-1-60309-047-6"},{"value":"978-1-60309-322-4"}]
+[
+ {"isbn13":"978-1-60309-322-4"},{"isbn13":"978-1-891830-85-3"},
+ {"isbn13":"978-1-60309-047-6"},{"isbn13":"978-1-60309-025-4"},
+ {"isbn13":"978-1-60309-016-2"},{"isbn13":"978-1-60309-265-4"}
+]
 ```
 
 #### Query available books
