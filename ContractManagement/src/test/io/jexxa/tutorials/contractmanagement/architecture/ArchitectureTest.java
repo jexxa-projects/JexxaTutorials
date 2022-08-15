@@ -20,14 +20,12 @@ class ArchitectureTest {
     @Test
     void validatePatternLanguage()
     {
-        patternLanguage(ContractManagement.class)
-                .validate();
+        patternLanguage(ContractManagement.class).validate();
     }
 
     @Test
     void validateAggregateRules()
     {
-        aggregateRules(ContractManagement.class)
-                .validate();
+        aggregateRules(ContractManagement.class).validate();
     }
 }

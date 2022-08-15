@@ -49,7 +49,7 @@ the following steps:
 ```java
 class BookStoreServiceTest
 {
-    private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
+    private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8");
 
     private BookStoreService objectUnderTest;       // Object we want to test
     private MessageRecorder  publishedDomainEvents; // Message recorder to validate published DomainEvents
@@ -79,7 +79,8 @@ For all tests we use the arrange-act-assert pattern because it is simple and for
 
 #### A simple test to add books into stock 
 ```java
-class BookStoreServiceTest {
+class BookStoreServiceTest 
+{
     // ... initialization of tests 
     @Test
     void addBooksToStock()
@@ -101,7 +102,8 @@ class BookStoreServiceTest {
 #### Test selling a book
 
 ```java
-class BookStoreServiceTest {
+class BookStoreServiceTest 
+{
     // ... initialization of tests 
     @Test
     void sellBook() throws BookNotInStockException
@@ -123,7 +125,8 @@ class BookStoreServiceTest {
 ```
 #### Test selling last book
 ```java
-class BookStoreServiceTest {
+class BookStoreServiceTest 
+{
    // ... initialization of tests
 
     @Test

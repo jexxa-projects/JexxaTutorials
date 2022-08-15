@@ -7,6 +7,13 @@ import static io.jexxa.jexxatest.architecture.ArchitectureRules.aggregateRules;
 import static io.jexxa.jexxatest.architecture.ArchitectureRules.patternLanguage;
 import static io.jexxa.jexxatest.architecture.ArchitectureRules.portsAndAdapters;
 
+/**
+ * This test can be used in all your applications.
+ * <p>
+ * You have only to adjust test validatePortsAndAdapters. Here you have to add all your
+ * packages containing the driven and driving adapters. This information is required to ensure
+ * that there are no dependencies between these packages.
+ */
 class ArchitectureTest {
 
     @Test
@@ -21,14 +28,12 @@ class ArchitectureTest {
     @Test
     void validatePatternLanguage()
     {
-        patternLanguage(BookStore.class)
-                .validate();
+        patternLanguage(BookStore.class).validate();
     }
 
     @Test
     void validateAggregateRules()
     {
-        aggregateRules(BookStore.class)
-                .validate();
+        aggregateRules(BookStore.class).validate();
     }
 }

@@ -18,7 +18,7 @@ public final class HelloJexxa
 
         jexxaMain
                 // Bind a REST adapter to class HelloJexxa to expose its methods
-                // To get greetings open: http://localhost:7500/HelloJexxa/greetings
+                // To get greetings open: http://localhost:7501/HelloJexxa/greetings
                 .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
