@@ -125,8 +125,7 @@ end up with an invalid ValueObject and finally with an invalid state in our appl
 
 Apart from providing valid `equals`, `hashCode`, and `toString` method, java records ensure that the so-called canonical
 constructor is called in all cases. This is also true if a record is deserialized and ensures that we have a single 
-point to validate our attributes.  
-
+point to validate our attributes, as you can see in the following:
 
 ```java 
 @ValueObject
