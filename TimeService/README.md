@@ -1,14 +1,12 @@
-# TimeService - Async Messaging #
+# TimeService - Async Messaging
 
-## What You Learn ##
+## What You Learn
 
 *   How to write an application service acting as a so called inbound-port 
-*   How to declare an outbound-port sending current time (which represents some kind of measuring point)    
-*   How to provide an implementation of this outbound-port, a so-called driving adapter, with console output
-*   How to provide an implementation of this outbound-port using `DrivenAdapterStrategy` from Jexxa for JMS.
-*   How to use a so called `specific adapter` provided by Jexxa together with an application specific driving adapter    
+*   How to declare and implement an outbound-port sending current time as async message     
+*   How to receive the async message including current time and print it to console 
 
-## What you need ##
+## What you need
 
 *   Understand tutorial `HelloJexxa` because we explain only new aspects 
 *   60 minutes
@@ -17,22 +15,41 @@
 *   A running ActiveMQ instance (at least if you start the application with infrastructure)
 *   curl to trigger the application  
 
-## Implement the Application Core ##
+## Implement the Application Core
 
 The application core consists of following two classes:
 
-*   `TimeService:` Provides use cases of the domain and is a `ApplicationService` in terms of the pattern language of DDD
-*   `ITimePublisher:` Allows for publishing current time and is a `DomainService` in terms of the pattern language of DDD
-*   `IMessageDisplay:` Shows a message and is a `DomainService` in terms of the pattern language of DDD        
+*   `TimeApplicationService:` As an inbound port, it provides use cases of the domain. In terms of pattern language of DDD it is an `ApplicationService`
+*   `TimePublisher:` As an outbound port, it allows for publishing current time and is a `InfrastrucureService` in terms of the pattern language of DDD
+*   `MessageDisplay:` As an outbound port, is shows a message and is a `InfrastructureService` in terms of the pattern language of DDD        
+
+### Declare interfaces for the outbound ports
+
+The most important aspect here is that a technology-agnostic application must not use any technology-stack. Therefore,
+we must define an interface `TimePublisher` that provides us the possibility to publish the time by an arbitrary 
+technology stack.
+
+```java
+public interface TimePublisher
+{
+    void publish(LocalTime localTime);
+}
+```                 
+
+The second interface `MessageDisplay` provides the possibility to display some messages. 
+
+```java
+public interface MessageDisplay
+{
+    void show(String message);
+}
+```      
   
-### Implement class `TimeService` ###
+### Implement class `TimeApplicationService`
 
-This class provides the supports the main two very simple use cases of this application: 
-*   Provide current time
-*   Publish current time in any way.   
-
-The most important aspect here is that a technology-agnostic application must not use any technology-stack. Therefore, 
-we must define an interface `ITimePublisher` that provides us the possibility to publish the time by an arbitrary technology stack.
+Now, we can implement our `ApplicationService` that provides two very simple use cases: 
+*   Publish current time   
+*   Receive and display a published time
 
 Since Jexxa only supports implicit constructor injection, we have to declare all required interfaces in the constructor.    
 
@@ -55,19 +72,17 @@ public class TimeApplicationService
         this.messageDisplay = Objects.requireNonNull(messageDisplay);
     }
 
-    public LocalTime getTime()
-    {
-        return LocalTime.now();
-    }
-
+    /**
+     * Implement use case 1: publish current time 
+     */
     public void publishTime()
     {
-        timePublisher.publish(getTime());
+        timePublisher.publish(LocalTime.now());
     }
 
 
     /**
-     * This method shows the previously published time.
+     * Implement use case 2 : Shows the previously published time.
      * @param localTime the previously published time
      */
     public void displayPublishedTime(LocalTime localTime)
@@ -77,44 +92,25 @@ public class TimeApplicationService
     }
 }
 ```                  
-
-### Declare interface `TimePublisher` ###
-
-The interface is quite simple since we need just a single method to publish a time. 
-
-```java
-public interface TimePublisher
-{
-    void publish(LocalTime localTime);
-}
-```                 
-
-### Declare interface `IMessageDisplay` ###
-
-```java
-public interface MessageDisplay
-{
-    void show(String message);
-}
-```                 
  
-## Implement the Infrastructure ##
+ 
+## Implement the Infrastructure
 
-### Driven Adapter with console output ###
-The interface `IMessageDisplay` can be implemented by `MessageDisplay` by just printing given arguments to a logger.  
+### Driven Adapter with console output
+The interface `MessageDisplay` is implemented by `MessageDisplayImpl` by just printing given arguments to a logger.  
 
 Note: Jexxa uses implicit constructor injection together with a strict convention over configuration approach.
 
 Therefore, each driven adapter needs one of the following constructors: 
 
 *   A public default constructor: `MessageDisplay()`
-*   A public constructor with a single `Properties` attribute:  `MessageDisplay(Properties propertes)`
+*   A public constructor with a single `Properties` attribute:  `MessageDisplay(Properties properties)`
 *   A public static factory method that gets no parameters and returns the interface which is the type of the driving adapter: `public static IMessageDisplay create()`
 *   A public static factory method with a single `Properties` parameter and returns the interface which is the type of the requested driving adapter: `public static IMessageDisplay create(Properties properties)`
    
 Since our driven adapter does not need/support any configuration parameter, we can use default constructor generated by Java.
 
-Note: In case you use any static code analysis tools such as SonarCube you can add annotation `@SuppressWarnings("unused")` to avoid a warning such as "class is not used". 
+Note: In case you use any static code analysis tools such as SonarLint/Cube you can add annotation `@SuppressWarnings("unused")` to avoid a warning such as "class is not used". 
 
 ```java
 @SuppressWarnings("unused")
@@ -178,25 +174,30 @@ java.naming.user=admin
 java.naming.password=admin
 ```                       
 
-## Implement the port adapter to receive JMS messages ##
-When receiving asynchronous messages we have to convert it into business data which is defined in the application core and forward it to a specific method within the application core. Since this cannot be done by convention meaningful, we have to use a configuration approach. As described in [Architecture of Jexxa](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html), we have to implement a so-called port adapter.   
-  
-Implementing a port adapter for JMS is quite easy.
-*   Within the constructor we define our class from the application core that will be called. Jexxa automatically injects this object when creating the port adapter. By convention, this is the only object defined in the constructor.  
-*   In case of JMS we have to implement the JMS specific `MessageListener` interface. To facilitate this, Jexxa offers convenience classes which perform JSON deserialization.  
-*   Finally, we have to pass the configuration parameter the specific driving adapter. In this case it is called `JMSConfiguration` and allows to define all JMS related information, such as destination, messaging type, and a messaging selector if required.
+## Implement the TimeListener
+When receiving asynchronous messages we have to:
+*   Define the connection information how to receive the data
+*   Convert it into business data which is defined in the application core 
+*   Forward it to a specific method within the application core. 
+ 
+Implementing a port adapter for JMS using Jexxa is quite easy.
+*   Within the constructor we define our class from the application core that will be called. Jexxa automatically 
+    injects this object when creating the port adapter. By convention, this is the only object defined in the 
+    constructor.  
+*   In case of JMS we have to implement the JMS specific `MessageListener` interface. To facilitate this, Jexxa offers 
+    convenience classes which perform JSON deserialization.
+*   Finally, we have to pass the configuration parameter the specific driving adapter. In this case it is called 
+    `JMSConfiguration` and allows to define all JMS related information, such as destination, messaging type, and a 
+    messaging selector if required.
 
 ```java
-import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
-
 @SuppressWarnings("unused")
-public final class PublishTimeListener extends TypedMessageListener<LocalTime> {
-    private final TimeApplicationService
-    timeApplicationService;
+public final class TimeListener extends TypedMessageListener<LocalTime> {
+    private final TimeApplicationService timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
 
     //To implement a so called PortAdapter we need a public constructor which expects a single argument that must be a InboundPort.
-    public PublishTimeListener(TimeApplicationService timeApplicationService) {
+    public TimeListener(TimeApplicationService timeApplicationService) {
         super(LocalTime.class);
         this.timeApplicationService = timeApplicationService;
     }
@@ -213,10 +214,9 @@ public final class PublishTimeListener extends TypedMessageListener<LocalTime> {
 
 ## Implement the Application ##
 
-Finally, we have to write our application. As you can see in the code below there are two main differences compared to `HelloJexxa`:
+Finally, we have to write our application. As you can see in the code below, the only difference compared to `HelloJexxa`
+is that we bind a JMSAdapter to our TimeListener
 
-*   We define the packages that should be used by Jexxa. This allows fine-grained control of used driven adapter since we must offer only a single implementation for each outbound port. In addition, this limits the search space for potential driven adapters and speeds up startup time.
-*   Depending on the command line parameters we decide which driven adapter should be used to publish the time, JMS based or console based.
 *   In case we use JMS, we connect JMSAdapter to the application specific port adapter.     
 *   The rest of the main method is similar to `HelloJexxa` tutorial.   
    

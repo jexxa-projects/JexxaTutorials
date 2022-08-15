@@ -26,19 +26,17 @@ public class TimeApplicationService
         this.messageDisplay = Objects.requireNonNull(messageDisplay);
     }
 
-    public LocalTime getTime()
-    {
-        return LocalTime.now();
-    }
-
+    /**
+     * Implement use case 1: publish current time
+     */
     public void publishTime()
     {
-        timePublisher.publish(getTime());
+        timePublisher.publish(LocalTime.now());
     }
 
 
     /**
-     * This method shows the previously published time.
+     * Implement use case 2 : Shows the previously published time.
      * @param localTime the previously published time
      */
     public void displayPublishedTime(LocalTime localTime)
