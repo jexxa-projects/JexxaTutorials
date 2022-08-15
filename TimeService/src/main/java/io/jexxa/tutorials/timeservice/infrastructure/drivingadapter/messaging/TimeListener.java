@@ -14,7 +14,8 @@ public final class TimeListener extends TypedMessageListener<LocalTime>
     private final TimeApplicationService timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
 
-    //To implement a so called PortAdapter we need a public constructor which expects a single argument that must be a InboundPort.
+    // To implement a so called PortAdapter we need a public constructor which expects a single argument that must be an
+    // InboundPort.
     public TimeListener(TimeApplicationService timeApplicationService)
     {
         super(LocalTime.class);
