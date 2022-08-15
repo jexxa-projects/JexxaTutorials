@@ -7,6 +7,8 @@ import io.jexxa.addend.applicationcore.AggregateID;
 import java.time.Instant;
 import java.util.Objects;
 
+import static io.jexxa.tutorials.contractmanagement.domain.DomainEventPublisher.publish;
+
 @Aggregate
 public class Contract
 {
@@ -32,15 +34,16 @@ public class Contract
         return advisor;
     }
 
+    @SuppressWarnings("unused")
     public void setAdvisor(String advisor)
     {
         this.advisor = advisor;
     }
 
-    public ContractSigned sign()
+    public void sign()
     {
         isSigned = true;
-        return new ContractSigned(contractNumber, Instant.now());
+        publish(new ContractSigned(contractNumber, Instant.now()));
     }
 
     public boolean isSigned()

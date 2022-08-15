@@ -3,12 +3,10 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.addend.applicationcore.ApplicationService;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
-import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
-import io.jexxa.tutorials.bookstore.domainservice.DomainEventPublisher;
+import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 
 import java.util.List;
-import java.util.Objects;
 
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 
@@ -16,84 +14,61 @@ import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 @ApplicationService
 public class BookStoreService
 {
-    private final BookRepository ibookRepository;
-    private final DomainEventPublisher domainEventPublisher;
+    private final BookRepository bookRepository;
 
-    public BookStoreService (BookRepository ibookRepository,
-                             DomainEventPublisher domainEventPublisher)
+    public BookStoreService (BookRepository bookRepository)
     {
-        this.ibookRepository = Objects.requireNonNull(ibookRepository);
-        this.domainEventPublisher = Objects.requireNonNull(domainEventPublisher);
+        this.bookRepository = bookRepository;
     }
 
-    public void addToStock(String isbn13, int amount)
+    public void addToStock(ISBN13 isbn13, int amount)
     {
-        var validatedISBN = new ISBN13(isbn13);
-
-        var result = ibookRepository.search(validatedISBN);
-        if (result.isEmpty())
+        if (!bookRepository.isRegistered(isbn13))
         {
-            ibookRepository.add(newBook(validatedISBN));
+            bookRepository.add(newBook(isbn13));
         }
 
-        var book = ibookRepository.get(validatedISBN);
+        var book = bookRepository.get(isbn13);
 
         book.addToStock(amount);
 
-        ibookRepository.update(book);
+        bookRepository.update(book);
     }
 
 
-    public boolean inStock(String isbn13)
+    public boolean inStock(ISBN13 isbn13)
     {
-        return inStock(new ISBN13(isbn13));
-    }
-
-    boolean inStock(ISBN13 isbn13)
-    {
-        return ibookRepository
+        return bookRepository
                 .search(isbn13)
                 .map(Book::inStock)
                 .orElse(false);
     }
 
-    public int amountInStock(String isbn13)
+    public int amountInStock(ISBN13 isbn13)
     {
-        return amountInStock(new ISBN13(isbn13));
-    }
-
-    int amountInStock(ISBN13 isbn13)
-    {
-        return ibookRepository
+        return bookRepository
                 .search(isbn13)
                 .map(Book::amountInStock)
                 .orElse(0);
     }
 
-    public void sell(String isbn13) throws BookNotInStockException
+    public void sell(ISBN13 isbn13) throws BookNotInStockException
     {
-        sell(new ISBN13(isbn13));
-    }
-
-    void sell(ISBN13 isbn13) throws BookNotInStockException
-    {
-        var book = ibookRepository
+        var book = bookRepository
                 .search(isbn13)
                 .orElseThrow(BookNotInStockException::new);
 
-        var lastBookSold = book.sell();
-        lastBookSold.ifPresent(domainEventPublisher::publish);
+        book.sell();
 
-        ibookRepository.update(book);
+        bookRepository.update(book);
     }
 
     public List<ISBN13> getBooks()
     {
-        return ibookRepository
+        return bookRepository
                 .getAll()
                 .stream()
                 .map(Book::getISBN13)
                 .toList();
     }
-
 }

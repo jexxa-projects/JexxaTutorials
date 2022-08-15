@@ -54,8 +54,11 @@ First we map the functionality of the application to DDD patterns
     *   `BookSoldOut` when copies of a book are no longer in stock   
 
 *   `DomainService:` 
-    *   `DomainEventPublisher:` We need to publish our domain events in some way. Since the implementation requires a technology stack we can only define an interface.   
-    *   `ReferenceLibrary:` Return latest books. For simplicity, we assume that it is a service which does not relate to our domain core directly.             
+    *   `DomainEventPublisher:` Registers for `DomainEvents` and forwards them to an external message bus.   
+    *   `ReferenceLibrary:` Master data for our bookstore which returns the latest books. For simplicity, we assume that it is a service which does not relate to our domain core directly.             
+
+*   `InfrastructureService:`
+    *   `DomainEventSender:` Interface to send `DomainEvents` to a message bus.
 
 *   `BusinessException:`
     *   `BookNotInStockException:` In case we try to sell a book that is currently not available   
@@ -77,7 +80,7 @@ In our tutorials we use following package structure. Please note that this packa
     *   drivenadapter
     *   drivingadapter 
 
-Please note that a package for a specific use case includes all required domain classes. As you can see in the examples these are typically the corresponding of type `Aggregate`,`ValueObject`, `DomainEvent`, `BusinessException`, and `Repository`. The reason for this is that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) so that changing classes within such a package is a change in the use case. 
+Please note that a package for a specific use case includes all required domain classes. As you can see in the examples these are typically the corresponding of type `Aggregate`,`ValueObject`, `DomainEvent`, `BusinessException`, and `Repository`. The reason for this is that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) so that changing classes within such a package is a change in the use case. In addition, it should not affect any other use cases.  
 
 Structuring your domain-package this way provides following benefits: 
 *   Use cases are represented explicitly which allows a clear view into the application
@@ -86,24 +89,81 @@ Structuring your domain-package this way provides following benefits:
 
 As soon as your domain logic and thus the number of use cases grows, it will happen that ValueObjects will be used by multiple use cases. This is quite normal. The challenge is to group these ValueObjects and find a domain specific main term which is not `common` or something like this. As soon as you have this name, create a corresponding package within `domain`.   
 
-   
 
 ### A note on implementing DDD patterns  
 
-*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons.  
+*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to following reasons:  
     *   They are immutable and compared based on their internal values.
-    *   They must not have setter methods. So all fields should be final. 
+    *   They must not have setter methods. So all fields are final. 
     *   They must provide a valid implementation of equals() and hashcode().
-    *   They must not include any business logic, but they can validate their input data.    
+    *   They must not include any business logic, but they can validate their input data.
+    *   Using records ensures that the canonical constructor is called, even if they are de-serialized. So you can validate given values in constructor without considering serialization methods.   
 
 *   `Aggregate`: Is identified by a unique `AggregateID` which is a `ValueObject`
     *   `Book` uses an `ISBN13` object     
 
-*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.        
-     
-## 2. Implement the infrastructure
+*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.     
 
-Implementation of `IDomainEventPublisher` just prints the `DomainEvent` to the console. So we can just use the implementation from tutorial `TimeService`.    
+As you can see in the source code, all classes are annotated with the pattern language of DDD. 
+This is not required but strongly recommended. The explanation for this can be found in tutorial [pattern language](README-PatternLanguage.md). 
+
+## 2. Sending DomainEvents
+When sending DomainEvents we should distinguish between two separate scenarios.
+*   `DomainEvent`: Used to inform the application core that something happened which is then typically handled by an `ApplicationService` or a `DomainService`. 
+*   `IntegrationEvent`: Used to inform other contexts that something happened. These events are typically forwarded by an `InfrastructureService`. 
+
+Within the DDD community, there are essentially three different approaches on how to implement sending DomainEvents. 
+An overview and discussion of these approaches can be found [here](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/).
+
+Jexxa itself supports all of these approaches. In these tutorials the approach with static methods is used, because it 
+is also used in the book ___Implementing Domain-Driven Design___ and described in great detail. It therefore forms a very good basis for the initial 
+implementation of a DDD application, from which teams can then work out for their own approach.
+
+     
+## 3. Implement the infrastructure
+
+### Implement the DomainEventSender
+Our implementation of `DomainEventSender` just prints the `DomainEvent` to the console. So we could use the 
+implementation from tutorial `TimeService`.
+
+In order to show the advantage of the strategy pattern, we request a message sender from Jexxa. The concrete 
+implementation is then configured in a properties file, so that we can exchange the implementation when starting 
+the application.
+
+```java
+public class DomainEventSenderImpl implements DomainEventSender {
+    private final MessageSender messageSender;
+
+    public DomainEventSenderImpl(Properties properties)
+    {
+        // Request a MessageSender from the framework, so that we can configure it in our properties file
+        messageSender = getMessageSender(DomainEventSender.class, properties);
+    }
+
+    @Override
+    public void publish(Object domainEvent)
+    {
+        // We just allow sending DomainEvents
+        validateDomainEvent(domainEvent);
+
+        // For publishing a DomainEvent we use a fluent API in Jexxa 
+        messageSender
+                .send(domainEvent)
+                .toTopic("BookStore")
+                .addHeader("Type", domainEvent.getClass().getSimpleName())
+                .asJson();
+    }
+
+    private void validateDomainEvent(Object domainEvent)
+    {
+        Objects.requireNonNull(domainEvent);
+        if ( domainEvent.getClass().getAnnotation(DomainEvent.class) == null )
+        {
+            throw new IllegalArgumentException("Given object is not annotated with @DomainEvent");
+        }
+    }
+}
+```
 
 ### Implement the repository 
 When using Jexxa's `RepositoryManager` implementing a repository is just a mapping to the `IRepository` interface which provides typical CRUD operations.   
@@ -115,50 +175,46 @@ The requirements are:
 
 The following source code shows a typical implementation of a `Repository`. Within the main function you can configure the `RepositoryManager` if required. 
 
-For the sake of completeness we use a static factory method in this implementation instead of a public constructor. Here it is quite important to return the interface and not the concrete type.        
 
 ```java
   
 @SuppressWarnings("unused")
-public final class BookRepository implements IBookRepository
+public class BookRepositoryImpl implements BookRepository
 {
     private final IRepository<Book, ISBN13> repository;
 
-    public BookRepository (Properties properties)
+    public BookRepositoryImpl(Properties properties)
     {
         this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }
 
-    @Override                    
-    public void add(Book book) { repository.add(book); }
+    @Override
+    public void add(Book book)                  { repository.add(book); }
 
     @Override
-    public Book get(ISBN13 isbn13) { return repository.get(isbn13).orElseThrow(); }
+    public void update(Book book)               { repository.update(book); }
 
     @Override
-    public boolean isRegistered(ISBN13 isbn13)
-    {
-        return search(isbn13)
-                .isPresent();
-    }
+    public boolean isRegistered(ISBN13 isbn13)  { return search(isbn13).isPresent(); }
+
+    @Override
+    public Book get(ISBN13 isbn13)              { return repository.get(isbn13).orElseThrow(); }
 
     @Override
     public Optional<Book> search(ISBN13 isbn13) { return repository.get(isbn13); }
-
+    
     @Override
-    public void update(Book book) { repository.update(book); }
-
-    @Override
-    public List<Book> getAll() { return repository.get(); }
+    public List<Book> getAll()                  { return repository.get(); }
 }
-
 ```
+
+**Important**: 
+As you can see, the implementation of a repository and a message sender is straight forward. So it is a good starting point for junior developers. See [here](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html#_strategy_pattern_for_driven_adapters) how you can use it to develop your junior developers.     
 
 ## 3. Implement the application 
 
-Finally, we have to write our application. As you can see in the code below there are two main differences compared to `HelloJexxa` and `TimeService`:
+Finally, we have to write our application. As you can see in the code below there is one difference compared to `HelloJexxa` and `TimeService`:
 
-*   Define a default strategy for our Repositories.
 *   Add a bootstrap service which is directly called to initialize domain-specific aspects.   
    
 ```java
@@ -170,15 +226,15 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                //Get the latest books when starting the application
-                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
+                // Bootstrap all classes annotated with @DomainService. In this application this causes to get the 
+                // latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
+                .bootstrapAnnotation(DomainService.class)
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .run();
     }
-    //...
 }
 ```
 
@@ -244,13 +300,17 @@ curl -X GET  http://localhost:7503/BookStoreService/getBooks
 
 Response: 
 ```Console
-[{"value":"978-1-891830-85-3"},{"value":"978-1-60309-025-4"},{"value":"978-1-60309-016-2"},{"value":"978-1-60309-265-4"},{"value":"978-1-60309-047-6"},{"value":"978-1-60309-322-4"}]
+[
+ {"isbn13":"978-1-60309-322-4"},{"isbn13":"978-1-891830-85-3"},
+ {"isbn13":"978-1-60309-047-6"},{"isbn13":"978-1-60309-025-4"},
+ {"isbn13":"978-1-60309-016-2"},{"isbn13":"978-1-60309-265-4"}
+]
 ```
 
 #### Query available books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
      http://localhost:7503/BookStoreService/inStock       
 ```
 
@@ -262,7 +322,7 @@ false
 #### Add some books
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d "["978-1-891830-85-3", 5]" \
+curl -X POST -H "Content-Type: application/json" -d "[{isbn13: "978-1-891830-85-3"}, 5]" \
      http://localhost:7503/BookStoreService/addToStock
 ```
 
@@ -273,7 +333,7 @@ Response: No output
 #### Ask again if a specific book is in stock
 Command:
 ```Console
-curl -X POST -H "Content-Type: application/json" -d '"978-1-891830-85-3"' \
+curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
      http://localhost:7503/BookStoreService/inStock       
 ```
 

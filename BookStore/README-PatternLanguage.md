@@ -15,14 +15,27 @@
 *   Optional: A postgres DB   
 
 ## A pattern language for your application core 
-In the [architecture of Jexxa](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html) we describe that Jexxa does not require any special annotations. Main reason is that framework related annotations can tightly couple your application core to a specific technology stack. Therefore, framework specific annotations should not be used within the application core.
+In the [architecture of Jexxa](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html) we describe that Jexxa 
+does not require any special annotations. Main reason is that framework related annotations can tightly couple your 
+application core to a specific technology stack. Therefore, framework specific annotations should not be used within 
+the application core.
 
-Instead, define and use your own annotations that are specific for your application. These annotations can then be used by a framework.  
+Instead, define and use your own annotations that are specific for your application. These annotations can then be used
+by a framework.  
 
 ### Framework-agnostic annotations 
-Annotations as pure meta-information can be used your developing teams to make a so-called __pattern language__ explicit. The pattern language is part of the micro architecture of an application and allows your developers to quickly navigate through the source code. Instead of reading and understanding the source code again and again, a developer can navigate through the code based on these patterns. For example if the application uses the pattern language of DDD, and you have to change the business logic of your application core the corresponding code must be within an `Aggregate`. So you can directly navigate to the `Aggregate` and skip all remaining elements. 
+Annotations as pure meta-information can be used your developing teams to make a so-called __pattern language__ 
+explicit. The pattern language is part of the micro architecture of an application and allows your developers to quickly
+navigate through the source code. Instead of reading and understanding the source code again and again, a developer can
+navigate through the code based on these patterns. For example if the application uses the pattern language of DDD, and
+you have to change the business logic of your application core the corresponding code must be within an `Aggregate`.
+So you can directly navigate to the `Aggregate` and skip all remaining elements. 
 
-Even if you not use the pattern language of DDD, the developers typically used some patterns to implement the application. To make these patterns explicit, I strongly recommend annotating all classes within the application core with their corresponding element of the pattern language. Classes that cannot be assigned to a specific element typically violate some design principles such as the single responsibility principle. In case of a durable software system, you will get the following advantages: 
+Even if you not use the pattern language of DDD, the developers typically used some patterns to implement the 
+application. To make these patterns explicit, I strongly recommend annotating all classes within the application core 
+with their corresponding element of the pattern language. Classes that cannot be assigned to a specific element 
+typically violate some design principles such as the single responsibility principle. In case of a durable software 
+system, you will get the following advantages: 
 
 *   You document the patterns directly in the code which ensures that all developers will read it
 *   You establish a common understanding of the used patterns within the development team 
@@ -33,17 +46,17 @@ Even if you not use the pattern language of DDD, the developers typically used s
 
 For the pattern langauge of DDD we recommend project [Addend](https://addend.jexxa.io/).     
 
-The following shows the annotation of an `Aggregate`. Apart from the obvious annotation, it also uses two other annotations: 
+The following shows the annotation of an `Aggregate`. Apart from the obvious annotation, it also uses two other 
+annotations: 
 *   `AggregateID` to explicitly document the unique key
 *   `AggregateFactory` to explicitly document the factory method for the `Aggregate`
 
 ```java
-
 @Aggregate
 public final class Book
 {
     private final ISBN13 isbn13;
-    private final int amountInStock = 0;
+    private int amountInStock = 0;
 
     private Book(ISBN13 isbn13)
     {
@@ -68,15 +81,21 @@ public final class Book
 
 ### Use of Java records to improve semantic meaning
 
-When implementing a business application using DDD one of the most important aspects is to provide a semantically elegant and consistent
-solution for implementing the DDD pattern elements. 
+When implementing a business application using DDD one of the most important aspects is to provide a semantically 
+elegant and consistent solution for implementing the DDD pattern elements. 
 
-One of the major changes in Java 16 is the official support for Java [records](https://openjdk.java.net/jeps/359). They are especially designed for classes holding immutable data. Apart from a compact syntax they also provide valid implementations of `equals()`, `hashCode()`, and `toString()`.
+One of the major changes in Java 16 is the official support for Java [records](https://openjdk.java.net/jeps/359). They 
+are especially designed for classes holding immutable data. Apart from a compact syntax they also provide two vital 
+features: 
+*   Valid implementations of `equals()`, `hashCode()`, and `toString()`.
+*   The canonical constructor must be called in any cases. This ensures that members of a record can be validated in all
+cases even if they are deserialized.  
+
 Therefore, they are suitable for the following DDD elements.
-
 *   `ValueObject`
 *   `DomainEvent`
 
+### Implementing DomainEvent `BookSoldOut`
 The following example shows the implementation of the domain event `BookSoldOut` using a record. Note that the static method `bookSoldOut` is not required but improves the read flow when creating the domain event.
 
 ```java 
@@ -95,53 +114,95 @@ As you can see, all important information of a DomainEvent can be seen in thw fo
 *   `@DomainEvent`: Indicates the concrete type of the pattern element.
 *   `public record BookSoldOut(ISBN13 isbn13)`: Indicates the type name `BookSoldOut` including the provided data which is `ISBN13`
 
-### `IDomainEventPublisher`: Considerations on interface definition
+### Implementing ValueObject `ISBN13`
+The main challenge when implementing this class is to ensure that we get a valid string representation of an ISBN13
+number. As long as the constructor is called, we can validate given string using private method `validateChecksum`.
 
-In large applications it is quite common that you have multiple domain events that have to published to other applications.
-To solve this issue at least following solutions exist:
+Unfortunately, we typically have to (de-)serialize our ValueObjects to send or receive them over a network connection. 
+In order to automate this, most frameworks use reflection or a default constructor to provide a generic approach. 
+The main disadvantage is that these approaches can leverage the validation of the internal attributes, so that we could 
+end up with an invalid ValueObject and finally with an invalid state in our application.   
 
-*   Method overloading: Provide a specific method for each type of DomainEvent in `IDomainEventPublisher`. On the one side, this ensures static type
-    safety but could flood your interface if the number of domain events is quite large. Unfortunately, I've learned that this could also lead to
-    implementations in a `DrivenAdapter` in which each domain event is treated in a slightly different way.
+Apart from providing valid `equals`, `hashCode`, and `toString` method, java records ensure that the so-called canonical
+constructor is called in all cases. This is also true if a record is deserialized and ensures that we have a single 
+point to validate our attributes.  
 
-*   Abstract `DomainEvent` class: This allows to ensure type safety in `IDomainEventPublisher` and also providing only a single method that is
-    implemented in a generic way. This seems to solve all issues from method overloading. The problem with this approach is that you introduce an
-    interface that must be implemented by all kind of domain events for technical reason. At first glance, this seems to be a slightly esoteric
-    problem. In the long run, I've learned that such classes can be a gate opener, allowing technology aspects to enter the application core.
 
-*   Publishing an `Object`: An alternative solution is to provide a method accepting a domain event of type `Object`. This prevents entering
-    technology aspects into the application core. The obvious drawback is that you loose type safety. In case you annotated all your classes you can
-    double-check if the domain event is annotated with `DomainEvent`. This prevents publishing arbitrary objects, but this check is performed only
-    during runtime.
+```java 
+@ValueObject
+public record ISBN13(String isbn13)
+{
+    public ISBN13
+    {
+        // The canonical constructor must be called in all cases. 
+        // So we put the validation of our attributes here.
+        validateChecksum(isbn13);
+    }
 
-Of course, you can also combine the approaches. For example, you can use method overloading, and the implementation uses an internal method accepting
-an `Object`. Anyway, the most important aspects are:
+    @ValueObjectFactory(ISBN13.class)
+    public static ISBN13 createISBN(String value)
+    {
+        return new ISBN13(value);
+    }
+
+    // implementaion of validateChecksum(String isbn13)
+
+}
+```
+
+### `DomainEventSender`: Considerations on interface definition
+
+In large applications it is quite common that you have multiple domain events that have to published to other 
+applications as so-called integration events. To solve this issue at least following solutions exist:
+
+*   Method overloading: Provide a specific method for each type of DomainEvent in `DomainEventSender`. On the one side, 
+    this ensures static type safety but could flood your interface if the number of domain events is quite large.
+
+*   Abstract `DomainEvent` class: This allows to ensure type safety in `DomainEventSender` and also providing only a 
+    single method that is implemented in a generic way. This seems to solve all issues from method overloading. The 
+    problem with this approach is that you introduce an interface or abstract base class that must be implemented by all
+    kind of domain events for technical reason. At first glance, this seems to be a slightly esoteric problem. In the 
+    long run, I've learned that such classes can be a gate opener, allowing technology aspects to enter the application 
+    core. Therefore, I can only recommend such an approach for teams who know how to avoid this. 
+
+*   Publishing an `Object`: An alternative solution is to provide a method accepting a domain event of type `Object`. 
+    This prevents entering technology aspects into the application core. The obvious drawback is that you loose type 
+    safety. In case you annotated all your classes you can double-check if the domain event is annotated with 
+    `DomainEvent`. This prevents publishing arbitrary objects, but this check is performed only during runtime.
+
+Of course, you can also combine the approaches. For example, you can use method overloading, and the implementation uses
+an internal method accepting an `Object`. Anyway, the most important aspects are:
 *   The outbound port is an interface to ensure the separation of your application core from a technology stack.
-*   To avoid entering technology aspects into the application core, or vice versa, you should provide a clean guideline how to handle this.
+*   To avoid entering technology aspects into the application core, or vice versa, you should provide a clean guideline 
+    how to handle this.
 
-Please do not underestimate such aspects if your application runs for several decades and is maintained by different developer teams. So you should
-discuss and document such aspects with your colleagues and/or software architects.
+Please do not underestimate such aspects if your application runs for several decades and is maintained by different 
+developer teams. So you should discuss and document such aspects with your colleagues and/or software architects.
 
 Finally, the following code shows how to use the annotation to add a runtime test.
 
 ```java
 @DrivenAdapter
-public class DomainEventPublisher implements IDomainEventPublisher
-{
-private final MessageSender messageSender;
+public class DomainEventSenderImpl implements DomainEventSender {
+    private final MessageSender messageSender;
 
-    public DomainEventPublisher(Properties properties)
+    public DomainEventSenderImpl(Properties properties)
     {
-        messageSender = MessageSenderManager.getMessageSender(properties);
+        // Request a MessageSender from the framework, so that we can configure it in our properties file
+        messageSender = getMessageSender(DomainEventSender.class, properties);
     }
 
     @Override
     public void publish(Object domainEvent)
     {
+        // We just allow sending DomainEvents
         validateDomainEvent(domainEvent);
+
+        // For publishing a DomainEvent we use a fluent API in Jexxa
         messageSender
                 .send(domainEvent)
-                .toTopic("BookStoreTopic")
+                .toTopic("BookStore")
+                .addHeader("Type", domainEvent.getClass().getSimpleName())
                 .asJson();
     }
 
@@ -153,8 +214,8 @@ private final MessageSender messageSender;
             throw new IllegalArgumentException("Given object is not annotated with @DomainEvent");
         }
     }
-
 }
+
 ```
 ## Implement the Application
 
@@ -169,12 +230,11 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                //Get the latest books when starting the application
-                .bootstrap(ReferenceLibrary.class).with(ReferenceLibrary::addLatestBooks)
+                // Bootstrap all classes annotated with @DomainService. In this application this causes to get the 
+                // latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
+                .bootstrapAnnotation(DomainService.class)
 
-                // In case you annotate your domain core with your pattern language,
-                // You can also bind DrivingAdapter to annotated classes.
-                .bind(RESTfulRPCAdapter.class).toAnnotation(ApplicationService.class)
+                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .run();
@@ -234,7 +294,7 @@ curl -X GET  http://localhost:7503/BookStoreService/getBooks
 
 Response: 
 ```Console
-[{"value":"978-1-891830-85-3"},{"value":"978-1-60309-025-4"},{"value":"978-1-60309-016-2"},{"value":"978-1-60309-265-4"},{"value":"978-1-60309-047-6"},{"value":"978-1-60309-322-4"}]
+[{"isbn13":"978-1-60309-322-4"},{"isbn13":"978-1-891830-85-3"},{"isbn13":"978-1-60309-047-6"},{"isbn13":"978-1-60309-025-4"},{"isbn13":"978-1-60309-016-2"},{"isbn13":"978-1-60309-265-4"}]
 ```
 
 #### Ask if a specific book is in stock**
@@ -242,7 +302,7 @@ Response:
 Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
-    -d '"978-1-891830-85-3"' \
+    -d '{isbn13:"978-1-891830-85-3"}' \
     http://localhost:7503/BookStoreService/inStock                 
 ```
 
@@ -256,7 +316,7 @@ false
 Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
-    -d '["978-1-891830-85-3", 5]' \
+    -d '[{isbn13:"978-1-891830-85-3"}, 5]' \
     http://localhost:7503/BookStoreService/addToStock                 
 ```
 Response: No output  
@@ -268,8 +328,8 @@ Response: No output
 Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" \
-    -d '"978-1-891830-85-3"' \
-    http://localhost:7503/BookStoreService/inStock                 
+    -d '{isbn13:"978-1-891830-85-3"}' \
+    http://localhost:7503/BookStoreService/inStock               
 ```
 
 Response: 

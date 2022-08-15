@@ -38,10 +38,8 @@ public class ContractService
     public void signContract( ContractNumber contractNumber )
     {
         var contract = contractRepository.get(contractNumber);
-        var domainEvent= contract.sign();
-
+        contract.sign();
         contractRepository.update(contract);
-        domainEventStore.add(domainEvent);
     }
 
     public List<ContractNumber> getUnsignedContracts()

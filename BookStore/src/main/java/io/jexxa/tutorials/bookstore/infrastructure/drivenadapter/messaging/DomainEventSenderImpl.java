@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 import io.jexxa.addend.applicationcore.DomainEvent;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSender;
-import io.jexxa.tutorials.bookstore.domainservice.DomainEventPublisher;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventSender;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -12,22 +12,25 @@ import static io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSen
 
 @SuppressWarnings("unused")
 @DrivenAdapter
-public class DomainEventPublisherImpl implements DomainEventPublisher
-{
+public class DomainEventSenderImpl implements DomainEventSender {
     private final MessageSender messageSender;
 
-    public DomainEventPublisherImpl(Properties properties)
+    public DomainEventSenderImpl(Properties properties)
     {
-        messageSender = getMessageSender(DomainEventPublisher.class, properties);
+        // Request a MessageSender from the framework, so that we can configure it in our properties file
+        messageSender = getMessageSender(DomainEventSender.class, properties);
     }
 
     @Override
     public void publish(Object domainEvent)
     {
+        // We just allow sending DomainEvents
         validateDomainEvent(domainEvent);
+
+        // For publishing a DomainEvent we use a fluent API in Jexxa
         messageSender
                 .send(domainEvent)
-                .toTopic("BookStoreTopic")
+                .toTopic("BookStore")
                 .addHeader("Type", domainEvent.getClass().getSimpleName())
                 .asJson();
     }
@@ -40,5 +43,4 @@ public class DomainEventPublisherImpl implements DomainEventPublisher
             throw new IllegalArgumentException("Given object is not annotated with @DomainEvent");
         }
     }
-
 }
