@@ -1,6 +1,6 @@
-# HelloJexxa #
+# HelloJexxa
 
-## What You Learn ##
+## What You Learn
 
 *   How to write a simple application using Jexxa
 *   How to expose and access `HelloJexxa` class via RESTful-RCP 
@@ -8,7 +8,7 @@
 *   How to use the `jexxa-application.properties` to configure the driving adapters
 *   How to build a docker image with this tutorial    
 
-## What you need ##
+## What you need
 
 *   15 minutes
 *   JDK 17  (or higher) installed 
@@ -17,7 +17,7 @@
 *   curl to access the web page via command line (optional)
 *   Docker installed (optional)
 
-## Write the application ##
+## Write the application
 
 The source code of the main method is quite obvious. Each line include comments to explain the meaning.  
 
@@ -47,7 +47,7 @@ public final class HelloJexxa
 }
 ```
 
-## Compile & Start the Application ##
+## Compile & Start the Application
 ```console                                                          
 mvn clean install
 java -jar target/hellojexxa-jar-with-dependencies.jar
@@ -62,9 +62,9 @@ You will see following (or similar) output
 [main] INFO io.jexxa.core.JexxaMain - BoundedContext 'HelloJexxa' successfully started in 0.549 seconds
 ```
 
-## Access the application ##
+## Access the application
 
-### Using a web browser ###
+### Using a web browser
 *   Get name of the bounded context:
     *   URL: http://localhost:7501/HelloJexxa/greetings
     *   Result: 
@@ -72,7 +72,7 @@ You will see following (or similar) output
         Hello Jexxa 
     ```
 
-### Adjust properties ###
+### Adjust properties
 In this simple tutorial `jexxa-application.properties` includes only the two parameters for RESTFulRPCAdapter.
 The most interesting one here is `io.jexxa.rest.port` that allows to define the used network port.
 
@@ -83,7 +83,7 @@ io.jexxa.rest.host=0.0.0.0
 io.jexxa.rest.port=7501
 ```
 
-### Access provided web pages ###
+### Access provided web pages
 You can also define a path to static web pages in properties as follows. 
 ```properties                                                          
 #Settings for RESTfulRPCAdapter
@@ -99,10 +99,10 @@ The web page can be accessed via following link [http://localhost:7501/index.htm
 
 ![Webpage](images/Webpage.jpg)
 
-## Build a docker image from release version##
+## Build a docker image from release version
 In order to build a docker image and a new release, we recommend to use the GitHub action [newRelease.yml](../.github/workflows/newRelease.yml). This action script can be executed directly on GitHub and uploads a docker image to the GitHub registry ghcr.io. 
 
-## Build a docker image from snapshot release ##
+## Build a docker image from snapshot release
 In order to build a docker image with this tutorial we use the maven-jib-plugin. For the sake of simplicity we assume
 that docker is installed on your local machine so that we do not need to configure any external docker registry.
 
