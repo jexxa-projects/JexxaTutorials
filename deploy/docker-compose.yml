@@ -107,8 +107,8 @@ services:
     image: quay.io/artemiscloud/activemq-artemis-broker:latest
     restart: always
     ports:
-      - "61616:61616"
-      - "8161:8161"
+      - "62616:61616"
+      - "8261:8161"
     environment:
       AMQ_USER: admin
       AMQ_PASSWORD: admin
