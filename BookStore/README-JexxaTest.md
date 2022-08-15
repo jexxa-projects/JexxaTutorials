@@ -31,7 +31,7 @@ First, add the following dependency to your tests.
     <dependency>
       <groupId>io.jexxa.jexxatest</groupId>
       <artifactId>jexxa-test</artifactId>
-      <version>5.0.2</version>
+      <version>5.1.0</version>
       <scope>test</scope>
     </dependency>
 ```

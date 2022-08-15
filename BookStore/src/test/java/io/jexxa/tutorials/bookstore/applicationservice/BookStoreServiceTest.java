@@ -42,6 +42,7 @@ class BookStoreServiceTest
         // Invoke all bootstrapping services from main to ensure same starting point
         jexxaTest.getJexxaMain().bootstrapAnnotation(DomainService.class);
     }
+
     @Test
     void addBooksToStock()
     {
