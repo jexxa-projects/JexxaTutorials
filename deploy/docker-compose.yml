@@ -106,12 +106,9 @@ services:
   ActiveMQ:
     image: quay.io/artemiscloud/activemq-artemis-broker:latest
     restart: always
-    ports:
-      - "62616:61616"
-      - "8261:8161"
     environment:
-      AMQ_USER: artemis
-      AMQ_PASSWORD: simetraehcapa
+      AMQ_USER: "admin"
+      AMQ_PASSWORD: "admin"
 
   Postgres:
     image: postgres:14.2-alpine
