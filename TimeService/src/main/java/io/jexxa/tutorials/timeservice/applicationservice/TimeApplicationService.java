@@ -34,7 +34,6 @@ public class TimeApplicationService
         timePublisher.publish(LocalTime.now());
     }
 
-
     /**
      * Implement use case 2 : Shows the previously published time.
      * @param localTime the previously published time

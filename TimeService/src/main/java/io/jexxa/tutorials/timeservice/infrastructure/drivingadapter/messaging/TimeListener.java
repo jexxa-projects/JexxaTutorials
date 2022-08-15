@@ -8,14 +8,24 @@ import java.time.LocalTime;
 
 import static io.jexxa.infrastructure.drivingadapter.messaging.JMSConfiguration.MessagingType.TOPIC;
 
+/**
+ * 1. Within the constructor we define our class from the application core that will be called. Jexxa automatically
+ * injects this object when creating the port adapter. By convention, this is the only object defined in the
+ * constructor.
+ * <p>
+ * 2. In case of JMS we have to implement the JMS specific `MessageListener` interface. To facilitate this, Jexxa offers
+ * convenience classes such as TypedMessageListener which perform JSON deserialization into a defined type.
+ * <p>
+ * 3. The JMS specific connection information is defined as annotation at the onMessage method.
+ * <p>
+ * 4. Finally, the implementation of this method just forwards received data to the application service.
+ */
 @SuppressWarnings("unused")
 public final class TimeListener extends TypedMessageListener<LocalTime>
 {
-    private final TimeApplicationService timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
+    private final TimeApplicationService timeApplicationService;
 
-    // To implement a so called PortAdapter we need a public constructor which expects a single argument that must be an
-    // InboundPort.
     public TimeListener(TimeApplicationService timeApplicationService)
     {
         super(LocalTime.class);
@@ -23,7 +33,6 @@ public final class TimeListener extends TypedMessageListener<LocalTime>
     }
 
     @Override
-    // The JMS specific configuration is defined via annotation.
     @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC)
     public void onMessage(LocalTime localTime)
     {
