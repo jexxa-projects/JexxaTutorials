@@ -110,8 +110,8 @@ services:
       - "62616:61616"
       - "8261:8161"
     environment:
-      AMQ_USER: admin
-      AMQ_PASSWORD: admin
+      AMQ_USER: artemis
+      AMQ_PASSWORD: simetraehcapa
 
   Postgres:
     image: postgres:14.2-alpine
@@ -133,6 +133,3 @@ services:
 
 volumes:
   postgres-data:
-
-
-
