@@ -3,8 +3,7 @@
 ## What You Learn
 
 *   How to write a simple application using Jexxa
-*   How to expose and access `HelloJexxa` class via RESTful-RCP 
-*   How to expose `BoundedContext` object via JMX to access status information   
+*   How to expose and access `HelloJexxa` class via RESTful-RPC   
 *   How to use the `jexxa-application.properties` to configure the driving adapters
 *   How to build a docker image with this tutorial    
 
@@ -24,6 +23,7 @@ The source code of the main method is quite obvious. Each line include comments 
 ```java     
 public final class HelloJexxa
 {
+    // Our business logic ;-)
     public String greetings()
     {
         return "Hello Jexxa";
