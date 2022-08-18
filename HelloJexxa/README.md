@@ -2,9 +2,9 @@
 
 ## What You Learn
 
-*   How to write a simple application using Jexxa
-*   How to configure this application using the `jexxa-application.properties`
-*   How to define a simple CI/CD pipeline    
+*   [How to write a simple application using Jexxa](#Write-the-application)
+*   [How to configure this application using the `jexxa-application.properties`](#Configure-the-application)
+*   [How to define a simple CI/CD pipeline](#A-simple-CI/CD-pipeline)   
 
 ## What you need
 
