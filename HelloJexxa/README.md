@@ -18,11 +18,12 @@
 
 ## Write the application
 
-The source code of the main method is quite obvious. Each line include comments to explain the meaning.  
+The source code of the main method is quite simple. Each line include comments to explain the meaning.  
 
 ```java     
 public final class HelloJexxa
 {
+    @SuppressWarnings({"java:S3400", "unused"})
     // Our business logic ;-)
     public String greetings()
     {
@@ -35,13 +36,11 @@ public final class HelloJexxa
         var jexxaMain = new JexxaMain(HelloJexxa.class);
 
         jexxaMain
-                // Bind a REST adapter to class HelloJexxa to expose its methods
-                // To get greetings open: http://localhost:7500/HelloJexxa/greetings
-                .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)
-                //Get status information from the application
-                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+                // Bind a REST adapter to expose parts of the application
+                .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)               // Get greetings: http://localhost:7501/HelloJexxa/greetings
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())  // Get stats: http://localhost:7501/BoundedContext/isRunning
 
-                // Run Jexxa and all bindings until Ctrl-C is pressed
+                // Run your application until Ctrl-C is pressed
                 .run();
     }
 }
@@ -71,8 +70,17 @@ You will see following (or similar) output
     ```Json 
         Hello Jexxa 
     ```
+*   Check if context is up and running:
+    *   URL: http://localhost:7501/BoundedContext/isRunning
+    *   Result:
+    ```Json 
+        true
+    ```
 
-### Adjust properties
+## Configure the application 
+All Jexxa applications are configure by using the `jexxa-application.properties`. 
+
+### Set HTTP(S) settings 
 In this simple tutorial `jexxa-application.properties` includes only the two parameters for RESTFulRPCAdapter.
 The most interesting one here is `io.jexxa.rest.port` that allows to define the used network port.
 
@@ -83,7 +91,16 @@ io.jexxa.rest.host=0.0.0.0
 io.jexxa.rest.port=7501
 ```
 
-### Access provided web pages
+In addition, we also enabled HTTPS. in this case you have to pass a keystore including https certificate. 
+In this tutorial we included a self-singed certificate for demonstration purpose. 
+```properties                                                          
+io.jexxa.rest.https_port=8081
+io.jexxa.rest.keystore=test.jks
+io.jexxa.rest.keystore_password=test123
+```
+
+
+### Define location of exposed web pages
 You can also define a path to static web pages in properties as follows. 
 ```properties                                                          
 #Settings for RESTfulRPCAdapter

@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  HelloJexxa:
+    image: ghcr.io/jexxa-projects/hellojexxa:latest
+    ports:
+      - "7501:7501"
+      - "8081:8081"
+
+    # Define a healthcheck so that we know the application is up and running. This is also required for
+    # Rolling updates in order to know that a new version is successfully started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -nv -t1 --spider 'http://localhost:7501/BoundedContext/isRunning/'"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+    # Enable rolling updates for zero Downtime Deployment
+    deploy:
+      replicas: 2
+      update_config:
+        order: start-first        # Configure rolling updates
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        order: start-first
+      restart_policy:
+        condition: on-failure
