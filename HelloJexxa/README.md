@@ -2,9 +2,9 @@
 
 ## What You Learn
 
-*   [How to write a simple application using Jexxa](#Write-the-application)
-*   [How to configure this application using the `jexxa-application.properties`](#Configure-the-application)
-*   [How to define a simple CI/CD pipeline](#A-simple-CI/CD-pipeline)   
+1.  [How to write a simple application using Jexxa](#1.-Write-the-application)
+2.  [How to configure this application using the `jexxa-application.properties`](#2.-Configure-the-application)
+3.  [How to define a simple CI/CD pipeline](#3.-A-simple-CI/CD-pipeline)   
 
 ## What you need
 
@@ -15,7 +15,7 @@
 *   curl to access the web page via command line (optional)
 *   Docker installed (optional)
 
-## Write the application
+## 1. Write the application
 
 The source code of the main method is quite simple. Each line include comments to explain the meaning.  
 
@@ -83,7 +83,7 @@ To access the application you can either use your favorite web browser, or a com
         Hello Jexxa 
     ```
 
-## Configure the application 
+## 2. Configure the application 
 All Jexxa applications are configured by using the `jexxa-application.properties`. 
 
 ### Configure HTTP(S) settings 
@@ -125,10 +125,10 @@ The web page can be accessed via following link [http://localhost:7501/index.htm
 
 ![Webpage](images/Webpage.jpg)
 
-## A simple CI/CD pipeline
+## 3. A simple CI/CD pipeline
 This CI/CD pipeline is only for demonstration purpose. Focus is to show how Jexxa supports your own CI/CD pipeline.  
 
-## Continuous Integration (CI) 
+### Continuous Integration (CI) 
 Since we host this tutorial on GitHub, we use so called `GitHub Actions` to build our application and provide the 
 artifacts via GitHub container registry (ghcr). 
 
@@ -137,7 +137,7 @@ artifacts via GitHub container registry (ghcr).
 * [newRelease.yml](../.github/workflows/newRelease.yml): Builds a new release including a docker image that is stored in GitHub's container registry (www.ghcr.io). Note: In our setup, this action script must be started manually via  be started manually to 
 In order to build a docker image and a new release, we recommend to use the GitHub action [newRelease.yml](../.github/workflows/newRelease.yml). This action script can be executed directly on GitHub and uploads a docker image to the GitHub registry ghcr.io. 
 
-## Continuous Deployment (CD)
+### Continuous Deployment (CD)
 For continuous deployment, we focus only on the following two aspects: 
 
 * **Zero downtime deployment:** For zero downtime deployment we configure rolling updates for the application as you can see 
