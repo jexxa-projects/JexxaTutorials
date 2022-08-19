@@ -50,7 +50,7 @@ public final class HelloJexxa
 mvn clean install
 java -jar target/hellojexxa-jar-with-dependencies.jar
 ```
-You will see following (or similar) output
+You should see following (or similar) output
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
 [main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.1.0, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-08-15 06:52]
@@ -84,7 +84,7 @@ To access the application you can either use your favorite web browser, or a com
     ```
 
 ## 2. Configure the application 
-All Jexxa applications are configured by using the `jexxa-application.properties`. 
+All Jexxa applications are configured by using the [`jexxa-application.properties`](src/main/resources/jexxa-application.properties). 
 
 ### Configure HTTP(S) settings 
 In this simple tutorial `jexxa-application.properties` includes only the two parameters for RESTFulRPCAdapter.
@@ -132,10 +132,10 @@ This CI/CD pipeline is only for demonstration purpose. Focus is to show how Jexx
 Since we host this tutorial on GitHub, we use so called `GitHub Actions` to build our application and provide the 
 artifacts via GitHub container registry (ghcr). 
 
+The used CI pipeline consists of following parts: 
 * [mavenBuild.yml](../.github/workflows/mavenBuild.yml): Builds our tutorials and runs the tests with each commit to ensure that we did not break the build process. 
 * [autoMerge.yml](../.github/workflows/newRelease.yml): Automatically merges dependency updates from dependabot.
-* [newRelease.yml](../.github/workflows/newRelease.yml): Builds a new release including a docker image that is stored in GitHub's container registry (www.ghcr.io). Note: In our setup, this action script must be started manually via  be started manually to 
-In order to build a docker image and a new release, we recommend to use the GitHub action [newRelease.yml](../.github/workflows/newRelease.yml). This action script can be executed directly on GitHub and uploads a docker image to the GitHub registry ghcr.io. 
+* [newRelease.yml](../.github/workflows/newRelease.yml): Builds a new release including a docker image that is stored in GitHub's container registry (www.ghcr.io). Note: In our setup, this action script must be started manually via GitHub web interface. 
 
 ### Continuous Deployment (CD)
 For continuous deployment, we focus only on the following two aspects: 
