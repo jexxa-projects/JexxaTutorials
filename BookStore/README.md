@@ -40,6 +40,9 @@ with Jexxa.
 ### Mapping to DDD patterns 
 
 First we map the functionality of the application to DDD patterns   
+<details>
+  <summary>Show mapping to DDD patterns</summary>
+
 *   `Domain`:
      *   `Book`: Is an `Aggregate` because it has a life-cycle that changes over time.
      *   `BookRepository`: Is a `Repository` that manages `Book` instances.  
@@ -54,10 +57,14 @@ First we map the functionality of the application to DDD patterns
 
 *   `ApplicationService`:
      *   `BookStoreService:` Is an `ApplicationService` that provides typical use cases such as selling a book. 
+</details>
 
 ### Package structure
 
 Based on the mapping to DDD patterns, we derive following package structure which is quite common in DDD community: 
+
+<details>
+  <summary>Show package structure</summary>
 
 *   `applicationservice`
 
@@ -71,6 +78,7 @@ Based on the mapping to DDD patterns, we derive following package structure whic
 *   `infrastructure`
     *   `drivenadapter`
     *   `drivingadapter` 
+</details>
 
 Please note that a package for a specific use case includes all required domain classes. As you can see in the examples these are typically the corresponding of type `Aggregate`,`ValueObject`, `DomainEvent`, `BusinessException`, and `Repository`. The reason for this is that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) so that changing classes within such a package is a change in the use case. In addition, it should not affect any other use cases.  
 
