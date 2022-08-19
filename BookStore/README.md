@@ -2,10 +2,10 @@
 
 ## What You Learn
 
-*   How to provide an implementation of a specific outbound-port which is called `Repository` in terms of DDD using a database  
-*   How to initialize master data into a Repository      
-*   Default package structure for more complex applications based on DDD
-*   How to test your business logic using Jexxa     
+*   [How to design and implement an application core](#1-implementing-application-core)  
+*   [How to publish Domain Events within the application core](#2-publishing-domainevents)      
+*   [How to implement a Repository](#3-implement-the-infrastructure)
+*   [Changes to the main method](#4-implement-the-application)     
 
 ## What you need
 
@@ -23,7 +23,7 @@ This application core should provide following super simplified functionality:
 
 *   All books should be identified by their ISBN13
 
-*   For each book the store the umber of available copies
+*   For each book we store the umber of available copies in stock
 
 *   Publish `DomainEvent` `BookSoldOut` if last copy of a book is sold
 
@@ -31,54 +31,46 @@ This application core should provide following super simplified functionality:
     *   Service provides a hardcoded list
     *   Service is triggered when starting the application     
 
-## Implementing application core 
+## 1. Implementing application core 
 
 General note: There are several books, courses, tutorials available describing how to implement an application core using the patterns of DDD. 
 The approach used in this tutorial should not be considered as reference. It serves only for demonstration purpose how to realize your decisions 
 with Jexxa.       
 
-### 1. Mapping to DDD patterns 
+### Mapping to DDD patterns 
 
 First we map the functionality of the application to DDD patterns   
+*   `Domain`:
+     *   `Book`: Is an `Aggregate` because it has a life-cycle that changes over time.
+     *   `BookRepository`: Is a `Repository` that manages `Book` instances.  
+     *   `ISBN13`: Is a `ValueObject` that is immutable and identifies a book     
+     *   `BookSoldOut`: Is a `DomainEvent` that informs us if a book is no longer in stock   
+     *   `BookNotInStockException`: Is a `BusinessException` in case we try to sell a book that is currently not available
 
-*   `Aggregate:` Elements that have a life-cycle and change over time and include our business logic 
-    *   `Book` which manages available copies of a book.       
+*   `DomainService`:
+     *   `DomainEventPublisher`: Is a `DomainService` that registers for all `DomainEvents` and forwards them to an external message bus.
+     *   `ReferenceLibrary`: Is a `DomainService` that provides master data for our bookstore and returns the latest books. 
+     *   `DomainEventSender`: Is an `InfrastructureService` that sends `DomainEvents` to a message bus.
 
-*   `Repository`: Provide access to repositories 
-   *    `BookRepository:` Interface to manage `Book` instances. Since the implementation requires a technology stack we can only define an interface.  
+*   `ApplicationService`:
+     *   `BookStoreService:` Is an `ApplicationService` that provides typical use cases such as selling a book. 
 
-*   `ValueObject:` Elements that represent a state and are immutable
-    *   `ISBN13` which identifies a book     
-
-*   `DomainEvent:` Business events that happened in the past 
-    *   `BookSoldOut` when copies of a book are no longer in stock   
-
-*   `DomainService:` 
-    *   `DomainEventPublisher:` Registers for `DomainEvents` and forwards them to an external message bus.   
-    *   `ReferenceLibrary:` Master data for our bookstore which returns the latest books. For simplicity, we assume that it is a service which does not relate to our domain core directly.             
-
-*   `InfrastructureService:`
-    *   `DomainEventSender:` Interface to send `DomainEvents` to a message bus.
-
-*   `BusinessException:`
-    *   `BookNotInStockException:` In case we try to sell a book that is currently not available   
-          
 ### Package structure
 
-In our tutorials we use following package structure. Please note that this package structure is just a recommendation but Jexxa offers some convenience methods if you use it. That's why we recommend to start with this structure: 
+Based on the mapping to DDD patterns, we derive following package structure which is quite common in DDD community: 
 
-*   applicationservice
+*   `applicationservice`
 
-*   domainservice
+*   `domainservice`
 
-*   domain 
-    *   <use case 1>
-    *   ...
-    *   \<use case n>
+*   `domain` 
+    *   `<use case 1>`
+    *   `...`
+    *   `<use case n>`
 
-*   infrastructure
-    *   drivenadapter
-    *   drivingadapter 
+*   `infrastructure`
+    *   `drivenadapter`
+    *   `drivingadapter` 
 
 Please note that a package for a specific use case includes all required domain classes. As you can see in the examples these are typically the corresponding of type `Aggregate`,`ValueObject`, `DomainEvent`, `BusinessException`, and `Repository`. The reason for this is that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) so that changing classes within such a package is a change in the use case. In addition, it should not affect any other use cases.  
 
@@ -107,7 +99,7 @@ As soon as your domain logic and thus the number of use cases grows, it will hap
 As you can see in the source code, all classes are annotated with the pattern language of DDD. 
 This is not required but strongly recommended. The explanation for this can be found in tutorial [pattern language](README-PatternLanguage.md). 
 
-## 2. Sending DomainEvents
+## 2. Publishing DomainEvents
 When sending DomainEvents we should distinguish between two separate scenarios.
 *   `DomainEvent`: Used to inform the application core that something happened which is then typically handled by an `ApplicationService` or a `DomainService`. 
 *   `IntegrationEvent`: Used to inform other contexts that something happened. These events are typically forwarded by an `InfrastructureService`. 
@@ -122,60 +114,13 @@ implementation of a DDD application, from which teams can then work out for thei
      
 ## 3. Implement the infrastructure
 
-### Implement the DomainEventSender
-Our implementation of `DomainEventSender` just prints the `DomainEvent` to the console. So we could use the 
-implementation from tutorial `TimeService`.
-
-In order to show the advantage of the strategy pattern, we request a message sender from Jexxa. The concrete 
-implementation is then configured in a properties file, so that we can exchange the implementation when starting 
-the application.
-
-```java
-public class DomainEventSenderImpl implements DomainEventSender {
-    private final MessageSender messageSender;
-
-    public DomainEventSenderImpl(Properties properties)
-    {
-        // Request a MessageSender from the framework, so that we can configure it in our properties file
-        messageSender = getMessageSender(DomainEventSender.class, properties);
-    }
-
-    @Override
-    public void publish(Object domainEvent)
-    {
-        // We just allow sending DomainEvents
-        validateDomainEvent(domainEvent);
-
-        // For publishing a DomainEvent we use a fluent API in Jexxa 
-        messageSender
-                .send(domainEvent)
-                .toTopic("BookStore")
-                .addHeader("Type", domainEvent.getClass().getSimpleName())
-                .asJson();
-    }
-
-    private void validateDomainEvent(Object domainEvent)
-    {
-        Objects.requireNonNull(domainEvent);
-        if ( domainEvent.getClass().getAnnotation(DomainEvent.class) == null )
-        {
-            throw new IllegalArgumentException("Given object is not annotated with @DomainEvent");
-        }
-    }
-}
-```
+The implementation of interface `DomainEventSender` is quite similar to message sender in tutorial [TimeService](../TimeService/README.md).
+So we don't discuss it here. 
 
 ### Implement the repository 
-When using Jexxa's `RepositoryManager` implementing a repository is just a mapping to the `IRepository` interface which provides typical CRUD operations.   
+To simplify the implementation of a `Repository` Jexxa provides strategies that can be used. For example, the `IRepository`
+interface provides typical CRUD operations and is especially designed to handle an `Aggregate` as you can see below:   
   
-The requirements are: 
-
-*   The managed object provides a so called key-function which returns a key to uniquely identify the object. In case of this tutorial it is the method `getISBN`.
-*   The key itself must provide a valid implementation of method equals and hashcode to validate equality.     
-
-The following source code shows a typical implementation of a `Repository`. Within the main function you can configure the `RepositoryManager` if required. 
-
-
 ```java
   
 @SuppressWarnings("unused")
@@ -185,6 +130,7 @@ public class BookRepositoryImpl implements BookRepository
 
     public BookRepositoryImpl(Properties properties)
     {
+        // Request a strategy to implement our repository    
         this.repository = getRepository(Book.class, Book::getISBN13, properties);
     }
 
@@ -211,7 +157,7 @@ public class BookRepositoryImpl implements BookRepository
 **Important**: 
 As you can see, the implementation of a repository and a message sender is straight forward. So it is a good starting point for junior developers. See [here](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html#_strategy_pattern_for_driven_adapters) how you can use it to develop your junior developers.     
 
-## 3. Implement the application 
+## 4. Implement the application 
 
 Finally, we have to write our application. As you can see in the code below there is one difference compared to `HelloJexxa` and `TimeService`:
 
