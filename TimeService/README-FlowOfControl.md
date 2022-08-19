@@ -1,17 +1,17 @@
-# TimeService - Flow of Control #
+# TimeService - Flow of Control
 
-## What you learn ##
+## What you learn
 
 *   A general idea of the building blocks of ports and adapters 
 *   How to follow the flow of control of your application using your architecture 
 *   An initial understanding of [dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle) 
 
-## What you need ##
+## What you need
 
 *   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects 
 *   45 minutes (take the time)
 
-## Building blocks of a hexagonal architecture ##
+## 1. Building blocks of a Ports & Adapters
 
 If you choose ports and adapters as the architecture of your application, you have the following building blocks:
 
@@ -27,7 +27,7 @@ If you choose ports and adapters as the architecture of your application, you ha
 
 Fore more details please read the article [ports and adapters](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
            
-## Navigate through your application ##
+## 2. Navigate through your application
 
 At the beginning, every developer learns to navigate through source code by reading it line by line. This allows you to see the flow of control,
 which eventually allows you to understand the application logic. Most IDE's and debuggers support this very well. However, this only works well for a
@@ -52,7 +52,7 @@ control as good as possible.
 
 Let's see how it works...
 
-### The main-method ###
+### The main-method
 
 Each application starts with the `main` method. Since it is our starting point, it should represent the beginning of the flow of control which is
 `Driving Adapter` &rarr; `Inbound Port`. For this purpose Jexxa's API offers methods to represent this binding explicitly in the main method.
@@ -64,7 +64,10 @@ public final class TimeService {
         jexxaMain
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
-                .bind(JMXAdapter.class).to(TimeService.class);
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+
+                // Bind the JMSAdapter to our 
+                .bind(JMSAdapter.class).to(TimeListener.class);
 
         ///...
     }
@@ -72,17 +75,18 @@ public final class TimeService {
 ```
 Now, we know following parts of our application: 
 
-*   Used `Driving Adapter`: `RESTfulRPCAdapter` and `JMXAdapter`
-*   Used `Inbound Port`: `TimeService`
+*   Used `Driving Adapter`: `RESTfulRPCAdapter` and `JMSAdapter`
+*   Used `Inbound Port`: `TimeService`, and `BoundedContext` which is provided by Jexxa
 
-Please note that frameworks such as Spring or J2EE allow to hide this step because it is seen as boilerplate code. You will see that 
-this is true to a certain extent if you check Jexxa's tutorials. Especially the main-class which includes this step is quite similar. 
-Anyway, please remember the quote `code is written once but read many times`. Since the main-class represents our starting point and 
-greatly simplifies the navigation through the application, it is worth the effort. 
+Please note that frameworks such as Spring or J2EE allow to hide this step because it is seen as boilerplate code. 
+You will see that this is true to a certain extent if you check Jexxa's tutorials. Especially the main-class which 
+includes this step is quite similar. Anyway, please remember the quote `code is written once but read many times`. 
+Since the main-class represents our starting point and greatly simplifies the navigation through the application, it 
+is worth the effort. 
 
-Based on this source code we can navigate into two different directions using some hotkeys of our IDE. Either we dive deep into a concrete 
-`Driving Adapter` such as `RESTfulRPCAdapter`. Or we follow direction `Inbound Port` &rarr; `Outbound Port` by selecting `TimeService` and enter 
-the application core.  
+Based on this source code we can navigate into two different directions using some hotkeys of our IDE. Either we dive 
+deep into a concrete `Driving Adapter` such as `RESTfulRPCAdapter`. 
+Or we follow direction `Inbound Port` &rarr; `Outbound Port` by selecting `TimeService` and enter the application core.  
 
 ### Enter the application core ###
 
@@ -114,15 +118,11 @@ At this point, we have following additional information:
 *   Current `inbound port`: `TimeApplicationService`
 *   Required `outbound ports`: `TimePublisher` and `MessageDisplay`
 
-Again, we can navigate into two different directions. Either we dive deep into the application core by checking the implementation 
-of `TimeService`. Please note that within a large application core you should use a so-called micro architecture that supports the
-navigation through your application core. Please check tutorial [BookStore](https://github.com/jexxa-projects/JexxaTutorials/blob/main/BookStore/README.md)
-to see a potential mapping to a so-called pattern language to structure your application core.   
-
-Alternatively, you can select one of the two `Outbound Ports` from your IDE to continue in the direction of `Outbound Port` &rarr; 
-`Driven Adapter`.
+Again, we can navigate into two different directions. Either we dive deep into the application core by checking the 
+implementation of `TimeApplicationService`. Alternatively, you can select one of the two `Outbound Ports` from your IDE 
+to continue in the direction of `Outbound Port` &rarr; `Driven Adapter`.
    
-### Leave the application core ###
+### Leave the application core
 
 If we select `MessageDisplay` we just see the following interface: 
 
@@ -142,7 +142,7 @@ depend on a specific infrastructure. So the direction of the dependency must be 
 the concept of an `interface`. That's the reason, why we must declare a high-level interface that belongs to our application core. 
 
 This approach ensures that we can easily exchange the technology stack that is used by our application core. That's why the interface is so important
-from an architectural point of view and represents one of the four building blocks of our architecture.   
+from an architectural point of view and represents one of the four building blocks of ports & adapter architecture.   
 
 Finally, this interface is then implemented by a `Driven Adapter` which again belongs to the infrastructure. Your IDE typically provides hot-keys 
 to switch to the concrete implementation of the interface which is located in the infrastructure part again. In this application the 
