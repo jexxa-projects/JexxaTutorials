@@ -134,14 +134,16 @@ public interface MessageDisplay
 ```
 This interface describes required methods from a domain's point of view that can only be implemented by using a technology stack such as a logger. 
 
-The most important aspect here is the following: 
+The most important aspect here is the following. Our flow of control states the following direction:
+*   `Outbound Port` &rarr; `Driven Adapter`. 
 
-Our flow of control states the direction `Outbound Port` &rarr; `Driven Adapter`. But an `Outbound Port` is a much higher abstraction that must not 
-depend on a specific infrastructure. So the direction of the dependency must be `Outbound Port` &larr; `Driven Adapter` which is done by using 
-[dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle). For this purpose any object-oriented language uses 
-the concept of an `interface`. That's the reason, why we must declare a high-level interface that belongs to our application core. 
+But an `Outbound Port` is a much higher abstraction that must not 
+depend on a specific infrastructure. So the direction of the dependency must be:
+*   `Outbound Port` &larr; `Driven Adapter`
 
-This approach ensures that we can easily exchange the technology stack that is used by our application core. That's why the interface is so important
+This is called [dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle) and implemented using `interfaces`. That's the reason, why we must declare a high-level interface `MessageDisplay` that belongs to our application core. 
+
+This approach ensures that we can easily exchange or update the technology stack that is used by our application core. That's why the interface is so important
 from an architectural point of view and represents one of the four building blocks of ports & adapter architecture.   
 
 Finally, this interface is then implemented by a `Driven Adapter` which again belongs to the infrastructure. Your IDE typically provides hot-keys 
