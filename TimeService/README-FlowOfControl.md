@@ -2,8 +2,8 @@
 
 ## What you learn
 
-*   A general idea of the building blocks of ports and adapters 
-*   How to follow the flow of control of your application using your architecture 
+*   [A general idea of the building blocks of ports and adapters](#1-building-blocks-of-a-ports--adapters) 
+*   [How to follow the flow of control of your application using your architecture](#2-navigate-through-your-application)
 *   An initial understanding of [dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle) 
 
 ## What you need
