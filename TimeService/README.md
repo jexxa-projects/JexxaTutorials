@@ -20,11 +20,9 @@
 
 The application core consists of following classes:
 
-*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) Is an `ApplicationService` in terms of DDD and provides the following two use cases to a client:
-  * Publishing current time 
-  * Display current time 
-*   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Allows for publishing current time. In terms of DDD, it is an `InfrastrucureService`, because the implementation requires a specific technology stack and cannot belong to the application core.
-*   [`MessageDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/MessageDisplay.java) Shows a message and is an `InfrastructureService` as well.        
+*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) Is an `ApplicationService` in terms of DDD and provides the use cases for a specific client.
+*   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Only declares a method to publish current time, so that implementation can be realized within the infrastructure.
+*   [`MessageDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/MessageDisplay.java) Only declares a method to show a message, so that implementation can be realized within the infrastructure.     
 
 ### Declare interfaces for the two infrastructure services
 
