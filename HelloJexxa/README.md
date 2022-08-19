@@ -126,7 +126,8 @@ The web page can be accessed via following link [http://localhost:7501/index.htm
 ![Webpage](images/Webpage.jpg)
 
 ## 3. A simple CI/CD pipeline
-This CI/CD pipeline is only for demonstration purpose. Focus is to show how Jexxa supports your own CI/CD pipeline.  
+This CI/CD pipeline is only for demonstration purpose. Focus is to show how Jexxa supports your own CI/CD pipeline. 
+If you do not have any defined CI/CD pipeline, you can use this one as a starting point. 
 
 ### Continuous Integration (CI) 
 Since we host this tutorial on GitHub, we use so called `GitHub Actions` to build our application and provide the 
