@@ -11,25 +11,26 @@ import static io.jexxa.infrastructure.drivenadapterstrategy.messaging.MessageSen
 @SuppressWarnings("unused")
 public class TimePublisherImpl implements TimePublisher
 {
-    public static final String TIME_TOPIC = "TimeService";
+    public static final String TIME_SERVICE_TOPIC = "TimeService";
 
     private final MessageSender messageSender;
 
-    // For all driven adapter we have to provide either a static factory or a public constructor to
-    // enable implicit constructor injection
+    // `getMessageSender()` requires a Properties object including all required config information. Therefore, we must
+    // use a constructor expecting `Properties`, so that Jexxa can hand in all defined properties (e.g., from `jexxa-application.properties`).
     public TimePublisherImpl(Properties properties)
     {
-        //Request a default message Sender from corresponding strategy manager
+        //Request a default message sender for the implemented interface TimePublisher
         this.messageSender = getMessageSender(TimePublisher.class, properties);
     }
 
     @Override
     public void publish(LocalTime localTime)
     {
-        // Send the message to the topic.
+        // For most integrated standard APIs, Jexxa provides a fluent API to improve readability
+        // and to emphasize the purpose of the code
         messageSender
                 .send(localTime)
-                .toTopic(TIME_TOPIC)
+                .toTopic(TIME_SERVICE_TOPIC)
                 .addHeader("Type", localTime.getClass().getSimpleName())
                 .asJson();
     }

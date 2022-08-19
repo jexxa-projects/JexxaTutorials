@@ -2,9 +2,10 @@
 
 ## What You Learn
 
-*   How to write an application service providing the use cases of your application  
-*   How to send current time as an async message     
-*   How to receive this async message print it to console 
+*   [How to write an application core providing some use cases](#1-implement-the-application-core) 
+*   [How to implement required driven adapter](#2-implement-the-driven-adapter)
+*   [How to implement required driving adapter](#3-implement-drivingadapter)
+*   [How to implement the application using application specific driving and driven adapter](#4-implement-the-application)
 
 ## What you need
 
@@ -15,19 +16,21 @@
 *   A running ActiveMQ instance (at least if you start the application with infrastructure)
 *   curl to trigger the application  
 
-## Implement the Application Core
+## 1. Implement the Application Core
 
 The application core consists of following classes:
 
-*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) Provides the two use cases of your application. In terms of DDD this is an `ApplicationService`.
+*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) Is an `ApplicationService` in terms of DDD and provides the following two use cases to a client:
+  * Publishing current time 
+  * Display current time 
 *   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Allows for publishing current time. In terms of DDD, it is an `InfrastrucureService`, because the implementation requires a specific technology stack and cannot belong to the application core.
 *   [`MessageDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/MessageDisplay.java) Shows a message and is an `InfrastructureService` as well.        
 
 ### Declare interfaces for the two infrastructure services
 
-The most important aspect here is that a technology-agnostic application must not use any technology-stack. Therefore,
-we must define the following two interface. Interface `TimePublisher` that provides us the possibility to publish the 
-time by an arbitrary technology stack.
+The most important aspect here is that a technology-agnostic application must not depend on any technology-stack. Therefore,
+we use dependency inversion principle which is explained in more detail [here](README-FlowOfControl.md). 
+Interface `TimePublisher` allows to publish the time by an arbitrary technology stack.
 
 ```java
 public interface TimePublisher
@@ -93,10 +96,12 @@ public class TimeApplicationService
 }
 ```                  
 
-## Implement the Infrastructure
+## 2. Implement the Driven Adapter
 
-### Driven Adapter with console output
-The interface `MessageDisplay` is implemented by `MessageDisplayImpl` by just printing given arguments to a logger.  
+### Driven Adapter for console output
+The interface [`MessageDisplay`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/MessageDisplay.java) is 
+implemented by [`MessageDisplayImpl`](src/main/java/io/jexxa/tutorials/timeservice/infrastructure/drivenadapter/display/MessageDisplayImpl.java) 
+by just logging given arguments.  
 
 Jexxa uses implicit constructor injection together with a strict convention over configuration approach. Therefore, 
 each driven adapter needs one of the following constructors: 
@@ -122,40 +127,32 @@ public class MessageDisplayImpl implements MessageDisplay
 ### Driven Adapter for messaging ###
 
 Jexxa provides so called `DrivenAdapterStrategy` for various Java-APIs such as JMS. When using these strategies the 
-implementation of a driven adapter is just a facade and maps domain specific methods to the technology stack. In the 
-main application we can adjust the default strategy so that we can define either to use JMS or a simple logger. 
-Moreover, within tests, we can define a MessageRecorder and unit-test our infrastructure as well.  
-
-Note: Since `TimePublisher` requires information from a `Properties` we must provide a constructor or static factory 
-method with a `Properties` attribute. By default, Jexxa hands in all information from jexxa-application.properties file.
-This file can be extended by application specific information such as the topic name if required.
-
-In this example, sending a time is just a representation for any kind of measuring point. In real world applications 
-this kind of information has no additional semantic meaning. Typically, it is also send in a fixed interval. So, we 
-just have to define a notation to publish this information. The following code shows how to publish a LocalTime in 
-JSON format.                
+implementation of a driven adapter is just a facade and maps domain specific methods to the technology stack. As you 
+can see in the following code, the application specific driven adapter requests the strategy from a so-called strategy 
+manager.    
 
 ```java
-@SuppressWarnings("unused")
 public class TimePublisherImpl implements TimePublisher
 {
     public static final String TIME_TOPIC = "TimeService";
 
     private final MessageSender messageSender;
 
-    // For all driven adapter we have to provide either a static factory or a public constructor to
-    // enable implicit constructor injection
-    public TimePublisher(Properties properties)
+    // `getMessageSender()` requires a Properties object including all required config information. Therefore, we must 
+    // declare a constructor expecting `Properties`, so that Jexxa can hand in all defined properties (e.g., from `jexxa-application.properties`).
+    public TimePublisherImpl(Properties properties)
     {
-        //Request a default message Sender from corresponding strategy manager
-        this.messageSender = MessageSenderManager.getMessageSender(properties);
+        //Request a message sender for the implemented interface TimePublisher 
+        this.messageSender = getMessageSender(TimePublisher.class, properties);
     }
 
     @Override
     public void publish(LocalTime localTime)
     {
-        // Send the message to the topic in JSON format.
-        messageSender.send(localTime)
+        // For most integrated standard APIs, Jexxa provides a fluent API to improve readability
+        // and to emphasize the purpose of the code
+        messageSender
+                .send(localTime)
                 .toTopic(TIME_TOPIC)
                 .addHeader("Type", localTime.getClass().getSimpleName())
                 .asJson();
@@ -163,7 +160,7 @@ public class TimePublisherImpl implements TimePublisher
 }
 ```
 
-Typically, information stated in `jexxa-application.properties` for JMS are as follows: 
+In order to configure your application for a specific message broker, we define all required information in [`jexxa-application.properties`](src/main/resources/jexxa-application.properties): 
 
 ```properties
 #suppress inspection "UnusedProperty" for whole file
@@ -174,10 +171,13 @@ java.naming.user=admin
 java.naming.password=admin
 ```                       
 
-## Implement the TimeListener
+## 3. Implement DrivingAdapter
+Now, we have to implement the driving adapter `TimeListener` which receives published time information.  
+
+### Implement TimeListener
 When receiving asynchronous messages we have to:
-1.  Declare an object that process the received data
-2.  Convert received data into business data 
+1.  Know and declare the object from our application core processing received data
+2.  Convert received data into business data
 3.  Define the connection information how to receive the data
 4.  Forward it to a specific method within the application core. 
  
@@ -215,13 +215,10 @@ public final class TimeListener extends TypedMessageListener<LocalTime> {
 }
 ```
 
-## Implement the Application ##
+## 4. Implement the Application ##
 
 Finally, we have to write our application. As you can see in the code below, the only difference compared to `HelloJexxa`
-is that we bind a JMSAdapter to our TimeListener
-
-*   In case we use JMS, we connect JMSAdapter to the application specific port adapter.     
-*   The rest of the main method is similar to `HelloJexxa` tutorial.   
+is that we bind a JMSAdapter to our TimeListener.    
    
 ```java
 public final class TimeService
@@ -235,7 +232,9 @@ public final class TimeService
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
-                .bind(JMSAdapter.class).to(PublishTimeListener.class)
+                
+                // Bind the JMSAdapter to our 
+                .bind(JMSAdapter.class).to(TimeListener.class)
 
                 .run();
     }
@@ -250,8 +249,7 @@ Disabling of all infrastructure components can be done by property files. By con
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" \
-     ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console
@@ -295,8 +293,7 @@ Running the application with a locally messaging system is typically required fo
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
-          ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
 You will see following (or similar) output
 ```console

@@ -17,6 +17,8 @@ public final class TimeService
                 // Bind RESTfulRPCAdapter and JMXAdapter to TimeService class so that we can invoke its method
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+
+                // Bind the JMSAdapter to our
                 .bind(JMSAdapter.class).to(TimeListener.class)
 
                 .run();
