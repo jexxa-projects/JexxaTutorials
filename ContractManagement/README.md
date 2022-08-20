@@ -2,8 +2,8 @@
 
 ## What You Learn
 
-*   When to use Jexxa's Repository or ObjectStore
-*   How to use Jexxa's ObjectStore
+*   [When to use Repository or ObjectStore](#Repository-vs.ObjectStore)
+*   [How to use Jexxa's ObjectStore](#Example-ContractManagement)
 
 ## What you need
 
@@ -14,37 +14,41 @@
 *   curl to trigger the application
 *   (Optional) A postgres DB 
 
-## Motivation 
+##  Repository vs. ObjectStore 
 
-When developing an enterprise application you should focus on the business domain and how to represent
+When developing a business application you should focus on the business domain and how to represent
 it within your application. Technical aspects such as the database schema should be hidden as good as possible. 
 Within Jexxa we support this by providing different strategies for implementing a Repository.   
 
 ### Driven Adapter Strategy: `IRepository`  
 
-The `IRepository` interface is very limited regarding querying a managed object. Either you query an object by its unique key, or you request all 
-objects. If you want to offer advanced querying mechanisms, you have to implement them by yourself based on querying all objects. Even though this 
-sounds very limiting choosing an `IRepository` for your object should be your first choice. Especially during development phase of a new application or
-bounded context, it gives you the time to learn which query interface you really need from the applications point of view. 
+The `IRepository` interface is very limited regarding querying a managed object. Either you query an object by its 
+unique key. If you want to offer advanced querying mechanisms, you have to implement them by yourself by querying all 
+objects in a first step. Even though this sounds very limiting choosing an `IRepository` for your object should be your 
+first choice. Especially during development phase of a new application or bounded context, it gives you the time to 
+learn which query interface you really need from the applications point of view. 
 
 In general, you should use an `IRepository` in following scenarios: 
 
 *   You query the managed objects only be their unique key.
-*   In case you need more advanced query operations, the lifetime of the managed objects should be short, so that the amount of managed objects is relatively small. This allows you to read all data from the database. 
+*   In case you need more advanced query operations, the lifetime of the aggregates should be short, so that their 
+    number is relatively. This allows you to read all data from the database. 
 
-Especially the second case happens quite often in production systems, especially in batch systems. Here, it is quite common that software controlling 
-a specific manufacturing unit requires only to know the batches that are currently processed. As soon as the processing step is finished, a corresponding 
-`DomainEvent` is published and the software object can be removed from the repository.         
+Especially the second case happens quite often in production systems, especially in batch systems. Here, it is quite 
+common that software controlling a specific manufacturing unit requires only to know the batches that are currently 
+processed. As soon as the processing step is finished, a corresponding `DomainEvent` is published and the aggregate can 
+be removed from the repository.         
                                                                                       
 Please do not underestimate this aspect because it supports you separating your production data from your archive data.  
 
 ### Driven Adapter Strategy: `IObjectStore`
                                
-The `IObjectStore` provides more sophisticated interfaces to query managed objects by all kind of data. Available strategies make explicit use
-of optimization mechanism of the underlying technology so that the performance depends on chosen technology stack. This kind of repository should 
-be your second choice. As soon as you see that an `IRepository` is not sufficient, you should switch the implementation of the driven adapter to an 
-`IObjectStore`. Please note that this step should be transparent to your application core because it uses a single interface which is not affected. 
-Only the underlying strategy is changed.
+The `IObjectStore` provides more sophisticated interfaces to query managed objects by all kind of data. Available 
+strategies make explicit use of optimization mechanism of the underlying technology so that the performance depends 
+on chosen technology stack. This kind of repository should be your second choice. As soon as you see that an 
+`IRepository` is not sufficient, you should switch the implementation of the driven adapter to an `IObjectStore`. 
+Please note that this step should be transparent to the application core because it uses a single interface which is 
+not affected. Only the underlying strategy is changed.
 
 In general, you should use an `IObjectStore` in following scenarios:
 
@@ -52,11 +56,13 @@ In general, you should use an `IObjectStore` in following scenarios:
 *   the lifetime of the managed objects is high, so that the amount of managed objects will continuously increase.
 *   The metadata to find objects is fixed and will not change over time.  
 
-At first thought, the last requirement sounds like a severe restriction. Especially this kind of change typically happens some time after the 
-software is in production. But please keep in mind that your application core is protected by your application specific interface. So changing the 
-implementation will not affect the application core itself. If a change request occurs, you have a lot of knowledge based from production and other 
-change requests which underlying technology or database stack should be used. Now it is the right point in time to switch to a specific implementation
-without using a specific strategy or to provide your own strategy using technologies such as liquibase for versioning your database schema.    
+At first thought, the last requirement sounds like a severe restriction. Especially this kind of change typically 
+happens some time after the software is in production. But please keep in mind that your application core is protected 
+by your application specific interface. So changing the implementation will not affect the application core itself. 
+If a change request occurs, you have a lot of knowledge based from production and other change requests which underlying
+technology or database stack should be used. Now it is the right point in time to switch to a specific implementation
+without using a specific strategy or to provide your own strategy using technologies such as liquibase for versioning 
+your database schema.    
 
 Typical use cases to select an `IObjectStore` are:
 *   An archive of the domain events.
@@ -64,11 +70,13 @@ Typical use cases to select an `IObjectStore` are:
 
 ### Strategies for `IRepository` and `IObjectStore`
 
-At the moment, Jexxa provides driven adapter strategies for in memory storage and JDBC. To query an `IRegistry` or `IObjectStore` you use the
-`RegistryManager` or `ObjectStoreManager` respectively. A significant advantage of using these strategies is to write tests against your 
-Repository without the need of a database. This typically speed up your tests significantly.   
+At the moment, Jexxa provides driven adapter strategies for in memory storage and JDBC. To query an `IRegistry` or 
+`IObjectStore` you use the `RegistryManager` or `ObjectStoreManager` respectively. A significant advantage of using 
+these strategies is to write tests against your Repository without the need of a database. This typically speed up 
+your tests significantly.   
 
-By default, both manager classes select a strategy depending on your application configuration and the `Property` object passed to Jexxa as follows: 
+By default, both manager classes select a strategy depending on your application configuration and the `Property` 
+object passed to Jexxa as follows: 
 
 1.  Check if the application defined a strategy for a specific object type is registered.
 2.  Check if the application defined a default strategy for all kind of objects. 
@@ -81,15 +89,17 @@ This tutorial defines following requirements:
 *   `IContractRepository`: Manage contracts with a very high lifetime and must be searched by different metadata.  
 *   `IDomainEventStore`: Archive all domain events that must be searched by different metadata.    
 
-Based on the requirements, both interface should be implemented using an `IObjectStore`. In the reset of this section we describe the implementation 
-of `IContractRepositroy`. Since the implementation of `IDomainEventStore` is quite similar please refer to its source code.  
+Based on the requirements, both interface should be implemented using an `IObjectStore`. In the reset of this section we 
+describe the implementation of `IContractRepositroy`. Since the implementation of `IDomainEventStore` is quite similar 
+please refer to its source code.  
 
 ### Implementing `IContractRepositroy`
 
-Using an ObjectStore is quite similar to a Repository. The main difference is in defining the metadata used to query objects. To ensure type safety, 
-Jexxa requires that all metadata is defined as enum together with a `MetaTag` used for converting the value into a base type such as a numeric or 
-string representation. In the following example, we define the three different values to query objects. Please note that the following code belongs 
-to the infrastructure of your application which means that your application just sees the `IContractRepository` and not the schema specification:
+Using an ObjectStore is quite similar to a Repository. The main difference is in defining the metadata used to query 
+objects. To ensure type safety, Jexxa requires that all metadata is defined as enum together with a `MetaTag` used for 
+converting the value into a base type such as a numeric or string representation. In the following example, we define 
+the three different values to query objects. Please note that the following code belongs to the infrastructure of your 
+application which means that your application just sees the `IContractRepository` and not the schema specification:
 
 ```java
 public class ContractRepositoryImpl implements ContractRepository
@@ -105,7 +115,7 @@ public class ContractRepositoryImpl implements ContractRepository
     enum ContractSchema implements MetadataSchema
     {
         /**
-         * This MetaTag represents the contract number. Since contract number is a  numeric value we use a numberTag. As most
+         * This MetaTag represents the contract number. Since it is a  numeric value we use a numberTag. As most
          * predefined {@link MetaTag} class, we just provide an accessor function to get the value from the managed object.
          */
         CONTRACT_NUMBER(numericTag(element -> element.getContractNumber().value())),
@@ -154,15 +164,11 @@ public class ContractRepositoryImpl  implements ContractRepository
     public ContractRepositoryImpl(Properties properties)
     {
         // To request an ObjectStore strategy we need to pass following information to the manager: 
-        // 1. Type information of the managed object
-        // 2. Method to get the unique key
-        // 3. The previous defined metadata
-        // 4. Finally, the application specific Property file 
         this.objectStore = ObjectStoreManager.getObjectStore(
-                Contract.class, 
-                Contract::getContractNumber, 
-                ContractMetadata.class, 
-                properties);
+                Contract.class,                // 1. Type information of the managed object
+                Contract::getContractNumber,   // 2. Method to get the unique key
+                ContractMetadata.class,        // 3. The previous defined metadata
+                properties);                   // 4. Finally, the application specific Property file
     }
 
     // We skip the implementation of the IRepository methods here and focus on the methods
@@ -223,24 +229,18 @@ You will see following (or similar) output
 
 ### Use a Postgres database
 
-You can run this application using a Postgres database because the corresponding driver is included in the pom file. The
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/test/resources/jexxa-test.properties)
-file if required.
+The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a postgres
+DB. So we have to enter following command
+
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
-     ./target/contractmanagement-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/contractmanagement-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
 [main] INFO io.jexxa.tutorials.contractmanagement.ContractManagement - Use persistence strategy: JDBCObjectStore 
 ```
-
-Note: In case you want to use a difference database, you have to:
-
-1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies section.
-2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-application.properties](src/main/resources/jexxa-application.properties).
 
 ### Execute some commands using curl
 

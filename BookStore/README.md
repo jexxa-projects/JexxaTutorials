@@ -221,15 +221,12 @@ You will see following (or similar) output
 ```          
 
 ### Use a postgres database
-
-You can run this application using a Postgres database because the corresponding driver is included in the pom file. The 
-configured username and password is `admin`/`admin`. You can change it in the [jexxa-test.properties](src/test/resources/jexxa-test.properties) 
-file if required.       
+The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a postgres 
+DB. So we have to enter following command 
 
 ```console                                                          
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
-          ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
 In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
 ```console
