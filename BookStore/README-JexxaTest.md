@@ -117,7 +117,7 @@ class BookStoreServiceTest
         //Assert
         assertEquals( amount - 1, objectUnderTest.amountInStock(ANY_BOOK) );       // Perform assertion against the object we test
         assertEquals( amount - 1, bookRepository.get(ANY_BOOK).amountInStock() );  // Perform assertion against the repository
-        assertTrue( publishedDomainEvents.isEmpty() );
+        assertTrue( publishedDomainEvents.isEmpty() );                             // Perform assertion against published DomainEvents
     }
     // ... further tests 
 }
