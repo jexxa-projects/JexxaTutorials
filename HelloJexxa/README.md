@@ -159,3 +159,20 @@ For continuous deployment, we focus only on the following two aspects:
   Since the secrets must be defined in your orchestration tool, we define the secrets directly in 
   jexxa-application.properties which is not recommended for production use. 
               
+### Run the stack
+In these tutorials, we provide docker compose files to run our applications. If you use run some container management 
+software such as [portainer](www.portainer.io), you can pass this compose file to this management software. 
+Alternatively, you can deploy this compose file with following commands: 
+
+```bash
+wget https://raw.githubusercontent.com/jexxa-projects/JexxaTutorials/main/deploy/hellojexxa-compose.yml
+
+docker stack deploy -c hellojexxa-compose.yml hellojexxa 
+```
+
+To validate that the service is up and running enter 
+```bash
+docker service ls
+ID             NAME                    MODE         REPLICAS   IMAGE                                                 PORTS
+ubd360a32yzo   hellojexxa_HelloJexxa   replicated   2/2        ghcr.io/jexxa-projects/hellojexxa:latest              *:7501->7501/tcp, *:8081->8081/tcp
+```
