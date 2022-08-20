@@ -3,10 +3,11 @@
 ## What You Learn
 
 *   [How to wirte unit-test for your business logic using Jexxa-Test](#Write-some-tests)
+*   [How to validate the arhcitecture of your application](#Validate-the-Architecture)
 
 ## What you need
 
-*   Understand tutorial `BookStore`
+*   Understand tutorial [`BookStore - Using a Repository`](README.md)
 *   30 minutes
 *   JDK 17 (or higher) installed
 *   Maven 3.6 (or higher) installed
@@ -142,5 +143,63 @@ class BookStoreServiceTest
         assertEquals( bookSoldOut(ANY_BOOK), publishedDomainEvents.getMessage(BookSoldOut.class));  // Perform assertion against published DomainEvents
     }
 
+}
+```
+
+## Validate the Architecture
+
+Even with a clear architecture, one can easily violate their rules by accident. So I strongly recommend to run some
+tests to validate the architecture of your application. Jexxa simplifies this especially if you use its conventions
+by providing architectural tests based on [ArchUnit](https://www.archunit.org). This ensures that the validation of 
+the architecture is port of your unit tests. 
+
+### Validate Ports and Adapters
+
+To validate the rules of a ports and adapter architecture is quite simple if you follow the conventions of Jexxa. As 
+you can see below, you just have to declare the packages including the driven and driving adapter of the application.  
+
+```java
+class ArchitectureTest {
+
+    @Test
+    void validatePortsAndAdapters()
+    {
+        portsAndAdapters(BookStore.class)
+                // Add all packages providing driven adapter  
+                .addDrivenAdapterPackage("persistence")  
+                .addDrivenAdapterPackage("messaging")
+
+                // Add all packages providing driving adapter such as  
+                // .addDrivingAdapterPackage("messaging")
+                
+                .validate();
+    }
+}
+```
+
+### Validate the Pattern Language
+The following test validates that all classes of your application are annotated. In addition, it validates that all 
+`ValueObject` and `DomainObject` classes are implemented as java-records. 
+
+```java
+class ArchitectureTest {
+    @Test
+    void validatePatternLanguage() {
+        patternLanguage(BookStore.class).validate();
+    }
+}
+```
+
+### Validate the usage of Aggregates
+Aggregates include the business logic and must not leave the application core. In addition, they must only be managed 
+by a `Repository`. This leads to some additional rules that can be validated using following test: 
+
+```java
+class ArchitectureTest {
+    @Test
+    void validateAggregateRules()
+    {
+        aggregateRules(BookStore.class).validate();
+    }
 }
 ```

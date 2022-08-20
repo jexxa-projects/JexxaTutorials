@@ -20,10 +20,16 @@ class ArchitectureTest {
     void validatePortsAndAdapters()
     {
         portsAndAdapters(BookStore.class)
+                // Add all packages providing driven adapter
                 .addDrivenAdapterPackage("persistence")
                 .addDrivenAdapterPackage("messaging")
+
+                // Add all packages providing driving adapter such as
+                // .addDrivingAdapterPackage("messaging")
+
                 .validate();
     }
+
 
     @Test
     void validatePatternLanguage()

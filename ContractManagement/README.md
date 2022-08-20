@@ -7,12 +7,12 @@
 
 ## What you need
 
-*   Understand tutorial `BookStore` because we explain only new aspects
+*   Understand tutorial [`BookStore - Using a Repository`](../BookStore/README.md) because we explain only new aspects
 *   30 minutes
 *   JDK 17  (or higher) installed
 *   Maven 3.6 (or higher) installed
 *   curl to trigger the application
-*   A postgres DB (if you start the application with a real DB)
+*   (Optional) A postgres DB 
 
 ## Motivation 
 
