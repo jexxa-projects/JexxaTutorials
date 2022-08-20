@@ -2,7 +2,7 @@
 
 ## What You Learn
 
-*   How to test your business logic using Jexxa
+*   [How to wirte unit-test for your business logic using Jexxa-Test](#Write-some-tests)
 
 ## What you need
 
@@ -40,11 +40,10 @@ Following code shows a simple validation of our BookStoreService. Some additiona
 
 ### Initialize the tests 
 
-As a first step, you need to initialize the tests within a test class. This is done in method `initTest()` and includes 
-the following steps: 
-*    Initialize JexxaTest before each test. This ensures that you have same initial situation for all your tests 
-*    Initialize all members you need for testing and validation. 
-*    Bootstrap all services as in your main method to ensure the same initial situation as in production
+As a first step, you initialize your tests by calling `initTest()`: 
+*    Initialize JexxaTest before each test 
+*    Initialize and request all objects you need for testing and validation 
+*    Bootstrap all services as in your main method to ensure the same initial setup as you start your application
 
 ```java
 class BookStoreServiceTest

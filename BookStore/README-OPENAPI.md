@@ -2,8 +2,8 @@
 
 ## What You Learn
 
-*   How to enable OpenAPI support for an application 
-*   How to access application from outside using OpenAPI        
+*   [How to enable OpenAPI support for an application](#Enable-OpenAPI) 
+*   [How to explore OpenAPI for your application](#Explore-OpenAPI)        
 
 ## What you need
 
@@ -14,13 +14,11 @@
 *   Maven 3.6 (or higher) installed
 *   A postgres DB (if you start the application with running infrastructure)  
 
-## Run the application  
+## Enable OpenAPI  
 
 In general OpenAPI support can be enabled for all objects that can be accessed via the `RESTfulRPCAdapter`. 
 To enable OpenAPI support, you just need to define an OpenAPI-path either in the properties or when starting the application. 
 The corresponding parameter is `io.jexxa.rest.open_api_path`.
-
-### Enable OpenAPI via console
 
 ```console                                                          
 mvn clean install
@@ -35,7 +33,7 @@ You will see following (or similar) output
 
 ```          
 
-### Explore OpenAPI
+## Explore OpenAPI
 
 You can use [Swagger UI](https://swagger.io/tools/swagger-ui/) to explore the documentation. Just start Swagger UI, enter the URL and press explore button. 
 
@@ -47,7 +45,7 @@ As result, you should get following overview with available operations:
 
 Now, lets start execute some methods.
        
-#### Get list of books
+### Get list of books
 
 To get a list of available books, you first have to select the corresponding methods. As soon as you pressed it, you will get detailed information such as including parameters and responses. 
 

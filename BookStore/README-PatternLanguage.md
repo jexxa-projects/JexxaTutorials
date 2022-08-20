@@ -7,7 +7,7 @@
 
 ## What you need
 
-*   Understand tutorial `BookStore` because we explain only new aspects 
+*   Understand tutorial [`BookStore - Using a Repository`](README.md) because we explain only new aspects 
 *   60 minutes
 *   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
@@ -15,24 +15,17 @@
 *   Optional: A postgres DB   
 
 ## A pattern language for your application core 
-In the [architecture of Jexxa](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html) we describe that Jexxa 
-does not require any special annotations. Main reason is that framework related annotations can tightly couple your 
-application core to a specific technology stack. Therefore, framework specific annotations should not be used within 
-the application core.
+Most developers are aware of design pattern and use them when developing software. A pattern language goes one step 
+further and describes how and which design patterns are allowed to interact with each other. Ideally, a pattern language 
+achieves 100% pattern consistency, so that all classes of an application and their relationships can be clearly mapped 
+to the pattern language.
 
-Instead, define and use your own annotations that are specific for your application. These annotations can then be used
-by a framework.  
+Instead of reading and understanding the source code again and again, a developer can navigate through the code based 
+on these patterns. For example if the application uses the pattern language of DDD, and you have to change the business 
+logic of your application core the corresponding code must be within an `Aggregate`. Another example is, that an 
+`ApplicationSerivce` must access all existing `Aggregates` through a `Repository`. 
 
-### Framework-agnostic annotations 
-Annotations as pure meta-information can be used your developing teams to make a so-called __pattern language__ 
-explicit. The pattern language is part of the micro architecture of an application and allows your developers to quickly
-navigate through the source code. Instead of reading and understanding the source code again and again, a developer can
-navigate through the code based on these patterns. For example if the application uses the pattern language of DDD, and
-you have to change the business logic of your application core the corresponding code must be within an `Aggregate`.
-So you can directly navigate to the `Aggregate` and skip all remaining elements. 
-
-Even if you not use the pattern language of DDD, the developers typically used some patterns to implement the 
-application. To make these patterns explicit, I strongly recommend annotating all classes within the application core 
+To make these patterns explicit, I strongly recommend annotating all classes within the application core 
 with their corresponding element of the pattern language. Classes that cannot be assigned to a specific element 
 typically violate some design principles such as the single responsibility principle. In case of a durable software 
 system, you will get the following advantages: 
@@ -151,7 +144,7 @@ public record ISBN13(String isbn13)
 
 ### `DomainEventSender`: Considerations on interface definition
 
-In large applications it is quite common that you have multiple domain events that have to published to other 
+In large applications it is quite common that you have multiple domain events that have to be published to other 
 applications as so-called integration events. To solve this issue at least following solutions exist:
 
 *   Method overloading: Provide a specific method for each type of DomainEvent in `DomainEventSender`. On the one side, 
@@ -233,7 +226,7 @@ public final class BookStore
                 // latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
                 .bootstrapAnnotation(DomainService.class)
 
-                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
+                .bind(RESTfulRPCAdapter.class).toAnnotation(AppicationService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 .run();
