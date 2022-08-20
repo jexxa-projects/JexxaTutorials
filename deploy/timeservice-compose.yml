@@ -38,23 +38,3 @@ services:
       AMQ_USER: "admin"
       AMQ_PASSWORD: "admin"
 
-  Postgres:
-    image: postgres:14.2-alpine
-    user: postgres
-
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_PASSWORD: "admin"
-      POSTGRES_USER: "postgres"
-
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres-data:
