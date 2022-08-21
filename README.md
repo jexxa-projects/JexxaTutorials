@@ -42,4 +42,6 @@ See documentation [BookStore - With OpenAPI Support](BookStore/README-OPENAPI.md
 ## ContractManagement - Using an ObjectStore  
 See documentation [ContractManagement](ContractManagement/README.md)
 
+## Copyright and license
 
+Code and documentation copyright 2020–2022 Michael Repplinger. Code released under the [Apache 2.0 License](LICENSE). Docs released under [Creative Commons](https://creativecommons.org/licenses/by/3.0/).
