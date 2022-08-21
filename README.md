@@ -15,8 +15,8 @@ meaning. In addition, we assume that you have a basic understanding of:
 * All tutorials run by default without any additional infrastructure services such as JMS or a database.
 
 * In case you want to just run the tutorials, you can use: 
-  * Docker images provided [here](https://github.com/jexxa-projects?tab=packages&repo_name=JexxaTutorials). Please note that you need a running ActiveMQ and Postgres database   
-  * [Docker stack](deploy/docker-compose.yml) starting all tutorials 
+  * Docker images provided [here](https://github.com/jexxa-projects?tab=packages&repo_name=JexxaTutorials). 
+  * Docker stacks for all tutorials: [HelloJexxa](deploy/hellojexxa-compose.yml), [TimeService](deploy/timeservice-compose.yml), [BookStore](deploy/bookstore-compose.yml), [ContractManagement](deploy/contract-management-compose.yml)
   
 ## HelloJexxa
 See documentation [HelloJexxa](HelloJexxa/README.md)
