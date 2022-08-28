@@ -156,7 +156,7 @@ For continuous deployment, we focus only on the following two aspects:
   [here](https://jexxa-projects.github.io/Jexxa/jexxa_reference.html#_secrets). This allows you to hand in credentials 
   such as a keystore, or a password into a docker container via files. The list of available properties can be seen 
   [here](https://github.com/jexxa-projects/Jexxa/blob/master/jexxa-web/src/test/resources/jexxa-application.properties). 
-  Since the secrets must be defined in your orchestration tool, we define the secrets directly in 
+  For simplicity reason we define the secrets directly in 
   jexxa-application.properties which is not recommended for production use. 
               
 ### Run the stack
