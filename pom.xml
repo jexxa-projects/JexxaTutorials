@@ -44,7 +44,7 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa-web.release.version>5.1.2</jexxa-web.release.version>
+        <jexxa-web.release.version>5.2.0</jexxa-web.release.version>
         <addend.version>1.3.0</addend.version>
         <activemq.client.version>5.17.2</activemq.client.version>
         <postgres.version>42.5.0</postgres.version>
