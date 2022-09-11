@@ -163,7 +163,7 @@ In order to configure your application for a specific message broker, we define 
 ```properties
 #suppress inspection "UnusedProperty" for whole file
 #Settings for JMSAdapter and JMSSender
-java.naming.factory.initial=org.apache.activemq.jndi.ActiveMQInitialContextFactory
+java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
 java.naming.provider.url=tcp://localhost:61616
 java.naming.user=admin
 java.naming.password=admin
@@ -205,7 +205,7 @@ public final class TimeListener extends TypedMessageListener<LocalTime> {
 
     @Override
     // The JMS specific configuration is defined via annotation.
-    @JMSConfiguration(destination = TIME_TOPIC, messagingType = TOPIC)
+    @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC, sharedSubscriptionName = "TimeService", durable = NON_DURABLE)
     public void onMessage(LocalTime localTime) {
         // Forward this information to corresponding application service.
         timeApplicationService.displayPublishedTime(localTime);
