@@ -12,7 +12,6 @@
   <groupId>io.jexxa.tutorials.contractmanagement</groupId>
 
   <properties>
-    <main.arguments>-jdbc</main.arguments>
     <main.http.port>7505</main.http.port>
     <main.https.port>8085</main.https.port>
   </properties>

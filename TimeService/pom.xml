@@ -12,7 +12,6 @@
   <groupId>io.jexxa.tutorials.timeservice</groupId>
 
   <properties>
-    <main.arguments>-jms</main.arguments>
     <main.http.port>7502</main.http.port>
     <main.https.port>8082</main.https.port>
   </properties>

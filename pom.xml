@@ -34,7 +34,6 @@
     <properties>
         <image.repository.root>ghcr.io/jexxa-projects</image.repository.root>
         <main.class>${project.groupId}.${project.name}</main.class>
-        <main.arguments>-jdbc</main.arguments>
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
         <docker.base.image>eclipse-temurin:17-alpine</docker.base.image>
@@ -509,11 +508,6 @@
                         <creationTime>
                             USE_CURRENT_TIMESTAMP
                         </creationTime>
-                        <args>
-                            <arg>
-                                ${main.arguments}
-                            </arg>
-                        </args>
 
                         <ports>
                             <port>${main.http.port}</port>
