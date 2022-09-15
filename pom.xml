@@ -84,7 +84,7 @@
         <maven.versions.plugin>2.12.0</maven.versions.plugin>
         <maven.build.helper.version>3.3.0</maven.build.helper.version>
         <maven.jib.plugin>3.3.0</maven.jib.plugin>
-        <maven.shade.plugin>3.3.0</maven.shade.plugin>
+        <maven.shade.plugin>3.4.0</maven.shade.plugin>
 
     </properties>
 
