@@ -55,7 +55,6 @@
         <junit.jupiter.engine.version>5.9.1</junit.jupiter.engine.version>
         <junit.jupiter.params.version>5.9.1</junit.jupiter.params.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <h2database.version>2.1.214</h2database.version>
         <unirest.java.version>3.13.11</unirest.java.version>
         <jexxa-test.release.version>5.2.2</jexxa-test.release.version>
 
@@ -145,13 +144,6 @@
             <groupId>io.jexxa.jexxatest</groupId>
             <artifactId>jexxa-test</artifactId>
             <version>${jexxa-test.release.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2database.version}</version>
             <scope>test</scope>
         </dependency>
 
