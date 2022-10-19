@@ -11,11 +11,11 @@ import java.util.function.Consumer;
 @Observer
 public final class DomainEventPublisher {
     private final Map<Class<?>, Set<Consumer<?>>> subscribers = new ConcurrentHashMap<>();
-    private static final DomainEventPublisher instance = new DomainEventPublisher();
+    private static final DomainEventPublisher DOMAIN_EVENT_PUBLISHER = new DomainEventPublisher();
 
     public static DomainEventPublisher instance()
     {
-        return instance;
+        return DOMAIN_EVENT_PUBLISHER;
     }
 
     @SuppressWarnings("unchecked") // we check if the given domainEvent is assignable to a listener. Therefore, the unchecked cast is safe
