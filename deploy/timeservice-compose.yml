@@ -37,4 +37,4 @@ services:
     environment:
       AMQ_USER: "admin"
       AMQ_PASSWORD: "admin"
-
+      AMQ_EXTRA_ARGS: --relax-jolokia
