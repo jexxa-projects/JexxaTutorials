@@ -14,20 +14,14 @@ jobs:
 
     # Service containers to run with `runner-job`
     services:
-      # Label used to access the service container
       activemq:
         image: quay.io/artemiscloud/activemq-artemis-broker:latest
         ports:
-          # Opens tcp port 6379 on the host and service container
           - 61616:61616
       postgres:
-        # Docker Hub image
         image: postgres
-        # setup default ports
         ports:
-          # Opens tcp port 5432 on the host and service container
           - 5432:5432
-        # setup default user for testing
         env:
           POSTGRES_PASSWORD: admin
           POSTGRES_USER: postgres
