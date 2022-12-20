@@ -1,4 +1,4 @@
-# BookStoreJ - OpenAPI Support 
+# BookStore - OpenAPI Support 
 
 ## What You Learn
 
@@ -37,7 +37,7 @@ You will see following (or similar) output
 
 You can use [Swagger UI](https://swagger.io/tools/swagger-ui/) to explore the documentation. Just start Swagger UI, enter the URL and press explore button. 
 
-Note: In case you start Swagger UI not on the same machine as your BookStoreJ-application, or from a docker image you have to use the public IP address of the machine running BookStoreJ-application. 
+Note: In case you start Swagger UI not on the same machine as your BookStore-application, or from a docker image you have to use the public IP address of the machine running BookStore-application. 
 
 As result, you should get following overview with available operations: 
 
