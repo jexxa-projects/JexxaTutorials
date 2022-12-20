@@ -32,7 +32,7 @@ First, add the following dependency to your tests.
     <dependency>
       <groupId>io.jexxa.jexxatest</groupId>
       <artifactId>jexxa-test</artifactId>
-      <version>5.2.0</version>
+      <version>5.5.4</version>
       <scope>test</scope>
     </dependency>
 ```
