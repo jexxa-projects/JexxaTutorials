@@ -20,6 +20,8 @@ challenging. In addition, if a team has written a lot of mock tests in the past,
 be helpful in communicating the benefits of a Ports-And-Adapters architecture.
 
 Once a team has mastered the challenges of DDD, writing pure unit tests should be trained consistently.
+As soon as your team reaches this level, you should only use the architecture tests from jexxa-test as
+described [here](#Validate-the-Architecture). 
 
 ## Write some tests
 Writing some tests with Jexxa is quite easy. If you implement your driven adapters using Jexxa's driven adapter strategies you can use
@@ -29,11 +31,6 @@ package **jexxa-test**. It automatically provides stubs so that you do not need 
 *   You don't need to use mocks which can lead to validating execution steps within the domain core instead of validating the domain specific use cases
 *   Your tests are much easier to read and can teach new developers the use cases of your domain.
 *   You can write your tests first without considering the infrastructure first.
-
-In addition, **jexxa-test** provides predefined architectural tests for:
-*   [Pattern Language](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validate the correct annotation of your application using project [Addend](http://addend.jexxa.io/)
-*   [Ports&Adapters Architecture](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validates dependencies between packages of your application
-*   [Usage of Aggregates](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validate that your business logic is not exposed
 
 First, add the following dependency to your tests.
 
@@ -157,10 +154,17 @@ class BookStoreServiceTest
 
 ## Validate the Architecture
 
+
 Even with a clear architecture, one can easily violate their rules by accident. So I strongly recommend to run some
 tests to validate the architecture of your application. Jexxa simplifies this especially if you use its conventions
-by providing architectural tests based on [ArchUnit](https://www.archunit.org). This ensures that the validation of 
-the architecture is port of your unit tests. 
+by providing architectural tests based on [ArchUnit](https://www.archunit.org). This ensures that the validation of the architecture is port of your unit tests. 
+
+Jexxa-test provides following architecture tests that. 
+*   [Pattern Language](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validate the correct annotation of your application using project [Addend](http://addend.jexxa.io/)
+*   [Ports&Adapters Architecture](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validates dependencies between packages of your application
+*   [Usage of Aggregates](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validate that your business logic is not exposed
+
+
 
 ### Validate Ports and Adapters
 
