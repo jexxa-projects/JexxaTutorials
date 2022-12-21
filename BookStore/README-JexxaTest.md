@@ -44,7 +44,7 @@ package **jexxa-test**. It automatically provides stubs so that you do not need 
 *   You can write your tests first without considering the infrastructure first.
 
 
-Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/jexxa-projects/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).
+Following code shows a simple validation of our BookStoreService. The described tests can be found [here](src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).
 
 ### Initialize the tests 
 
