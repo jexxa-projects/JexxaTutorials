@@ -23,6 +23,17 @@ Once a team has mastered the challenges of DDD, writing pure unit tests should b
 As soon as your team reaches this level, you should only use the architecture tests from jexxa-test as
 described [here](#Validate-the-Architecture). 
 
+If you want to use the stubs and/or architecture validation, you first have to add the following dependency to your tests.
+
+```xml
+    <dependency>
+      <groupId>io.jexxa.jexxatest</groupId>
+      <artifactId>jexxa-test</artifactId>
+      <version>5.5.4</version>
+      <scope>test</scope>
+    </dependency>
+```
+
 ## Write some tests
 Writing some tests with Jexxa is quite easy. If you implement your driven adapters using Jexxa's driven adapter strategies you can use
 package **jexxa-test**. It automatically provides stubs so that you do not need any mock framework. Main advantages are:
@@ -32,16 +43,6 @@ package **jexxa-test**. It automatically provides stubs so that you do not need 
 *   Your tests are much easier to read and can teach new developers the use cases of your domain.
 *   You can write your tests first without considering the infrastructure first.
 
-First, add the following dependency to your tests.
-
-```maven
-    <dependency>
-      <groupId>io.jexxa.jexxatest</groupId>
-      <artifactId>jexxa-test</artifactId>
-      <version>5.5.4</version>
-      <scope>test</scope>
-    </dependency>
-```
 
 Following code shows a simple validation of our BookStoreService. Some additional tests can be found [here](https://github.com/jexxa-projects/Jexxa/blob/master/tutorials/BookStore/src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).
 
