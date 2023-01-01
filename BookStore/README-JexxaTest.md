@@ -16,8 +16,8 @@
 In general, you should write pure unit tests, especially for your aggregates. This ensures that your business-tests remain independent of any technology as well. In addition, you avoid the anti-pattern `anemic model` and accidentally put business logic into an application- or domain service. 
 
 Depending on the teams' experience in writing tests, even the transition to DDD can be quite 
-challenging. In addition, if a team has written a lot of mock tests in the past, the use of subs can 
-be helpful in communicating the benefits of a Ports-And-Adapters architecture.
+challenging. In addition, if a team has written a lot of mock tests in the past, the use of 
+stubs can be helpful in communicating the benefits of a Ports-And-Adapters architecture.
 
 Once a team has mastered the challenges of DDD, writing pure unit tests should be trained consistently.
 As soon as your team reaches this level, you should only use the architecture tests from jexxa-test as
