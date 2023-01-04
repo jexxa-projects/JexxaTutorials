@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
 import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -61,14 +62,14 @@ class BookStoreServiceTest
 
 
     @Test
-    void sellBook() throws BookNotInStockException
+    void sellBook()
     {
         //Arrange
         var amount = 5;
         objectUnderTest.addToStock(ANY_BOOK, amount);
 
-        //Act
-        objectUnderTest.sell(ANY_BOOK);
+        //Act / Assert
+        assertDoesNotThrow(() -> objectUnderTest.sell(ANY_BOOK));
 
         //Assert
         assertEquals( amount - 1, objectUnderTest.amountInStock(ANY_BOOK) );       // Perform assertion against the object we test
@@ -86,13 +87,13 @@ class BookStoreServiceTest
     }
 
     @Test
-    void sellLastBook() throws BookNotInStockException
+    void sellLastBook()
     {
         //Arrange
         objectUnderTest.addToStock(ANY_BOOK, 1);
 
         //Act
-        objectUnderTest.sell(ANY_BOOK);
+        assertDoesNotThrow(() -> objectUnderTest.sell(ANY_BOOK));
 
         //Assert
         assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );                        // Perform assertion against the object we test
