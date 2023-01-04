@@ -1,9 +1,9 @@
-# BookStore - Writing Unit Tests
+# BookStore - Writing Tests
 
 ## What You Learn
    
-*   [How to wirte unit-test for your aggregates](#Write-unit-tests-for-aggregates)
-*   [How to wirte unit-test for your aggregates](#Write-tests-using-stubs)
+*   [How to write unit-tests for your aggregates](#Write-unit-tests-for-aggregates)
+*   [How to write test using stubs](#Write-tests-using-stubs)
 
 ## What you need
 
