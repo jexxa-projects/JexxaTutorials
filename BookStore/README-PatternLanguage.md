@@ -15,15 +15,22 @@
 *   Optional: A postgres DB   
 
 ## A pattern language for your application core 
-Most developers are aware of design pattern and use them when developing software. A pattern language goes one step 
-further and describes how and which design patterns are allowed to interact with each other. Ideally, a pattern language 
-achieves 100% pattern consistency, so that all classes of an application and their relationships can be clearly mapped 
-to the pattern language.
+Most developers are aware of design pattern and use them when developing software. A pattern language 
+goes one step further. It describes which design patterns are allowed and how they may interact with 
+each other. Much like a grammar for a language, a developer uses a pattern language to navigate through code even if 
+he or she has never read it before.
 
-Instead of reading and understanding the source code again and again, a developer can navigate through the code based 
-on these patterns. For example if the application uses the pattern language of DDD, and you have to change the business 
-logic of your application core the corresponding code must be within an `Aggregate`. Another example is, that an 
-`ApplicationSerivce` must access all existing `Aggregates` through a `Repository`. 
+__Example:__ If an application uses the pattern language of DDD the execution of a typical use case looks as follows: 
+*   A command, represented as `ValueObject` is received by an `ApplicationServcice`
+*   The `ApplicationService` requests the required `Aggregate` containing the business logic from the corresponding `Repository`
+*   The `ApplicationService` executes the command ont the `Aggregate` 
+*   The `Aggregate` creates and publishes `DomainEvent` 
+*   Finally, the `ApplicationService` returns the `Aggregate` to Repository again 
+
+Ideally, a pattern language achieves 100% pattern consistency, so that all classes of an application and their 
+relationships can be clearly mapped to the pattern language.
+
+## Using a Pattern Language
 
 To make these patterns explicit, I strongly recommend annotating all classes within the application core 
 with their corresponding element of the pattern language. Classes that cannot be assigned to a specific element 
