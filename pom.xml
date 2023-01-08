@@ -43,7 +43,7 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa-web.release.version>5.5.4</jexxa-web.release.version>
+        <jexxa-web.release.version>5.6.0</jexxa-web.release.version>
         <addend.version>2.0.0</addend.version>
         <activemq.artemis.client.version>2.27.1</activemq.artemis.client.version>
         <postgres.version>42.5.1</postgres.version>
