@@ -56,7 +56,7 @@
         <junit.jupiter.params.version>5.9.1</junit.jupiter.params.version>
         <awaitility.version>4.2.0</awaitility.version>
         <unirest.java.version>3.14.1</unirest.java.version>
-        <jexxa-test.release.version>5.5.4</jexxa-test.release.version>
+        <jexxa-test.release.version>5.6.0</jexxa-test.release.version>
 
         <!-- server-name used in mavens settings.xml to find to your repository credentials -->
         <project.scm.id>github</project.scm.id>
