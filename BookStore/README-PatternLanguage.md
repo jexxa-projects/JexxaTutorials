@@ -21,10 +21,10 @@ each other. Much like a grammar for a language, a developer uses a pattern langu
 he or she has never read it before.
 
 __Example:__ If an application uses the pattern language of DDD the execution of a typical use case looks as follows: 
-*   A command, represented as `ValueObject` is received by an `ApplicationServcice`
+*   A command, represented as `ValueObject`, is received by an `ApplicationServcice`
 *   The `ApplicationService` requests the required `Aggregate` containing the business logic from the corresponding `Repository`
 *   The `ApplicationService` executes the command ont the `Aggregate` 
-*   The `Aggregate` creates and publishes `DomainEvent` 
+*   The `Aggregate` executes the business logic, creates and publishes `DomainEvent` 
 *   Finally, the `ApplicationService` returns the `Aggregate` to Repository again 
 
 Ideally, a pattern language achieves 100% pattern consistency, so that all classes of an application and their 
@@ -43,8 +43,9 @@ system, you will get the following advantages:
 *   You speed up relearning of and navigating within the source code   
 *   You speed up and simplify the initial training of new employees
 *   You can use them for code reviews and refactorings      
+*   You can automatically validate your architecture as part of your unit-tests(see [here](README-ArchitectureValidation.md))
 
-For the pattern langauge of DDD we recommend project [Addend](https://addend.jexxa.io/).     
+For the pattern language of DDD we recommend project [Addend](https://addend.jexxa.io/).     
 
 The following shows the annotation of an `Aggregate`. Apart from the obvious annotation, it also uses two other 
 annotations: 

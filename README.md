@@ -37,7 +37,7 @@ See documentation [BookStore](BookStore/README.md)
 ## BookStore - Pattern Language
 See documentation [BookStore - Pattern Language](BookStore/README-PatternLanguage.md)
 
-## BookStore - Architecture Validateion 
+## BookStore - Architecture Validation 
 See documentation [BookStore - Architecture Validation](BookStore/README-ArchitectureValidation.md)
 
 ## BookStore - Writing Tests 
