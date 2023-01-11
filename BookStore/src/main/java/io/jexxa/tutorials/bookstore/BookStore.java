@@ -1,10 +1,11 @@
 package io.jexxa.tutorials.bookstore;
 
 
-import io.jexxa.addend.applicationcore.DomainService;
 import io.jexxa.core.JexxaMain;
 import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventService;
+import io.jexxa.tutorials.bookstore.domainservice.ReferenceLibrary;
 
 public final class BookStore
 {
@@ -13,14 +14,13 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                // Bootstrap all classes annotated with @DomainService. In this application this causes to get
-                // the latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
-                .bootstrapAnnotation(DomainService.class)
+                .bootstrap(ReferenceLibrary.class).and()       // Bootstrap latest book via ReferenceLibrary
+                .bootstrap(DomainEventService.class).and()     // DomainEventService to forward DomainEvents to a message bus
 
-                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
-                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)        // Provide REST access to BookStoreService
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext()) // Provide REST access to BoundedContext
 
-                .run();
+                .run(); // Finally run the application
     }
 
     private BookStore()
