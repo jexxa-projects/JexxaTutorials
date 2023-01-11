@@ -74,7 +74,7 @@ class BookstoreIT
     {
         //Arrange
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
-        var messageListener = messageBinding.getMessageListener("BookStoreTopic", JMSConfiguration.MessagingType.TOPIC);
+        var messageListener = messageBinding.getMessageListener("BookStore", JMSConfiguration.MessagingType.TOPIC);
 
         bookStoreService.postRequest(Void.class, addToStock, ANY_BOOK, 5);
         var inStock = bookStoreService.postRequest(Integer.class, amountInStock, ANY_BOOK );
