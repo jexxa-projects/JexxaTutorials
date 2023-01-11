@@ -18,6 +18,10 @@ jobs:
         image: quay.io/artemiscloud/activemq-artemis-broker:latest
         ports:
           - 61616:61616
+        env:
+          AMQ_USER: admin
+          AMQ_PASSWORD: admin
+
       postgres:
         image: postgres
         ports:
