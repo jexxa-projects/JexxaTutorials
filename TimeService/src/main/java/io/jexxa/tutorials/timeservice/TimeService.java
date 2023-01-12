@@ -18,7 +18,7 @@ public final class TimeService
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
-                // Bind the JMSAdapter to our
+                // Bind the JMSAdapter to our message listener
                 .bind(JMSAdapter.class).to(TimeListener.class)
 
                 .run();
