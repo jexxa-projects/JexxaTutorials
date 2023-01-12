@@ -4,7 +4,7 @@
 
 1.  [How to write a simple application using Jexxa](#1-Write-the-application)
 2.  [Develop a Web Frontend](#2-Develop-a-Web-Frontend)
-3. 
+
 ## What you need
 
 *   30 minutes
