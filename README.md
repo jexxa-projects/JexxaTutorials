@@ -5,14 +5,14 @@
 ## General notes
 
 All tutorials focus on the usage of Jexxa. Therefore, the business logic in these tutorials is without any special 
-meaning. Nevertheless, we tried to find typical scenarios of business applications that can be easily mapped to our own applications.
+meaning. Nevertheless, we tried to find typical scenarios of business applications that can be easily mapped to other applications.
 
-Finally, we assume that you have a basic understanding of: 
+In these tutorials we assume that you have a basic understanding of: 
 * Writing Java code and build your programs using maven.
 
-* A general understanding of the used technology stacks such as a messaging system or a database.
+* First experience in the use of a database and message bus. 
 
-* A general understanding of [ports and adapters](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
+* An initial idea of ports and adapters architecture as described [here](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
 
 * All tutorials run by default without any additional infrastructure services such as JMS or a database.
 
@@ -20,7 +20,7 @@ Finally, we assume that you have a basic understanding of:
   * Docker images provided [here](https://github.com/jexxa-projects?tab=packages&repo_name=JexxaTutorials). 
   * Docker stacks for all tutorials: [HelloJexxa](deploy/hellojexxa-compose.yml), [TimeService](deploy/timeservice-compose.yml), [BookStore](deploy/bookstore-compose.yml), [ContractManagement](deploy/contract-management-compose.yml)
   
-* In case you want to build the tutorials, please ensure a locally running  [developer stack](deploy/developerStack.yml) providing a Postgres database, ActiveMQ broker, and Swagger-UI 
+* In case you want to build the tutorials, please ensure a locally running  [developer stack](deploy/developerStack.yml) providing a Postgres database, ActiveMQ broker, and Swagger-UI to access these applications.
 
 ## HelloJexxa
 See documentation [HelloJexxa](HelloJexxa/README.md)
