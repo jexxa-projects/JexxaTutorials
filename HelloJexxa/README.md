@@ -3,7 +3,7 @@
 ## What You Learn
 
 1.  [How to write a simple application using Jexxa](#1-Write-the-application)
-2.  [Develop a Web Frontend](#2-Develop-a-Web-Frontend)
+2.  [How to develop a web frontend](#2-Develop-a-Web-Frontend)
 
 ## What you need
 
@@ -89,8 +89,8 @@ This web page can be used as starting point for developing your own web page tha
 
 ## 2. Develop a Web Frontend
 
-### Enter Developing Mode
-For simplicity, our web page is included in the jar which is fine as long as the application is running. We can also define an external location of the provided web pages so that we do not need to recompile the entire application.
+### Start Application in Developing Mode
+For simplicity, our web page is included in the jar. We can also define an external location of the provided web pages so that we do not need to recompile the entire application if we change the web frontend. 
 
 All Jexxa applications are configured by using the [`jexxa-application.properties`](src/main/resources/jexxa-application.properties). This config file is automatically loaded if available. 
 In addition, we can also define configuration files which either extend, or overwrite the settings in the `jexxa-application.properties`. More information about this hierarchical approach can be found [here](https://jexxa-projects.github.io/Jexxa/jexxa_reference.html#_properties_files).
