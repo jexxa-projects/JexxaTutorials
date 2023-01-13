@@ -58,9 +58,7 @@ You should see following (or similar) output
 [2023-01-12T06:36Z] INFO JexxaBanner - 
 [2023-01-12T06:36Z] INFO JexxaBanner - Access Information: 
 [2023-01-12T06:36Z] INFO JexxaBanner - Listening on: http://0.0.0.0:7501
-[2023-01-12T06:36Z] INFO JexxaBanner - Listening on: https://0.0.0.0:8081
 [2023-01-12T06:36Z] INFO JexxaBanner - OpenAPI available at: http://0.0.0.0:7501/swagger-docs
-[2023-01-12T06:36Z] INFO JexxaBanner - OpenAPI available at: https://0.0.0.0:8081/swagger-docs
 [2023-01-12T06:36Z] INFO JexxaMain - BoundedContext 'HelloJexxa' successfully started in 1.568 seconds
 ```
 
