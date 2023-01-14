@@ -4,6 +4,8 @@ import io.jexxa.addend.applicationcore.Aggregate;
 import io.jexxa.addend.applicationcore.AggregateFactory;
 import io.jexxa.addend.applicationcore.AggregateID;
 
+import java.util.UUID;
+
 import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
 import static io.jexxa.tutorials.bookstore.domain.DomainEventPublisher.publish;
 
@@ -50,7 +52,7 @@ public final class Book
 
         if ( ! inStock() )
         {
-            publish(bookSoldOut(isbn13));
+            publish(bookSoldOut( UUID.randomUUID(), isbn13));
         }
     }
 

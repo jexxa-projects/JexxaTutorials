@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
-import static io.jexxa.tutorials.bookstore.domain.book.BookSoldOut.bookSoldOut;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,9 +95,9 @@ class BookStoreServiceTest
         assertDoesNotThrow(() -> objectUnderTest.sell(ANY_BOOK));
 
         //Assert
-        assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );                        // Perform assertion against the object we test
-        assertEquals( 1 , publishedDomainEvents.size() );                                   // Perform assertion against the repository
-        assertEquals( bookSoldOut(ANY_BOOK), publishedDomainEvents.getMessage(BookSoldOut.class));  // Perform assertion against published DomainEvents
+        assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );                    // Perform assertion against the object we test
+        assertEquals( 1 , publishedDomainEvents.size() );                               // Perform assertion against the repository
+        assertEquals( ANY_BOOK, publishedDomainEvents.getMessage(BookSoldOut.class).isbn13());  // Perform assertion against published DomainEvents
     }
 
 }

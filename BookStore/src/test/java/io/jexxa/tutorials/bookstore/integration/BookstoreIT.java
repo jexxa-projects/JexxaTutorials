@@ -91,7 +91,7 @@ class BookstoreIT
                 .pop(BookSoldOut.class);
 
         //Assert
-        assertEquals(BookSoldOut.bookSoldOut(ANY_BOOK), result);
+        assertEquals(ANY_BOOK, result.isbn13());
     }
 
     @AfterAll
