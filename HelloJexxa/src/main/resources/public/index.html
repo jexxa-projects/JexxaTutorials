@@ -6,19 +6,15 @@
 </head>
 
 <body>
-<h1 id = "greetings">Gentle people say: </h1>
+<h1 id = "greetings">Greetings: </h1>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
+    //Base URL is the URL of the browser together with the name of our application name HelloJexxa
     const BASE_URL = window.location.protocol + '//' + location.host +'/HelloJexxa';
 
-    const appendToDOM = (message) => {
-        document
-            .querySelector("#greetings")
-            .append(message);
-    };
-
+    //Invoke method `greetings` on our backend (using axios framework)
     const fetchGreetings = () => {
         axios.get(`${BASE_URL}/greetings`)
             .then(response => {
@@ -28,6 +24,13 @@
                 appendToDOM(greetings);
             })
             .catch(error => console.error(error));
+    };
+
+    //Append message behind id 'greetings'
+    const appendToDOM = (message) => {
+        document
+            .querySelector("#greetings")
+            .append(message);
     };
 
     fetchGreetings();

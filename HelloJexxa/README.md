@@ -3,7 +3,7 @@
 ## What You Learn
 
 1.  [How to write a simple application using Jexxa](#1-Write-the-application)
-2.  [How to develop a web frontend](#2-Develop-a-Web-Frontend)
+2.  [How to change the web frontend](#2-Develop-a-Web-Frontend)
 
 ## What you need
 
@@ -15,6 +15,27 @@
 
 ## 1. Write the application
 
+### Create a Maven project 
+
+All IDEs such as IntelliJ or Eclipse provide a way to create a new maven project that you should to create your HelloJexxa program. Then add the following dependencies to the `pom.xml` to use Jexxa and to print log information to the console. 
+
+```xml
+<dependencies>
+    <dependency>
+       <groupId>io.jexxa</groupId>
+       <artifactId>jexxa-web</artifactId>
+       <version>5.6.0</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>2.0.6</version>
+    </dependency>
+</dependencies>
+```
+
+### Write the main method 
 The source code of the main method is quite simple. Each line include comments to explain the meaning.  
 
 ```java     
@@ -43,23 +64,29 @@ public final class HelloJexxa
 }
 ```
 
-### Compile & Start the Application
-```console                                                          
-mvn clean install
-java -jar target/hellojexxa-jar-with-dependencies.jar
+### Configure your Application
+
+Before we can run your application, we need to configure network port and address for HTTP access via a properties file. The default properties file used in jexxa
+is named `jexxa-application.properties`. Add a file into the `resources` directory of your project and add the following
+content:
+```properties
+#Settings for RESTfulRPCAdapter
+io.jexxa.rest.host=0.0.0.0
+io.jexxa.rest.port=7501
 ```
-You should see following (or similar) output
+
+### Compile & Start the Application
+Compile and start the program via your IDE. As soon as you start the application, you should see following (or similar) output
+
 ```console
-[2023-01-12T06:36Z] INFO JexxaBanner - Config Information: 
-[2023-01-12T06:36Z] INFO JexxaBanner - Jexxa Version                  : VersionInfo[version=5.6.0, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2023-01-08T17:51:13+0000]
-[2023-01-12T06:36Z] INFO JexxaBanner - Context Version                : VersionInfo[version=2.0.15-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/hellojexxa, projectName=HelloJexxa, buildTimestamp=2023-01-11 08:42]
-[2023-01-12T06:36Z] INFO JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
-[2023-01-12T06:36Z] INFO JexxaBanner - Used Properties Files          : [/jexxa-application.properties]
-[2023-01-12T06:36Z] INFO JexxaBanner - 
-[2023-01-12T06:36Z] INFO JexxaBanner - Access Information: 
-[2023-01-12T06:36Z] INFO JexxaBanner - Listening on: http://0.0.0.0:7501
-[2023-01-12T06:36Z] INFO JexxaBanner - OpenAPI available at: http://0.0.0.0:7501/swagger-docs
-[2023-01-12T06:36Z] INFO JexxaMain - BoundedContext 'HelloJexxa' successfully started in 1.568 seconds
+[main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.6.1-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2023-01-21T17:05:30+0000]
+[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=, repository=, projectName=HelloJexxa, buildTimestamp=]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
+[main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties]
+[main] INFO io.jexxa.utils.JexxaBanner - 
+[main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
+[main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7501
 ```
 
 ### Access the application
@@ -78,51 +105,71 @@ To access the application you can either use your favorite web browser, or a com
     ```Json 
         "Hello Jexxa" 
     ```
+## 2. Develop a Web Frontend
+
+### Add a Web Page
+
+For simplicity, we add our web page into the same project as our backend by performing following steps: 
+
+* Create directory `public` into our `resources` directory that will include our web page
+* Extend `jexxa-application.propertoes` by following lines so that this directory is exposed as web directory 
+  ```properties
+  io.jexxa.rest.static_files_root=src/main/resources/public
+  io.jexxa.rest.static_files_external=true
+  ```
+* Finally, add web page `index.html` with following content into `resources/public`:
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title> Test page for Jexxa </title>
+    </head>
+    
+    <body>
+    <h1 id = "greetings">Greetings: </h1>
+    
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+    <script>
+        //Base URL is the URL of the browser together with the name of our application name HelloJexxa
+        const BASE_URL = window.location.protocol + '//' + location.host +'/HelloJexxa';
+    
+        //Invoke method `greetings` on our backend (using axios framework)  
+        const fetchGreetings = () => {
+            axios.get(`${BASE_URL}/greetings`)
+                .then(response => {
+                    const greetings = response.data;
+                    console.log(`GET greetings`, greetings);
+                    // append to DOM
+                    appendToDOM(greetings);
+                })
+                .catch(error => console.error(error));
+        };
+    
+        //Append message behind id 'greetings'
+        const appendToDOM = (message) => {
+            document
+                    .querySelector("#greetings")
+                    .append(message);
+        };
+    
+        //Call our method 
+        fetchGreetings();
+    </script>
+    </body>
+    </html>
+    ```
+
 ### Access the Web Page
-This tutorial provides also a simple web page, which uses the above REST commands. You can access it via following link [http://localhost:7501/index.html](http://localhost:7501/index.html). The result should look like this:
+
+After restarting the application, you can access the web page via following link [http://localhost:7501/index.html](http://localhost:7501/index.html). The result should look like this:
 
 ![Webpage](images/Webpage.jpg)
 
-This web page can be used as starting point for developing your own web page that is described in the following section. 
+This web page can be used as starting point for developing your own web page.
 
-## 2. Develop a Web Frontend
 
-### Start Application in Developing Mode
-For simplicity, our web page is included in the jar. We can also define an external location of the provided web pages so that we do not need to recompile the entire application if we change the web frontend. 
+## Final notes
+The steps described in this tutorial are written in a way that you can use it in any IDE. The source code we provide is based on the [JexxaTemplate](https://github.com/jexxa-projects/JexxaTutorials/) which uses additional maven plugins. As soon as you start developing a project for production use, you should use this template.    
 
-All Jexxa applications are configured by using the [`jexxa-application.properties`](src/main/resources/jexxa-application.properties). This config file is automatically loaded if available. 
-In addition, we can also define configuration files which either extend, or overwrite the settings in the `jexxa-application.properties`. More information about this hierarchical approach can be found [here](https://jexxa-projects.github.io/Jexxa/jexxa_reference.html#_properties_files).
-
-To do so, we define another configuration file called [`jexxa-test.properties`](src/test/resources/jexxa-test.properties) that changes our default configuration as follows.
-```properties                                                          
-#Changed Settings for RESTfulRPCAdapter
-io.jexxa.rest.static_files_root=src/main/resources/public
-io.jexxa.rest.static_files_external=true
-```
-
-Since this configuration file is also included in this tutorial, we can restart our application using following command: 
-```console                                                          
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" target/hellojexxa-jar-with-dependencies.jar
-```
-The output messages states that two properties files are loaded: 
-```console
-...
-[2023-01-12T07:22Z] INFO JexxaBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-test.properties]
-...
-```
-
-### Change the Web Page 
-
-To change the web page we first open the file [index.html](src/main/resources/public/index.html) in our favorite editor.  
-
-For example, we can change the headings from: 
-```html
-<h1 id = "greetings">Greetings: </h1>
-```
-into 
-```html
-<h1 id = "greetings">Gentle people say: </h1>
-```
-
-After saving the file, you can reload the web page and should see following output:
-![](images/ChangedWebPage.png)
