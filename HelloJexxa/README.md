@@ -176,5 +176,5 @@ This web page can be used as starting point for developing your own web page.
 
 
 ## Final notes
-The steps described in this tutorial are written in a way that you can use it in any IDE. The source code we provide is based on the [JexxaTemplate](https://github.com/jexxa-projects/JexxaTutorials/) which uses additional maven plugins. As soon as you start developing a project for production use, you should use this template.    
+The steps described in this tutorial are written in a way that you can use it in any IDE. The source code we provide is based on the [JexxaTemplate](https://github.com/jexxa-projects/JexxaTemplate/) which uses additional maven plugins. As soon as you start developing a project for production use, you should use this template.    
 
