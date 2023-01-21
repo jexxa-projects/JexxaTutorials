@@ -80,7 +80,7 @@ Compile and start the program via your IDE. As soon as you start the application
 
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
-[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.6.1-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2023-01-21T17:05:30+0000]
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.6.0, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2023-01-21T17:05:30+0000]
 [main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=, repository=, projectName=HelloJexxa, buildTimestamp=]
 [main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
 [main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties]
