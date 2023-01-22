@@ -43,7 +43,10 @@ All IDEs such as IntelliJ or Eclipse provide a way to create a new maven project
 ### Write the main method 
 The source code of the main method is quite simple. Each line include comments to explain the meaning.  
 
-```java     
+```java
+import io.jexxa.core.JexxaMain;
+import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
+
 public final class HelloJexxa
 {
     @SuppressWarnings({"java:S3400", "unused"})
