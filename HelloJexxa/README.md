@@ -3,7 +3,7 @@
 ## What You Learn
 
 1.  [How to write a simple application using Jexxa](#1-Write-the-application)
-2.  [How to change the web frontend](#2-Add-a-Web-Page)
+2.  [How to add a web page](#2-Add-a-Web-Page)
 
 ## What you need
 
