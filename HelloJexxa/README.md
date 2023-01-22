@@ -3,7 +3,7 @@
 ## What You Learn
 
 1.  [How to write a simple application using Jexxa](#1-Write-the-application)
-2.  [How to change the web frontend](#2-Develop-a-Web-Frontend)
+2.  [How to change the web frontend](#2-Add-a-Web-Page)
 
 ## What you need
 
@@ -110,9 +110,9 @@ To access the application you can either use your favorite web browser, or a com
     ```Json 
         "Hello Jexxa" 
     ```
-## 2. Develop a Web Frontend
+## 2. Add a Web Page
 
-### Add a Web Page
+### Write the Web Page 
 
 For simplicity, we add our web page into the same project as our backend by performing following steps: 
 
@@ -176,5 +176,5 @@ This web page can be used as starting point for developing your own web page.
 
 
 ## Final notes
-The steps described in this tutorial are written in a way that you can use it in any IDE. The source code we provide is based on the [JexxaTemplate](https://github.com/jexxa-projects/JexxaTemplate/) which uses additional maven plugins. As soon as you start developing a project for production use, you should use this template.    
+The steps described in this tutorial are written in a way that you can use it in any modern IDE. The source code we provide in this repository is based on the [JexxaTemplate](https://github.com/jexxa-projects/JexxaTemplate/) which uses additional maven plugins. As soon as you start developing a project for production use, you should use this template.    
 
