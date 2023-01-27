@@ -27,7 +27,7 @@ jobs:
         # setup default user for testing
         env:
           POSTGRES_PASSWORD: admin
-          POSTGRES_USER: admin
+          POSTGRES_USER: postgres
 
     steps:
       - name: Login to GitHub Container Registry
