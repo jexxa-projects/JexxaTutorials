@@ -13,8 +13,8 @@
     <description>JexxaTutorials - Typical use cases for Jexxa</description>
     <licenses>
         <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <name>The Unlicense</name>
+            <url>https://unlicense.org</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
