@@ -246,7 +246,7 @@ Note: In case you want to use a difference database, you have to:
 
 Command: 
 ```Console
-curl -X GET  http://localhost:7503/BookStoreService/getBooks
+curl -X GET  http://localhost:7500/BookStoreService/getBooks
 ```
 
 Response: 
@@ -262,7 +262,7 @@ Response:
 Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
-     http://localhost:7503/BookStoreService/inStock       
+     http://localhost:7500/BookStoreService/inStock       
 ```
 
 Response: 
@@ -274,7 +274,7 @@ false
 Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" -d "[{isbn13: "978-1-891830-85-3"}, 5]" \
-     http://localhost:7503/BookStoreService/addToStock
+     http://localhost:7500/BookStoreService/addToStock
 ```
 
 Response: No output  
@@ -285,7 +285,7 @@ Response: No output
 Command:
 ```Console
 curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
-     http://localhost:7503/BookStoreService/inStock       
+     http://localhost:7500/BookStoreService/inStock       
 ```
 
 Response: 
