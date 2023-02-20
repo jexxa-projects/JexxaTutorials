@@ -17,7 +17,7 @@
 
 ### Create a Maven project 
 
-All IDEs such as IntelliJ or Eclipse provide a way to create a new maven project that you should to create your HelloJexxa program. Then add the following dependencies to the `pom.xml` to use Jexxa and to print log information to the console. 
+All IDEs such as IntelliJ or Eclipse provide a way to create a new maven project that you can use to create your HelloJexxa program. Then add the following dependencies to the `pom.xml` to use Jexxa and to print log information to the console. 
 
 ```xml
 <project> 
@@ -28,7 +28,7 @@ All IDEs such as IntelliJ or Eclipse provide a way to create a new maven project
        <dependency>
           <groupId>io.jexxa</groupId>
           <artifactId>jexxa-web</artifactId>
-          <version>5.6.0</version>
+          <version>5.7.0</version>
        </dependency>
        
        <dependency>
@@ -88,7 +88,7 @@ Compile and start the program via your IDE. As soon as you start the application
 
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
-[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.6.0, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2023-01-21T17:05:30+0000]
+[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.7.0, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2023-01-21T17:05:30+0000]
 [main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=, repository=, projectName=HelloJexxa, buildTimestamp=]
 [main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
 [main] INFO io.jexxa.utils.JexxaBanner - Used Properties Files          : [/jexxa-application.properties]
