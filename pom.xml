@@ -4,7 +4,7 @@
 
     <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>2.0.16-SNAPSHOT</version>
+    <version>2.0.17-SNAPSHOT</version>
     <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
@@ -43,7 +43,7 @@
         <maven.compiler.release>17</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa-web.release.version>5.6.2</jexxa-web.release.version>
+        <jexxa-web.release.version>5.7.0</jexxa-web.release.version>
         <addend.version>2.0.0</addend.version>
         <activemq.artemis.client.version>2.28.0</activemq.artemis.client.version>
         <postgres.version>42.5.4</postgres.version>
@@ -56,7 +56,7 @@
         <junit.jupiter.params.version>5.9.2</junit.jupiter.params.version>
         <awaitility.version>4.2.0</awaitility.version>
         <unirest.java.version>3.14.1</unirest.java.version>
-        <jexxa-test.release.version>5.6.2</jexxa-test.release.version>
+        <jexxa-test.release.version>5.7.0</jexxa-test.release.version>
 
         <!-- server-name used in mavens settings.xml to find to your repository credentials -->
         <project.scm.id>github</project.scm.id>
