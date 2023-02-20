@@ -8,29 +8,31 @@
 <body>
 <h1 id = "greetings">Greetings: </h1>
 
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
 <script>
-    //Base URL is the URL of the browser together with the name of our application name HelloJexxa
-    const BASE_URL = window.location.protocol + '//' + location.host +'/HelloJexxa';
+    const BASE_URL = window.location.protocol + '//' + location.host;
 
-    //Invoke method `greetings` on our backend (using axios framework)
-    const fetchGreetings = () => {
-        axios.get(`${BASE_URL}/greetings`)
-            .then(response => {
-                const greetings = response.data;
-                console.log(`GET greetings`, greetings);
-                // append to DOM
-                appendToDOM(greetings);
-            })
-            .catch(error => console.error(error));
-    };
-
-    //Append message behind id 'greetings'
+    //Append greetings message to heading
     const appendToDOM = (message) => {
         document
             .querySelector("#greetings")
             .append(message);
+    };
+
+    //Method to query greetings and append it to DOM
+    const fetchGreetings = () => {
+        fetch(`${BASE_URL}/HelloJexxa/greetings`)
+            .then( response => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`GET contextName`, data);
+                // append to DOM
+                appendToDOM(data);
+            })
+            .catch(error => console.error(error));
     };
 
     fetchGreetings();

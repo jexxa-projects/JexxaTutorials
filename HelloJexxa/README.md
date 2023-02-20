@@ -120,7 +120,7 @@ To access the application you can either use your favorite web browser, or a com
 For simplicity, we add our web page into the same project as our backend by performing following steps: 
 
 * Create directory `public` into our `resources` directory that will include our web page
-* Extend `jexxa-application.propertoes` by following lines so that this directory is exposed as web directory 
+* Extend `jexxa-application.properties` by following lines so that this directory is exposed as web directory 
   ```properties
   io.jexxa.rest.static_files_root=src/main/resources/public
   io.jexxa.rest.static_files_external=true
@@ -137,32 +137,33 @@ For simplicity, we add our web page into the same project as our backend by perf
     <body>
     <h1 id = "greetings">Greetings: </h1>
     
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    
     <script>
-        //Base URL is the URL of the browser together with the name of our application name HelloJexxa
-        const BASE_URL = window.location.protocol + '//' + location.host +'/HelloJexxa';
+        const BASE_URL = window.location.protocol + '//' + location.host;
     
-        //Invoke method `greetings` on our backend (using axios framework)  
+        //Append greetings message to heading
+        const appendToDOM = (message) => {
+            document
+                .querySelector("#greetings")
+                .append(message);
+        };
+    
+        //Method to query greetings and append it to DOM
         const fetchGreetings = () => {
-            axios.get(`${BASE_URL}/greetings`)
-                .then(response => {
-                    const greetings = response.data;
-                    console.log(`GET greetings`, greetings);
+            fetch(`${BASE_URL}/HelloJexxa/greetings`)
+                .then( response => {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(`GET contextName`, data);
                     // append to DOM
-                    appendToDOM(greetings);
+                    appendToDOM(data);
                 })
                 .catch(error => console.error(error));
         };
     
-        //Append message behind id 'greetings'
-        const appendToDOM = (message) => {
-            document
-                    .querySelector("#greetings")
-                    .append(message);
-        };
-    
-        //Call our method 
         fetchGreetings();
     </script>
     </body>
