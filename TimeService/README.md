@@ -279,11 +279,11 @@ curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 Each time you execute curl you should see following output on the console: 
 
 ```console                                                          
-[qtp380242442-31] INFO io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLogger - Begin> Send message
-[qtp380242442-31] INFO io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLogger - Message           : {"hour":17,"minute":12,"second":34,"nano":873658000}
-[qtp380242442-31] INFO io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLogger - Destination       : TimeService
-[qtp380242442-31] INFO io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLogger - Destination-Type  : TOPIC
-[qtp380242442-31] INFO io.jexxa.infrastructure.drivenadapterstrategy.messaging.logging.MessageLogger - End> Send message
+[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Begin> Send message
+[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Message           : {"hour":17,"minute":12,"second":34,"nano":873658000}
+[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Destination       : TimeService
+[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Destination-Type  : TOPIC
+[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - End> Send message
 ```
 
 ## Run the Application with JMS

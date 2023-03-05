@@ -19,8 +19,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: admin
       POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
 
   SwaggerUI:
     image: swaggerapi/swagger-ui:latest
