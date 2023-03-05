@@ -18,7 +18,7 @@
 
 In general OpenAPI support can be enabled for all objects that can be accessed via the `RESTfulRPCAdapter`. 
 To enable OpenAPI support, you just need to define an OpenAPI-path either in the properties or when starting the application. 
-The corresponding parameter is `io.jexxa.rest.open_api_path`.
+The corresponding parameter is `io.jexxa.rest.openapi.path`.
 
 ```console                                                          
 mvn clean install

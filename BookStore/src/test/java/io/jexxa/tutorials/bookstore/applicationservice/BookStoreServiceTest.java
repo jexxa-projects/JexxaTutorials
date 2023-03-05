@@ -2,7 +2,7 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 
 import io.jexxa.addend.applicationcore.DomainService;
 import io.jexxa.jexxatest.JexxaTest;
-import io.jexxa.jexxatest.infrastructure.drivenadapterstrategy.messaging.recording.MessageRecorder;
+import io.jexxa.jexxatest.infrastructure.messaging.recording.MessageRecorder;
 import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
@@ -24,7 +24,7 @@ class BookStoreServiceTest
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
 
     private BookStoreService objectUnderTest;       // Object we want to test
-    private MessageRecorder  publishedDomainEvents; // Message recorder to validate published DomainEvents
+    private MessageRecorder publishedDomainEvents; // Message recorder to validate published DomainEvents
     private BookRepository   bookRepository;        // Repository to validate results in the tests
 
 

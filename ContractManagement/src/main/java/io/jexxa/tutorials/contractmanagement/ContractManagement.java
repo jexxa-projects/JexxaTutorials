@@ -1,7 +1,7 @@
 package io.jexxa.tutorials.contractmanagement;
 
 import io.jexxa.core.JexxaMain;
-import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
+import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.contractmanagement.applicationservice.ContractService;
 import io.jexxa.tutorials.contractmanagement.domainservice.ContractAuditService;
 

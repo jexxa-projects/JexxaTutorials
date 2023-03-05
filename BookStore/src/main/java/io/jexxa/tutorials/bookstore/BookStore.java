@@ -2,7 +2,7 @@ package io.jexxa.tutorials.bookstore;
 
 
 import io.jexxa.core.JexxaMain;
-import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
+import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
 import io.jexxa.tutorials.bookstore.domainservice.DomainEventService;
 import io.jexxa.tutorials.bookstore.domainservice.ReferenceLibrary;

@@ -1,13 +1,15 @@
 package io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging;
 
-import io.jexxa.infrastructure.drivingadapter.messaging.JMSConfiguration;
-import io.jexxa.infrastructure.drivingadapter.messaging.listener.TypedMessageListener;
+
+import io.jexxa.drivingadapter.messaging.JMSConfiguration;
+import io.jexxa.drivingadapter.messaging.listener.TypedMessageListener;
 import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
 
 import java.time.LocalTime;
 
-import static io.jexxa.infrastructure.drivingadapter.messaging.JMSConfiguration.DurableType.NON_DURABLE;
-import static io.jexxa.infrastructure.drivingadapter.messaging.JMSConfiguration.MessagingType.TOPIC;
+import static io.jexxa.drivingadapter.messaging.JMSConfiguration.DurableType.NON_DURABLE;
+import static io.jexxa.drivingadapter.messaging.JMSConfiguration.MessagingType.TOPIC;
+
 
 /**
  * 1. Within the constructor we define our class from the application core that will be called. Jexxa automatically
@@ -34,7 +36,8 @@ public final class TimeListener extends TypedMessageListener<LocalTime>
     }
 
     @Override
-    @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC, sharedSubscriptionName = "TimeService", durable = NON_DURABLE)
+    @JMSConfiguration(destination = TIME_TOPIC,
+            messagingType = TOPIC, sharedSubscriptionName = "TimeService", durable = NON_DURABLE)
     public void onMessage(LocalTime localTime)
     {
         // Forward this information to corresponding application service.

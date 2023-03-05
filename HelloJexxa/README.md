@@ -45,7 +45,7 @@ The source code of the main method is quite simple. Each line include comments t
 
 ```java
 import io.jexxa.core.JexxaMain;
-import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
+import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
 
 public final class HelloJexxa
 {
@@ -97,6 +97,10 @@ Compile and start the program via your IDE. As soon as you start the application
 [main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7501
 ```
 
+To run the application from console enter: 
+```console                                                          
+java -jar ./target/hellojexxa-jar-with-dependencies.jar
+```
 ### Access the application
 To access the application you can either use your favorite web browser, or a command line tool like 'curl'. 
 
@@ -122,8 +126,8 @@ For simplicity, we add our web page into the same project as our backend by perf
 * Create directory `public` into our `resources` directory that will include our web page
 * Extend `jexxa-application.properties` by following lines so that this directory is exposed as web directory 
   ```properties
-  io.jexxa.rest.static_files_root=src/main/resources/public
-  io.jexxa.rest.static_files_external=true
+  io.jexxa.rest.static.files.root=src/main/resources/public
+  io.jexxa.rest.static.files.external=true
   ```
 * Finally, add web page `index.html` with following content into `resources/public`:
     ```html

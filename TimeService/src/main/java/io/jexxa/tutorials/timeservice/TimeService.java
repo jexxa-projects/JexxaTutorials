@@ -1,8 +1,9 @@
 package io.jexxa.tutorials.timeservice;
 
 import io.jexxa.core.JexxaMain;
-import io.jexxa.infrastructure.drivingadapter.messaging.JMSAdapter;
-import io.jexxa.infrastructure.drivingadapter.rest.RESTfulRPCAdapter;
+
+import io.jexxa.drivingadapter.messaging.JMSAdapter;
+import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
 import io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging.TimeListener;
 
@@ -19,6 +20,7 @@ public final class TimeService
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
                 // Bind the JMSAdapter to our message listener
+                .bind(JMSAdapter.class).to(TimeListener.class)
                 .bind(JMSAdapter.class).to(TimeListener.class)
 
                 .run();
