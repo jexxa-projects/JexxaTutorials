@@ -28,7 +28,7 @@ You will see following (or similar) output
 ...
 [main] INFO io.jexxa.utils.JexxaBanner - Access Information: 
 [main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7503
-[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7503/swagger-docs
+[main] INFO io.jexxa.utils.JexxaBanner - OpenAPI available at: http://0.0.0.0:7503/swagger-docs/swagger.json
 
 
 ```          
