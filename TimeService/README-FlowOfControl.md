@@ -93,7 +93,7 @@ Or we follow direction `Inbound Port` &rarr; `Outbound Port` by selecting `TimeS
 If we select an inbound port such as `TimeService`, the constructor looks as follows. 
 
 ```java
-public class TimeApplicationService(TimePublisher timePublisher, MessageDisplay messageDisplay)
+public class TimeApplicationService(TimePublisher timePublisher, MessageDisplay timeDisplay)
 {
   // ...
 }

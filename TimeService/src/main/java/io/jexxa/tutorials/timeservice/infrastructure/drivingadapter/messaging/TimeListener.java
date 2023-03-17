@@ -41,6 +41,6 @@ public final class TimeListener extends TypedMessageListener<LocalTime>
     public void onMessage(LocalTime localTime)
     {
         // Forward this information to corresponding application service.
-        timeApplicationService.displayPublishedTime(localTime);
+        timeApplicationService.showReceivedTime(localTime);
     }
 }

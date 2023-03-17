@@ -1,33 +1,32 @@
 package io.jexxa.tutorials.timeservice.applicationservice;
 
-import io.jexxa.tutorials.timeservice.domainservice.MessageDisplay;
+import io.jexxa.tutorials.timeservice.domainservice.TimeDisplay;
 import io.jexxa.tutorials.timeservice.domainservice.TimePublisher;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class TimeApplicationService
 {
     private final TimePublisher timePublisher;
-    private final MessageDisplay messageDisplay;
+    private final TimeDisplay timeDisplay;
 
     /**
-     * Note: Jexxa supports only implicit constructor injection. Therefore, we must
+     * This class need a {@link TimePublisher} and {@link TimeDisplay} for proper working. Therefore, we must
      * declare all required interfaces in the constructor.
      *
-     * @param timePublisher required outbound port for this application service
-     * @param messageDisplay required outbound port for this application service
+     * @param timePublisher used to publish time.
+     * @param timeDisplay used to show a received time
      */
-    public TimeApplicationService(TimePublisher timePublisher, MessageDisplay messageDisplay)
+    public TimeApplicationService(TimePublisher timePublisher, TimeDisplay timeDisplay)
     {
         this.timePublisher = Objects.requireNonNull(timePublisher);
-        this.messageDisplay = Objects.requireNonNull(messageDisplay);
+        this.timeDisplay = Objects.requireNonNull(timeDisplay);
     }
 
     /**
-     * Implement use case 1: publish current time
+     * Implements use case 1: publish current time
      */
     public void publishTime()
     {
@@ -35,12 +34,11 @@ public class TimeApplicationService
     }
 
     /**
-     * Implement use case 2 : Shows the previously published time.
+     * Implements use case 2 : Shows the previously published time.
      * @param localTime the previously published time
      */
-    public void displayPublishedTime(LocalTime localTime)
+    public void showReceivedTime(LocalTime localTime)
     {
-        var messageWithPublishedTime = "New Time was published, time: " + localTime.format(DateTimeFormatter.ISO_TIME);
-        messageDisplay.show(messageWithPublishedTime);
+        timeDisplay.show(localTime);
     }
 }

@@ -16,8 +16,12 @@ public class TimePublisherImpl implements TimePublisher
 
     private final MessageSender messageSender;
 
-    // `getMessageSender()` requires a Properties object including all required config information. Therefore, we must
-    // use a constructor expecting `Properties`, so that Jexxa can hand in all defined properties (e.g., from `jexxa-application.properties`).
+
+    /**
+     * Creates a TimePublisher sending LocalTime to a JMS broker
+     *
+     * @param properties contains all required configuration information of our JMS broker
+     */
     public TimePublisherImpl(Properties properties)
     {
         //Request a default message sender for the implemented interface TimePublisher
@@ -32,7 +36,6 @@ public class TimePublisherImpl implements TimePublisher
         messageSender
                 .send(localTime)
                 .toTopic(TIME_SERVICE_TOPIC)
-                .addHeader("Type", localTime.getClass().getSimpleName())
                 .asJson();
     }
 }

@@ -3,8 +3,8 @@
 ## What You Learn
 
 *   [How to write an application core providing some use cases](#1-implement-the-application-core) 
-*   [How to implement required driven adapter](#2-implement-the-driven-adapter)
-*   [How to implement required driving adapter](#3-implement-drivingadapter)
+*   [How to implement required driven adapter](#2-implement-the-infrastructure)
+*   [How to implement required driving adapter](#3-receive-localtime-again)
 *   [How to implement the application using application specific driving and driven adapter](#4-implement-the-application)
 
 ## What you need
@@ -16,19 +16,29 @@
 *   A running ActiveMQ instance (at least if you start the application with infrastructure)
 *   curl to trigger the application  
 
+## Motivation
+
+This application shows the strict separation from domain logic and technology stacks by following tow use cases:  
+
+* Use case 1: A user can publish the current time in some way. 
+* Use case 2: A published time is shown to the user in some way. 
+
+In a first step, we ignore the technology stacks and focus on the domain logic which resists in our application core.  
+
 ## 1. Implement the Application Core
 
 The application core consists of following classes:
 
-*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) Is an `ApplicationService` in terms of DDD and provides the use cases for a specific client.
-*   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Only declares a method to publish current time, so that implementation can be realized within the infrastructure.
-*   [`MessageDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/MessageDisplay.java) Only declares a method to show a message, so that implementation can be realized within the infrastructure.     
+*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) implements both uses cases because they belong to the same user. In terms of DDD this class is an `ApplicationService`.
+*   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Is responsible for publishing the time from the first used case. Since we do not know which technology is used, we can only declare an interface providing the required methods. In terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
+*   [`TimeDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimeDisplay.java) Is responsible for showing a received time to the user. Since we do not know which technology is used, we can only declare an interface providing the required methods. In terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
 
-### Declare interfaces for the two infrastructure services
+The important aspect here is that we use the concept of an interface to separate our application core from technology specific implementation.
+So lets start programming...
 
-The most important aspect here is that a technology-agnostic application must not depend on any technology-stack. Therefore,
-we use dependency inversion principle which is explained in more detail [here](README-FlowOfControl.md). 
-Interface `TimePublisher` allows to publish the time by an arbitrary technology stack.
+### Interface `TimePublisher` 
+
+Declare the interface `TimePublisher` in sub-package `domainservice` that allows to publish a `LocalTime`.
 
 ```java
 public interface TimePublisher
@@ -37,97 +47,80 @@ public interface TimePublisher
 }
 ```                 
 
-The second interface `MessageDisplay` provides the possibility to display some messages. 
+### Interface `TimeDisplay`
+Declare the interface `TimeDisplay` in sub-package `domainservice` that allows to show a `LocalTime`.
 
 ```java
-public interface MessageDisplay
+public interface TimeDisplay
 {
-    void show(String message);
+    void show(LocolTime localTime);
 }
 ```      
   
 ### Implement class `TimeApplicationService`
 
-Now, we can implement our `ApplicationService` that provides two very simple use cases: 
-*   Publish current time   
-*   Receive and display a published time
+Implement `TimeApplicationService` in sub-package `applicationservice` that uses the two interfaces to realize the two use cases.  
 
-Since Jexxa only supports implicit constructor injection, we have to declare all required interfaces in the constructor.    
 
 ```java
 public class TimeApplicationService
 {
     private final TimePublisher timePublisher;
-    private final MessageDisplay messageDisplay;
+    private final TimeDisplay timeDisplay;
 
     /**
-     * Note: Jexxa supports only implicit constructor injection. Therefore, we must
+     * This class need a {@link TimePublisher} and {@link TimeDisplay} for proper working. Therefore, we must
      * declare all required interfaces in the constructor.
      *
-     * @param timePublisher required outbound port for this application service
-     * @param messageDisplay required outbound port for this application service
+     * @param timePublisher used to publish time.
+     * @param timeDisplay used to show a received time 
      */
-    public TimeApplicationService(TimePublisher timePublisher, MessageDisplay messageDisplay)
+    public TimeApplicationService(TimePublisher timePublisher, TimeDisplay timeDisplay)
     {
         this.timePublisher = Objects.requireNonNull(timePublisher);
-        this.messageDisplay = Objects.requireNonNull(messageDisplay);
+        this.timeDisplay = Objects.requireNonNull(timeDisplay);
     }
 
     /**
-     * Implement use case 1: publish current time 
+     * Implements use case 1: publish current time
      */
     public void publishTime()
     {
         timePublisher.publish(LocalTime.now());
     }
 
-
     /**
-     * Implement use case 2 : Shows the previously published time.
+     * Implements use case 2 : Shows the previously published time.
      * @param localTime the previously published time
      */
-    public void displayPublishedTime(LocalTime localTime)
+    public void showReceivedTime(LocalTime localTime)
     {
-        var messageWithPublishedTime = "New Time was published, time: " + localTime.format(DateTimeFormatter.ISO_TIME);
-        messageDisplay.show(messageWithPublishedTime);
+        timeDisplay.show(localTime);
     }
 }
 ```                  
 
-## 2. Implement the Driven Adapter
+## 2. Implement the Infrastructure
 
-### Driven Adapter for console output
-The interface [`MessageDisplay`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/MessageDisplay.java) is 
-implemented by [`MessageDisplayImpl`](src/main/java/io/jexxa/tutorials/timeservice/infrastructure/drivenadapter/display/MessageDisplayImpl.java) 
-by just logging given arguments.  
-
-Jexxa uses implicit constructor injection together with a strict convention over configuration approach. Therefore, 
-each driven adapter needs one of the following constructors: 
-
-*   A public default constructor `MessageDisplay()`
-*   A static factory method `public static MessageDisplay create()`
-*   A public constructor with a single `Properties` attribute `MessageDisplay(Properties properties)`
-*   A static factory method with a single `Properties` parameter `public static MessageDisplay create(Properties properties)`
-   
-Since our driven adapter does not need/support any configuration parameter, we can use default constructor generated by Java.
+### `TimeDisplayImpl` implements `TimeDisplay`   
+[`TimeDisplayImpl`](src/main/java/io/jexxa/tutorials/timeservice/infrastructure/drivenadapter/display/TimeDisplayImpl.java) is located in package `infrastructure/drivenadapter/display` and logs received time to console. So the implementation is quite simple.    
 
 ```java
-public class MessageDisplayImpl implements MessageDisplay
+public class TimeDisplayImpl implements TimeDisplay
 {
-    @Override
-    public void show(String message)
+    public void show(LocalTime localTime)
     {
-        JexxaLogger.getLogger(MessageDisplay.class).info(message);
+        var messageWithPublishedTime = "New Time was published, time: " + localTime.format(DateTimeFormatter.ISO_TIME);
+        SLF4jLogger.getLogger(TimeDisplayImpl.class).info(messageWithPublishedTime);
     }
 }
 ```
 
-### Driven Adapter for messaging ###
+### `TimePublisherImpl` implements `TimePublisher`
+[`TimePublisherImpl`](src/main/java/io/jexxa/tutorials/timeservice/infrastructure/drivenadapter/messaging/TimePublisherImpl.java) is located in package `infrastructure/drivenadapter/messaging` and sends the time to topic `TimeService` of a JMS broker.
 
-Jexxa provides so called `DrivenAdapterStrategy` for various Java-APIs such as JMS. When using these strategies the 
-implementation of a driven adapter is just a facade and maps domain specific methods to the technology stack. As you 
-can see in the following code, the application specific driven adapter requests the strategy from a so-called strategy 
-manager.    
+Jexxa provides infrastructure components for various Java-APIs such as JMS. When using these components the
+implementation of a driven adapter is quite easy.
 
 ```java
 public class TimePublisherImpl implements TimePublisher
@@ -136,8 +129,11 @@ public class TimePublisherImpl implements TimePublisher
 
     private final MessageSender messageSender;
 
-    // `getMessageSender()` requires a Properties object including all required config information. Therefore, we must 
-    // declare a constructor expecting `Properties`, so that Jexxa can hand in all defined properties (e.g., from `jexxa-application.properties`).
+    /**
+     * Creates a TimePublisher sending LocalTime to a JMS broker 
+     *
+     * @param properties contains all required configuration information of our JMS broker
+     */
     public TimePublisherImpl(Properties properties)
     {
         //Request a message sender for the implemented interface TimePublisher 
@@ -152,7 +148,6 @@ public class TimePublisherImpl implements TimePublisher
         messageSender
                 .send(localTime)
                 .toTopic(TIME_TOPIC)
-                .addHeader("Type", localTime.getClass().getSimpleName())
                 .asJson();
     }
 }
@@ -169,7 +164,7 @@ java.naming.user=admin
 java.naming.password=admin
 ```                       
 
-## 3. Implement DrivingAdapter
+## 3. Receive LocalTime again
 Now, we have to implement the driving adapter `TimeListener` which receives published time information.  
 
 ### Implement TimeListener
@@ -325,5 +320,5 @@ curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 Each time you execute curl you should see following output on the console: 
 
 ```console                                                          
-[ActiveMQ Session Task-1] INFO io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.display.MessageDisplayImpl - New Time was published, time: 17:15:18.743772
+[ActiveMQ Session Task-1] INFO io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.display.TimeDisplayImpl - New Time was published, time: 17:15:18.743772
 ```
