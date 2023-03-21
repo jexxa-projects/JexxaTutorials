@@ -27,13 +27,11 @@ In a first step, we ignore the technology stacks and focus on the domain logic w
 
 ## 1. Implement the Application Core
 
-The application core consists of following classes:
+*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) This class implements both use cases because they belong to the same user. So in terms of DDD this class is an `ApplicationService`.
+*   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Is responsible for publishing the time from the first used case. Since we do not know which technology is used, we can only declare an interface providing the required methods. So in terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
+*   [`TimeDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimeDisplay.java) Is responsible for showing a received time to the user. Since we do not know which technology is used, we can only declare an interface providing the required methods. So in terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
 
-*   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) implements both uses cases because they belong to the same user. In terms of DDD this class is an `ApplicationService`.
-*   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Is responsible for publishing the time from the first used case. Since we do not know which technology is used, we can only declare an interface providing the required methods. In terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
-*   [`TimeDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimeDisplay.java) Is responsible for showing a received time to the user. Since we do not know which technology is used, we can only declare an interface providing the required methods. In terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
-
-The important aspect here is that we use the concept of an interface to separate our application core from technology specific implementation.
+The important aspect here is that we use the concept of an interface to separate our application core from technology specific details.
 So lets start programming...
 
 ### Interface `TimePublisher` 
@@ -59,7 +57,7 @@ public interface TimeDisplay
   
 ### Implement class `TimeApplicationService`
 
-Implement `TimeApplicationService` in sub-package `applicationservice` that uses the two interfaces to realize the two use cases.  
+Implement `TimeApplicationService` in sub-package `applicationservice` that uses the previous declared interfaces to realize our use cases.  
 
 
 ```java
@@ -200,7 +198,7 @@ public final class TimeListener extends TypedMessageListener<LocalTime> {
 
     @Override
     // The JMS specific configuration is defined via annotation.
-    @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC, sharedSubscriptionName = "TimeService", durable = NON_DURABLE)
+    @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC)
     public void onMessage(LocalTime localTime) {
         // Forward this information to corresponding application service.
         timeApplicationService.displayPublishedTime(localTime);

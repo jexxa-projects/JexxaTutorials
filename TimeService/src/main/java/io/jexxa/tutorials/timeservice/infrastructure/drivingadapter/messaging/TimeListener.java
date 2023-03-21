@@ -7,7 +7,6 @@ import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
 
 import java.time.LocalTime;
 
-import static io.jexxa.drivingadapter.messaging.JMSConfiguration.DurableType.NON_DURABLE;
 import static io.jexxa.drivingadapter.messaging.JMSConfiguration.MessagingType.TOPIC;
 
 
@@ -36,8 +35,7 @@ public final class TimeListener extends TypedMessageListener<LocalTime>
     }
 
     @Override
-    @JMSConfiguration(destination = TIME_TOPIC,
-            messagingType = TOPIC, sharedSubscriptionName = "TimeService", durable = NON_DURABLE)
+    @JMSConfiguration(destination = TIME_TOPIC, messagingType = TOPIC)
     public void onMessage(LocalTime localTime)
     {
         // Forward this information to corresponding application service.
