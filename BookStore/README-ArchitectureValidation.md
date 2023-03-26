@@ -1,4 +1,4 @@
-# BookStore - Writing Unit Tests
+# BookStore - Architecture Validation
 
 ## What You Learn
    
