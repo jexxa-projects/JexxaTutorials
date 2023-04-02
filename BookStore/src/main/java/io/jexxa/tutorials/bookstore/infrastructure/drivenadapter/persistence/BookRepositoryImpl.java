@@ -37,6 +37,11 @@ public class BookRepositoryImpl implements BookRepository
     }
 
     @Override
+    public void remove(ISBN13 isbn13) {
+        repository.remove(isbn13);
+    }
+
+    @Override
     public Book get(ISBN13 isbn13)
     {
         return repository.get(isbn13).orElseThrow();

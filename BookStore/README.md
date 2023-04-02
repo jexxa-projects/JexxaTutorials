@@ -148,6 +148,8 @@ public class BookRepositoryImpl implements BookRepository
     @Override
     public void update(Book book)               { repository.update(book); }
 
+    public void removeFromStock(ISBN13 isbn13)  { bookRepository.remove(isbn13); }
+    
     @Override
     public boolean isRegistered(ISBN13 isbn13)  { return search(isbn13).isPresent(); }
 

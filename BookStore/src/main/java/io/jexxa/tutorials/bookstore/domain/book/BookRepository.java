@@ -18,5 +18,7 @@ public interface BookRepository
 
     void update(Book book);
 
+    void remove(ISBN13 isbn13);
+
     List<Book> getAll();
 }

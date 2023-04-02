@@ -52,6 +52,11 @@ public class BookStoreService
                 .orElse(0);
     }
 
+    public void removeFromStock(ISBN13 isbn13)
+    {
+        bookRepository.remove(isbn13);
+    }
+
     public void sell(ISBN13 isbn13) throws BookNotInStockException
     {
         var book = bookRepository
