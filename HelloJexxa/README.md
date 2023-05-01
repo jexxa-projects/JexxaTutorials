@@ -17,7 +17,8 @@
 
 ### Create a Maven project 
 
-All IDEs such as IntelliJ or Eclipse provide a way to create a new maven project that you can use to create your HelloJexxa program. Then add the following dependencies to the `pom.xml` to use Jexxa and to print log information to the console. 
+* Create a new `maven` project using your favorite IDE 
+* Add the following dependencies to the `pom.xml` to use Jexxa and to print log information to the console 
 
 ```xml
 <project> 
@@ -74,17 +75,23 @@ public final class HelloJexxa
 
 ### Configure your Application
 
-Before we can run your application, we need to configure network port and address for HTTP access via a properties file. The default properties file used in jexxa
-is named `jexxa-application.properties`. Add a file into the `resources` directory of your project and add the following
-content:
-```properties
-#Settings for RESTfulRPCAdapter
-io.jexxa.rest.host=0.0.0.0
-io.jexxa.rest.port=7501
-```
+Before we can run your application, we need to configure our application. 
+
+* Add the file `jexxa-application.properties` into the `src/main/resources` directory
+* Add the following entries:
+    ```properties
+    # Network address used for listening (0.0.0.0 means all network addresses)
+    io.jexxa.rest.host=0.0.0.0
+  
+    # HTTP-port used to access the application
+    io.jexxa.rest.port=7501
+    ```
 
 ### Compile & Start the Application
-Compile and start the program via your IDE. As soon as you start the application, you should see following (or similar) output
+* Compile the application via your IDE (`mvn clean install`) 
+* Start the program via your IDE. 
+ 
+As soon as you start the application, you should see following (or similar) output
 
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
@@ -97,10 +104,6 @@ Compile and start the program via your IDE. As soon as you start the application
 [main] INFO io.jexxa.utils.JexxaBanner - Listening on: http://0.0.0.0:7501
 ```
 
-To run the application from console enter: 
-```console                                                          
-java -jar ./target/hellojexxa-jar-with-dependencies.jar
-```
 ### Access the application
 To access the application you can either use your favorite web browser, or a command line tool like 'curl'. 
 
@@ -123,13 +126,13 @@ To access the application you can either use your favorite web browser, or a com
 
 For simplicity, we add our web page into the same project as our backend by performing following steps: 
 
-* Create directory `public` into our `resources` directory that will include our web page
+* Create directory `public` into `src/main/resources` directory that will include our web page
 * Extend `jexxa-application.properties` by following lines so that this directory is exposed as web directory 
   ```properties
   io.jexxa.rest.static.files.root=src/main/resources/public
   io.jexxa.rest.static.files.external=true
   ```
-* Finally, add web page `index.html` with following content into `resources/public`:
+* Add web page `index.html` with following content into `resources/public`:
     ```html
     <!DOCTYPE html>
     <html lang="en">
@@ -176,7 +179,10 @@ For simplicity, we add our web page into the same project as our backend by perf
 
 ### Access the Web Page
 
-After restarting the application, you can access the web page via following link [http://localhost:7501/index.html](http://localhost:7501/index.html). The result should look like this:
+* Restarting the application
+* Access the web page via following link [http://localhost:7501/index.html](http://localhost:7501/index.html). 
+ 
+The result should look like this:
 
 ![Webpage](images/Webpage.jpg)
 
