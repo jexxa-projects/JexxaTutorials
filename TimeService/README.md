@@ -51,7 +51,7 @@ Declare the interface `TimeDisplay` in sub-package `domainservice` that allows t
 ```java
 public interface TimeDisplay
 {
-    void show(LocolTime localTime);
+    void show(LocalTime localTime);
 }
 ```      
   
