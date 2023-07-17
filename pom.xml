@@ -37,6 +37,7 @@
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
         <docker.base.image>eclipse-temurin:17-alpine</docker.base.image>
+        <docker.user>guest</docker.user> <!-- Defines the user running the application inside the container. Note: This user must be already created inside the base image -->
 
         <!-- target/compiler configuration  -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -505,6 +506,9 @@
                             <port>${main.http.port}</port>
                             <port>${main.https.port}</port>
                         </ports>
+                        <user>
+                            ${docker.user}
+                        </user>
                     </container>
                 </configuration>
             </plugin>
