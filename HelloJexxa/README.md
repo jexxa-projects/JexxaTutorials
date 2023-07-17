@@ -142,21 +142,19 @@ For simplicity, we add our web page into the same project as our backend by perf
     </head>
     
     <body>
-    <h1 id = "greetings">Greetings: </h1>
+    <h1 id = "contextName">Context Name: </h1>
     
     <script>
-        const BASE_URL = window.location.protocol + '//' + location.host;
+        const BASE_URL = window.location.protocol + '//' + location.host +'/BoundedContext';
     
-        //Append greetings message to heading
         const appendToDOM = (message) => {
             document
-                .querySelector("#greetings")
+                .querySelector("#contextName")
                 .append(message);
         };
     
-        //Method to query greetings and append it to DOM
         const fetchGreetings = () => {
-            fetch(`${BASE_URL}/HelloJexxa/greetings`)
+            fetch(`${BASE_URL}/contextName`)
                 .then( response => {
                     if (!response.ok) {
                         throw Error(response.statusText);
