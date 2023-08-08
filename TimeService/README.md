@@ -18,12 +18,12 @@
 
 ## Motivation
 
-This application shows the strict separation from domain logic and technology stacks by following tow use cases:  
+This application shows the strict separation from domain logic and technology stacks by following two use cases:  
 
 * Use case 1: A user can publish the current time in some way. 
 * Use case 2: A published time is shown to the user in some way. 
 
-In a first step, we ignore the technology stacks and focus on the domain logic which resists in our application core.  
+In a first step, we ignore the technology stacks and focus on the domain logic which rests in our application core.  
 
 ## 1. Implement the Application Core
 
@@ -164,6 +164,7 @@ java.naming.password=admin
 
 ## 3. Receive LocalTime again
 Now, we have to implement the driving adapter `TimeListener` which receives published time information.  
+It is located in package `infrastructure/drivingadapter/messaging`.
 
 ### Implement TimeListener
 When receiving asynchronous messages we have to:
@@ -201,7 +202,7 @@ public final class TimeListener extends TypedMessageListener<LocalTime> {
     @JMSConfiguration(destination = TIME_TOPIC,  messagingType = TOPIC)
     public void onMessage(LocalTime localTime) {
         // Forward this information to corresponding application service.
-        timeApplicationService.displayPublishedTime(localTime);
+        timeApplicationService.showReceivedTime(localTime);
     }
 }
 ```
@@ -224,7 +225,7 @@ public final class TimeService
                 .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
                 
-                // Bind the JMSAdapter to our 
+                // Bind the JMSAdapter to our TimeListener
                 .bind(JMSAdapter.class).to(TimeListener.class)
 
                 .run();
