@@ -23,9 +23,42 @@ This application shows the strict separation from domain logic and technology st
 * Use case 1: A user can publish the current time in some way. 
 * Use case 2: A published time is shown to the user in some way. 
 
-In a first step, we ignore the technology stacks and focus on the domain logic which rests in our application core.  
+## 0. Setup
+
+In order to organize our code we will base our package structure on the concepts of Domain Driven Design.
+Those concepts are as follows:
+
+* `applicationservice`: Provides interfaces per application scenario.
+* `domainservice`: Provides specialized domain logic that cannot be attributed to a single entity or value object within the domain.
+* `domain`: Provides the core domain typically grouped by use cases.
+* `infrastructure`: Provides implementations to the ports and adapters defined by the interfaces in the applicationservice.
+
+Because we do not have an extensive domain, we can ignore it at the moment.
+In order to complete the tutorial you will have to create the following package structure:
+
+First create the packages `applicationservice`, `domainservice` and `infrastructure` in the same folder as your Main-file.
+Then create the packages `drivenadapter` and `drivingadapter` in the `infrastructure` package.
+Finally you will need to create the packages `display` and `messaging` in the `drivenadapter` package and the package `messaging` in the `drivingadapter` package.
+
+Your package structure should now look similar to this:
+``` 
+(io.jexxa.tutorials.timeservice)
+    applicationservice
+    domainservice
+    infrastructure
+    |    drivenadapter
+    |    |    display
+    |    |    messaging
+    |    drivingadapter
+    |    |    messaging
+    Main.java
+
+```
+
 
 ## 1. Implement the Application Core
+
+In a first step, we ignore the technology stacks and focus on the domain logic which rests in our application core.
 
 *   [`TimeApplicationService:`](src/main/java/io/jexxa/tutorials/timeservice/applicationservice/TimeApplicationService.java) This class implements both use cases because they belong to the same user. So in terms of DDD this class is an `ApplicationService`.
 *   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Is responsible for publishing the time from the first used case. Since we do not know which technology is used, we can only declare an interface providing the required methods. So in terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
