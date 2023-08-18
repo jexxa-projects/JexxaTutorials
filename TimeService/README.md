@@ -44,6 +44,7 @@ Your package structure should now look similar to this:
 ``` 
 (io.jexxa.tutorials.timeservice)
     applicationservice
+    domain
     domainservice
     infrastructure
     |    drivenadapter
