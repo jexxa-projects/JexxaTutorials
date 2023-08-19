@@ -10,11 +10,13 @@ meaning. Nevertheless, we tried to find typical scenarios of business applicatio
 In these tutorials we assume that you have a basic understanding of: 
 * Writing Java code and build your programs using maven.
 
-* First experience in the use of a database and message bus. 
+* Ideally, first experience in the use of a database and message bus. 
 
-* An initial idea of ports and adapters architecture as described [here](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
+* Ideally, an initial idea of ports and adapters architecture as described [here](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
 
-* All tutorials run by default without any additional infrastructure services such as JMS or a database.
+Additional information: 
+* To implement the tutorials by yourself, you should use the [`jexxa-blank-archetype` to generate a project skeleton](https://github.com/jexxa-projects/JexxaArchetypes). 
+* All tutorials run by default without any additional infrastructure services such as message bus or a database.
 
 * In case you want to just run the tutorials, you can use: 
   * Docker images provided [here](https://github.com/orgs/jexxa-projects/packages?repo_name=JexxaTutorials). 
