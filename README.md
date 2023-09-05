@@ -15,7 +15,7 @@ In these tutorials, we assume that you have a basic understanding of:
 * Ideally, an initial idea of ports and adapters architecture as described [here](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
 
 Additional information: 
-* To implement the tutorials by yourself, you should use the [`jexxa-blank-archetype` to generate a project skeleton](https://github.com/jexxa-projects/JexxaArchetypes). 
+* To implement the tutorials by yourself, you should use the [`jexxa-blank-archetype`](https://github.com/jexxa-projects/JexxaArchetypes) to generate a project skeleton. 
 * All tutorials run by default without any additional infrastructure services such as message bus or a database.
 
 * In case you want to just run the tutorials, you can use: 
