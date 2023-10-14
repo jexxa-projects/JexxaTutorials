@@ -36,12 +36,12 @@
         <main.class>${project.groupId}.${project.name}</main.class>
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
-        <docker.base.image>eclipse-temurin:17-jre-alpine</docker.base.image>
+        <docker.base.image>eclipse-temurin:21-jre-jammy</docker.base.image>
         <docker.user>guest</docker.user> <!-- Defines the user running the application inside the container. Note: This user must be already created inside the base image -->
 
         <!-- target/compiler configuration  -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
 
         <!-- version of dependencies -->
         <jexxa.release.version>6.2.1</jexxa.release.version>
