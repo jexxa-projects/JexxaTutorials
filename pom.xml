@@ -36,7 +36,7 @@
         <main.class>${project.groupId}.${project.name}</main.class>
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
-        <docker.base.image>eclipse-temurin:21-jre-jammy</docker.base.image>
+        <docker.base.image>eclipse-temurin:21-jre-alpine</docker.base.image>
         <docker.user>guest</docker.user> <!-- Defines the user running the application inside the container. Note: This user must be already created inside the base image -->
 
         <!-- target/compiler configuration  -->
