@@ -29,7 +29,7 @@
     <main.https.port>8084</main.https.port>
 
     <maven.javadoc.skip>true</maven.javadoc.skip>
-    <maven.exec.plugin>3.1.0</maven.exec.plugin>
+    <maven.exec.plugin>3.1.1</maven.exec.plugin>
 
       <!-- command to start the application for integration tests -->
     <context.command.start>
