@@ -1,11 +1,11 @@
-# TimeService - Async Messaging
+# TimeService—Async Messaging
 
 ## What You Learn
 
 *   [How to write an application core providing some use cases](#1-implement-the-application-core) 
 *   [How to implement required driven adapter](#2-implement-the-infrastructure)
 *   [How to implement required driving adapter](#3-receive-localtime-again)
-*   [How to implement the application using application specific driving and driven adapter](#4-implement-the-application)
+*   [How to implement the application using application-specific driving and driven adapter](#4-Implement-the-Application)
 
 ## What you need
 
@@ -38,7 +38,7 @@ In order to complete the tutorial you will have to create the following package 
 
 First create the packages `applicationservice`, `domainservice` and `infrastructure` in the same folder as your Main-file.
 Then create the packages `drivenadapter` and `drivingadapter` in the `infrastructure` package.
-Finally you will need to create the packages `display` and `messaging` in the `drivenadapter` package and the package `messaging` in the `drivingadapter` package.
+Finally, you will need to create the packages `display` and `messaging` in the `drivenadapter` package and the package `messaging` in the `drivingadapter` package.
 
 Your package structure should now look similar to this:
 ``` 
@@ -241,7 +241,7 @@ public final class TimeListener extends TypedMessageListener<LocalTime> {
 }
 ```
 
-## 4. Implement the Application ##
+## 4. Implement the Application
 
 Finally, we have to write our application. As you can see in the code below, the only difference compared to `HelloJexxa`
 is that we bind a JMSAdapter to our TimeListener.    
@@ -271,7 +271,7 @@ That's it.
 
 ## Run the Application with console output ##
 
-Disabling of all infrastructure components can be done by property files. By convention, Jexxa tries to find a real implementation of infrastructure components such as a database or messaging system. If they are not configured, Jexxa falls back to dummy implementation that are suitable for local testing.    
+Disabling of all infrastructure components can be done by property files. By convention, Jexxa tries to find a real implementation of infrastructure components such as a database or messaging system. If they are not configured, Jexxa falls back to dummy implementation that is suitable for local testing.    
 
 ```console                                                          
 mvn clean install
@@ -304,14 +304,14 @@ You can use curl to publish the time.
 curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 ```
 
-Each time you execute curl you should see following output on the console: 
+Each time you execute curl, you should see the following output on the console: 
 
 ```console                                                          
-[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Begin> Send message
-[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Message           : {"hour":17,"minute":12,"second":34,"nano":873658000}
-[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Destination       : TimeService
-[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - Destination-Type  : TOPIC
-[qtp380242442-31] INFO io.jexxa.infrastructure.messaging.logging.MessageLogger - End> Send message
+[qtp380242442-31] INFO io.jexxa.common.drivenadapter.messaging.logging.MessageLogger - Begin> Send message
+[qtp380242442-31] INFO io.jexxa.common.drivenadapter.messaging.logging.MessageLogger - Message           : {"hour":17,"minute":12,"second":34,"nano":873658000}
+[qtp380242442-31] INFO io.jexxa.common.drivenadapter.messaging.logging.MessageLogger - Destination       : TimeService
+[qtp380242442-31] INFO io.jexxa.common.drivenadapter.messaging.logging.MessageLogger - Destination-Type  : TOPIC
+[qtp380242442-31] INFO io.jexxa.common.drivenadapter.messaging.logging.MessageLogger - End> Send message
 ```
 
 ## Run the Application with JMS
@@ -321,7 +321,7 @@ Running the application with a locally messaging system is typically required fo
 mvn clean install
 java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
-You will see following (or similar) output
+You will see the following (or similar) output
 ```console
 ...
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
@@ -341,7 +341,7 @@ You will see following (or similar) output
 ... 
 ```          
 
-As you can see in the last two lines, we now use the `JMSSender` which is listening on Topic TimeService. 
+As you can see in the last two lines, we now use the `JMSSender` which is listening to topic TimeService. 
 
 ### Publish the time with JMS ###
  
@@ -350,7 +350,7 @@ You can use curl to publish the time.
 curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 ```
 
-Each time you execute curl you should see following output on the console: 
+Each time you execute curl, you should see the following output on the console: 
 
 ```console                                                          
 [ActiveMQ Session Task-1] INFO io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.display.TimeDisplayImpl - New Time was published, time: 17:15:18.743772

@@ -1,6 +1,6 @@
 package io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.display;
 
-import io.jexxa.common.wrapper.logger.SLF4jLogger;
+import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.tutorials.timeservice.domainservice.TimeDisplay;
 
 import java.time.LocalTime;
