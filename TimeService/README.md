@@ -3,15 +3,15 @@
 ## What You Learn
 
 *   [How to write an application core providing some use cases](#1-implement-the-application-core) 
-*   [How to implement required driven adapter](#2-implement-the-infrastructure)
-*   [How to implement required driving adapter](#3-receive-localtime-again)
+*   [How to implement required driven-adapter](#2-implement-the-infrastructure)
+*   [How to implement required driving-adapter](#3-receive-localtime-again)
 *   [How to implement the application using application-specific driving and driven adapter](#4-Implement-the-Application)
 
 ## What you need
 
 *   Understand tutorial `HelloJexxa` because we explain only new aspects 
 *   60 minutes
-*   JDK 17  (or higher) installed 
+*   JDK 17 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   A running ActiveMQ instance (at least if you start the application with infrastructure)
 *   curl to trigger the application  
@@ -25,7 +25,7 @@ This application shows the strict separation from domain logic and technology st
 
 ## 0. Setup
 
-In order to organize our code we will base our package structure on the concepts of Domain Driven Design.
+To organize our code, we will base our package structure on the concepts of Domain Driven Design.
 Those concepts are as follows:
 
 * `applicationservice`: Provides interfaces per application scenario.
@@ -34,7 +34,7 @@ Those concepts are as follows:
 * `infrastructure`: Provides implementations to the ports and adapters defined by the interfaces in the applicationservice.
 
 Because we do not have an extensive domain, we can ignore it at the moment.
-In order to complete the tutorial you will have to create the following package structure:
+To complete the tutorial, you will have to create the following package structure:
 
 First create the packages `applicationservice`, `domainservice` and `infrastructure` in the same folder as your Main-file.
 Then create the packages `drivenadapter` and `drivingadapter` in the `infrastructure` package.
@@ -65,8 +65,8 @@ In a first step, we ignore the technology stacks and focus on the domain logic w
 *   [`TimePublisher:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimePublisher.java) Is responsible for publishing the time from the first used case. Since we do not know which technology is used, we can only declare an interface providing the required methods. So in terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
 *   [`TimeDisplay:`](src/main/java/io/jexxa/tutorials/timeservice/domainservice/TimeDisplay.java) Is responsible for showing a received time to the user. Since we do not know which technology is used, we can only declare an interface providing the required methods. So in terms of DDD, this is an `InfrastructureService` which is a special type of  `DomainService` because its implementation can only be done within the infrastructure.
 
-The important aspect here is that we use the concept of an interface to separate our application core from technology specific details.
-So lets start programming...
+The important aspect here is that we use the concept of an interface to separate our application core from technology-specific details.
+So let's start programming...
 
 ### Interface `TimePublisher` 
 
@@ -151,7 +151,7 @@ public class TimeDisplayImpl implements TimeDisplay
 ### `TimePublisherImpl` implements `TimePublisher`
 [`TimePublisherImpl`](src/main/java/io/jexxa/tutorials/timeservice/infrastructure/drivenadapter/messaging/TimePublisherImpl.java) is located in package `infrastructure/drivenadapter/messaging` and sends the time to topic `TimeService` of a JMS broker.
 
-Jexxa provides infrastructure components for various Java-APIs such as JMS. When using these components the
+Jexxa provides infrastructure components for various Java APIs such as JMS. When using these components, the
 implementation of a driven adapter is quite easy.
 
 ```java
@@ -185,7 +185,7 @@ public class TimePublisherImpl implements TimePublisher
 }
 ```
 
-In order to configure your application for a specific message broker, we define all required information in [`jexxa-application.properties`](src/main/resources/jexxa-application.properties): 
+To configure your application for a specific message broker, we define all required information in [`jexxa-application.properties`](src/main/resources/jexxa-application.properties): 
 
 ```properties
 #suppress inspection "UnusedProperty" for whole file
@@ -201,7 +201,7 @@ Now, we have to implement the driving adapter `TimeListener` which receives publ
 It is located in package `infrastructure/drivingadapter/messaging`.
 
 ### Implement TimeListener
-When receiving asynchronous messages we have to:
+When receiving asynchronous messages, we have to:
 1.  Know and declare the object from our application core processing received data
 2.  Convert received data into business data
 3.  Define the connection information how to receive the data
@@ -271,13 +271,15 @@ That's it.
 
 ## Run the Application with console output ##
 
-Disabling of all infrastructure components can be done by property files. By convention, Jexxa tries to find a real implementation of infrastructure components such as a database or messaging system. If they are not configured, Jexxa falls back to dummy implementation that is suitable for local testing.    
+Property files can do disabling of all infrastructure components. 
+By convention, Jexxa tries to find a real implementation of infrastructure components such as a database or messaging system. 
+If they are not configured, Jexxa falls back to dummy-implementation that is suitable for local testing.    
 
 ```console                                                          
 mvn clean install
 java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/timeservice-jar-with-dependencies.jar
 ```
-You will see following (or similar) output
+You will see the following (or similar) output
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
 [main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.1-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-24 05:10]
@@ -297,7 +299,7 @@ You will see following (or similar) output
 
 ```          
 
-### Publish the time  with console output
+### Publish the time with console output
 
 You can use curl to publish the time.  
 ```Console

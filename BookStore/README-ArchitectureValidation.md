@@ -15,12 +15,12 @@
 
 
 Even with a clear architecture, one can easily violate their rules by accident. So I 
-strongly recommend to run some tests to validate the architecture of your application. 
-Jexxa simplifies this especially if you use its conventions by providing architectural 
+strongly recommend running some tests to validate the architecture of your application. 
+Jexxa simplifies this, especially if you use its conventions by providing architectural 
 tests based on [ArchUnit](https://www.archunit.org). This ensures that the validation of the
 architecture is port of your unit tests. 
 
-Jexxa-test provides following architecture tests that. 
+Jexxa-test provides the following architecture tests that. 
 *   [Pattern Language](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validate the correct annotation of your application using project [Addend](http://addend.jexxa.io/)
 *   [Ports&Adapters Architecture](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validates dependencies between packages of your application
 *   [Usage of Aggregates](src/test/java/io/jexxa/tutorials/bookstore/architecture/ArchitectureTest.java) to validate that your business logic is not exposed
@@ -41,7 +41,7 @@ If you want to use the architecture tests provided by Jexxa, you need to add the
 ### Validate Ports and Adapters
 
 To validate the rules of a ports and adapter architecture is quite simple if you follow the conventions of Jexxa. As 
-you can see below, you just have to declare the packages including the driven and driving adapter of the application.  
+you can see below, you have to declare the packages including the driven and driving adapter of the application.  
 
 ```java
 class ArchitectureTest {
@@ -77,7 +77,7 @@ class ArchitectureTest {
 
 ### Validate the usage of Aggregates
 Aggregates include the business logic and must not leave the application core. In addition, they must only be managed 
-by a `Repository`. This leads to some additional rules that can be validated using following test: 
+by a `Repository`. This leads to some additional rules that can be validated using the following test: 
 
 ```java
 class ArchitectureTest {

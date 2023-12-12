@@ -38,7 +38,7 @@ public final class TimeListener extends TypedMessageListener<LocalTime>
     @JMSConfiguration(destination = TIME_TOPIC, messagingType = TOPIC)
     public void onMessage(LocalTime localTime)
     {
-        // Forward this information to corresponding application service.
+        // Forward this information to the corresponding application service.
         timeApplicationService.showReceivedTime(localTime);
     }
 }

@@ -18,7 +18,7 @@ public final class DomainEventPublisher {
         return DOMAIN_EVENT_PUBLISHER;
     }
 
-    @SuppressWarnings("unchecked") // we check if the given domainEvent is assignable to a listener. Therefore, the unchecked cast is safe
+    @SuppressWarnings("unchecked") // We check if the given domainEvent is assignable to a listener. Therefore, the unchecked cast is safe
     public static synchronized <T> void publish(final T domainEvent)
     {
         instance()
