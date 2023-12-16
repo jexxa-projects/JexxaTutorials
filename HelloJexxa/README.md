@@ -42,7 +42,7 @@
 ```
 
 ### Write the main method 
-The source code of the main method is quite simple. Each line include comments to explain the meaning.  
+The source code of the main method is quite simple. Each line includes comments to explain the meaning.  
 
 ```java
 import io.jexxa.core.JexxaMain;
@@ -91,7 +91,7 @@ Before we can run your application, we need to configure our application.
 * Compile the application via your IDE (`mvn clean install`) 
 * Start the program via your IDE. 
  
-As soon as you start the application, you should see following (or similar) output
+As soon as you start the application, you should see the following (or similar) output
 
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
@@ -105,7 +105,7 @@ As soon as you start the application, you should see following (or similar) outp
 ```
 
 ### Access the application
-To access the application you can either use your favorite web browser, or a command line tool like 'curl'. 
+To access the application, you can either use your favorite web browser, or a command line tool like `curl`. 
 
 *   Check if context is up and running:
     *   URL: http://localhost:7501/BoundedContext/isRunning
@@ -124,7 +124,7 @@ To access the application you can either use your favorite web browser, or a com
 
 ### Write the Web Page 
 
-For simplicity, we add our web page into the same project as our backend by performing following steps: 
+For simplicity, we add our web page into the same project as our backend by performing the following steps: 
 
 * Create directory `public` into `src/main/resources` directory that will include our web page
 * Extend `jexxa-application.properties` by following lines so that this directory is exposed as web directory 
@@ -178,13 +178,13 @@ For simplicity, we add our web page into the same project as our backend by perf
 ### Access the Web Page
 
 * Restarting the application
-* Access the web page via following link [http://localhost:7501/index.html](http://localhost:7501/index.html). 
+* Access the web page via the following link [http://localhost:7501/index.html](http://localhost:7501/index.html). 
  
 The result should look like this:
 
 ![Webpage](images/Webpage.jpg)
 
-This web page can be used as starting point for developing your own web page.
+This web page can be used as a starting point for developing your own web page.
 
 
 ## Final notes

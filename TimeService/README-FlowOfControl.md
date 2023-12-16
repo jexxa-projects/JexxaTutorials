@@ -1,8 +1,8 @@
-# TimeService - Flow of Control
+# TimeService—Flow of Control
 
 ## What you learn
 
-*   [A general idea of the building blocks of ports and adapters](#1-building-blocks-of-a-ports--adapters) 
+*   [A general idea of the building blocks of ports and adapters](#1-building-blocks-of-ports--adapters) 
 *   [How to follow the flow of control of your application using your architecture](#2-navigate-through-your-application)
 *   [An initial understanding of dependency inversion principle](#leave-the-application-core) 
 
@@ -11,12 +11,12 @@
 *   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects 
 *   45 minutes (take the time)
 
-## 1. Building blocks of a Ports & Adapters
+## 1. Building blocks of Ports & Adapters
 
 If you choose ports and adapters as the architecture of your application, you have the following building blocks:
 
 *   `Driving Adapter`: A driving adapter belongs to the infrastructure. It receives incoming requests from a client using a specific technology such 
-    as REST, RMI or, JMS. Then it forwards the request to an `inbound port` for execution and this *drives* the domain logic of your application.
+    as REST, RMI or JMS. Then it forwards the request to an `inbound port` for execution and this *drives* the domain logic of your application.
     
 *   `Inbound Port`: An `inbound port` belongs to the application core and represents the use cases of your business application that can be started 
     by a specific client or a group of clients via an `Driving Adapter`. 
@@ -25,19 +25,19 @@ If you choose ports and adapters as the architecture of your application, you ha
     
 *   `Driven Adapter`: A `driven adapter` belongs to the infrastructure and implements a specific `outbound port` by using a concrete technology stack such as database. This building block is *driven* by the domain logic of the application.   
 
-Fore more details please read the article [ports and adapters](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
+Fore more details, please read the article [ports and adapters](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/).
            
 ## 2. Navigate through your application
 
-At the beginning, every developer learns to navigate through source code by reading it line by line. This allows you to see the flow of control,
-which eventually allows you to understand the application logic. Most IDE's and debuggers support this very well. However, this only works well for a
+In the beginning, every developer learns to navigate through source code by reading it line by line. This allows you to see the flow of control,
+which eventually allows you to understand the application logic. Most IDEs and debuggers support this very well. However, this only works well for a
 limited number of lines of code and/or for a few possible paths. For larger applications, you need an approach that scales independently of 
 the lines of code and excludes a large portion of possible paths directly.
 
 This is where the software architecture of an application comes into play. A suitable software architecture is the most scalable approach to navigate 
 through your application. The main problem with software architecture is that it looks so simple and obvious on a white board but is quite 
 hard to see in the source code. Much worse, a missing understanding or misunderstanding of the software architecture can cause high developing costs 
-in a long term.     
+in the long term.     
 
 Let's see the flow of control of an incoming command through an application based on ports and adapters architecture:
 
@@ -55,7 +55,7 @@ Let's see how it works...
 ### The main-method
 
 Each application starts with the `main` method. Since it is our starting point, it should represent the beginning of the flow of control which is
-`Driving Adapter` &rarr; `Inbound Port`. For this purpose Jexxa's API offers methods to represent this binding explicitly in the main method.
+`Driving Adapter` &rarr; `Inbound Port`. For this purpose, Jexxa's API offers methods to represent this binding explicitly in the main method.
 
 ```java
 public final class TimeService {
@@ -73,18 +73,18 @@ public final class TimeService {
     }
 }
 ```
-Now, we know following parts of our application: 
+Now, we know the following parts of our application: 
 
 *   Used `Driving Adapter`: `RESTfulRPCAdapter` and `JMSAdapter`
 *   Used `Inbound Port`: `TimeService`, and `BoundedContext` which is provided by Jexxa
 
-Please note that frameworks such as Spring or J2EE allow to hide this step because it is seen as boilerplate code. 
+Please note that frameworks such as Spring or J2EE allow hiding this step because it is seen as boilerplate code. 
 You will see that this is true to a certain extent if you check Jexxa's tutorials. Especially the main-class which 
 includes this step is quite similar. Anyway, please remember the quote `code is written once but read many times`. 
 Since the main-class represents our starting point and greatly simplifies the navigation through the application, it 
 is worth the effort. 
 
-Based on this source code we can navigate into two different directions using some hotkeys of our IDE. Either we dive 
+Based on this source code, we can navigate into two different directions using some hotkeys of our IDE. Either we dive 
 deep into a concrete `Driving Adapter` such as `RESTfulRPCAdapter`. 
 Or we follow direction `Inbound Port` &rarr; `Outbound Port` by selecting `TimeService` and enter the application core.  
 
@@ -104,7 +104,7 @@ Please remember the characteristics of an `Outbound Port`:
 *   It provides **required** methods to the application core.
 *   It must be an interface because it can be implemented by different technology stacks.
 
-In most object-oriented languages it is the job of the constructor to define all required attributes. Therefore, the constructor of an 
+In most object-oriented languages, it is the job of the constructor to define all required attributes. Therefore, the constructor of an 
 `Inbound Port` must define its required `Outbound Ports` and this represents `Inbound Port` &rarr; `Outbound Port`. Jexxa enforces this 
 rule and requires that all parameters of the constructor must be `Outbound Ports`. These are the only parameters that are essential to 
 create an `Inbound Port`. If you need any other parameters in the constructor of your `inbound port` it is most likely that you have an 
@@ -114,7 +114,7 @@ Obviously, the constructor of an `inbound port` should only take these `outbound
 a large application, the constructor should take only a few parameters. Otherwise, you should think about splitting your `Inbound Port`.
 Especially for a large application, you automatically hide a lot of source code and can focus on the source code for a specific use case.
 
-At this point, we have following additional information:
+At this point, we have the following additional information:
 *   Current `inbound port`: `TimeApplicationService`
 *   Required `outbound ports`: `TimePublisher` and `MessageDisplay`
 
@@ -147,7 +147,7 @@ This approach ensures that we can easily exchange or update the technology stack
 from an architectural point of view and represents one of the four building blocks of ports & adapter architecture.   
 
 Finally, this interface is then implemented by a `Driven Adapter` which again belongs to the infrastructure. Your IDE typically provides hot-keys 
-to switch to the concrete implementation of the interface which is located in the infrastructure part again. In this application the 
+to switch to the concrete implementation of the interface which is located in the infrastructure part again. In this application, the 
 implementation is quite simple. 
 
 ```java
@@ -163,12 +163,12 @@ public class MessageDisplayImpl implements MessageDisplay
                    
 ### One small exception ###
 
-In reality there is always an exception that confirms the rule. Within Jexxa this exception is directly in the beginning `Driving Adapter` &rarr;
+In reality, there is always an exception that confirms the rule. Within Jexxa this exception is directly in the beginning `Driving Adapter` &rarr;
 `Inbound Port`. The described rule works fine as long as the `Driving Adapter` can apply a convention how to automatically expose the methods 
-of an `Inbound Port`. Unfortunately, this does not work if we have to change the representation style. For example this is required if we have to 
+of an `Inbound Port`. Unfortunately, this does not work if we have to change the representation style. For example, this is required if we have to 
 offer a RESTful API to our `Inbound Port`, or if we have to map asynchronous messages to `Inbound Ports`. 
 
-In case we can not apply a convention, Jexxa represents the flow of control as follows:     
+In case we cannot apply a convention, Jexxa represents the flow of control as follows:     
 
 *   `Driving Adapter` &rarr; `Port Adapter` &rarr; `Inbound Port` &rarr; `Outbound Port` &rarr; `Driven Adapter`
 
@@ -189,7 +189,7 @@ public final class TimeService {
 
 Here, a JMS message should be handled by our application core. The `port adapter` belongs to the infrastructure and performs the specific mapping. 
 Please note that this is a crucial aspect. In the past, I saw a lot of code where this mapping is directly done in the `Inbound Port`. From my 
-understanding this is a massive architectural violation because we couple a technology stack directly to our application core. 
+ understanding, this is a massive architectural violation because we couple a technology stack directly to our application core. 
 
 Anyway, from a navigation point of view we have to take just a single additional step to continue in the direction of `Port Adapter` &rarr; 
 `Inbound Port`. To do so, just select `PublishTimeListener` in your IDE. Again, you have to check the constructor of `PublishTimeListener`. Within 
@@ -203,8 +203,8 @@ public class PublishTimeListener(TimeService timeApplicationService)
 }
 ```
 
-By selecting the parameter of the constructor in our IDE, we can continue in the direction of `Inbound Port` &rarr; `Outbound Port`. Since it is no 
-difference to follow the flow of control in the source code, Jexxa uses the same API to represent the starting point on both cases.
+By selecting the parameter of the constructor in our IDE, we can continue in the direction of `Inbound Port` &rarr; `Outbound Port`. Since there is no 
+difference to follow the flow of control in the source code, Jexxa uses the same API to represent the starting point in both cases.
 
 ## Summary ##
 
