@@ -2,9 +2,9 @@ package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persi
 
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 
-import io.jexxa.infrastructure.persistence.objectstore.IObjectStore;
-import io.jexxa.infrastructure.persistence.objectstore.metadata.MetaTag;
-import io.jexxa.infrastructure.persistence.objectstore.metadata.MetadataSchema;
+import io.jexxa.common.drivenadapter.persistence.objectstore.IObjectStore;
+import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTag;
+import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetadataSchema;
 import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository;
@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import static io.jexxa.infrastructure.ObjectStoreManager.getObjectStore;
-import static io.jexxa.infrastructure.persistence.objectstore.metadata.MetaTags.booleanTag;
-import static io.jexxa.infrastructure.persistence.objectstore.metadata.MetaTags.numericTag;
-import static io.jexxa.infrastructure.persistence.objectstore.metadata.MetaTags.stringTag;
+import static io.jexxa.common.drivenadapter.persistence.ObjectStoreManager.getObjectStore;
+import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.booleanTag;
+import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.numericTag;
+import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.stringTag;
 import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.ADVISOR;
 import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.CONTRACT_NUMBER;
 import static io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence.ContractRepositoryImpl.ContractSchema.CONTRACT_SIGNED;

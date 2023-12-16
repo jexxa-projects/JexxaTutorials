@@ -2,13 +2,13 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.addend.applicationcore.DomainEvent;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-import io.jexxa.infrastructure.messaging.MessageSender;
+import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
 
 import java.util.Objects;
 import java.util.Properties;
 
-import static io.jexxa.infrastructure.MessageSenderManager.getMessageSender;
+import static io.jexxa.common.drivenadapter.messaging.MessageSenderManager.getMessageSender;
 
 
 @SuppressWarnings("unused")
@@ -28,7 +28,7 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
         // We just allow sending DomainEvents
         validateDomainEvent(domainEvent);
 
-        // For publishing a DomainEvent we use a fluent API in Jexxa
+        // For publishing a DomainEvent, we use a fluent API in Jexxa
         messageSender
                 .send(domainEvent)
                 .toTopic("BookStore")

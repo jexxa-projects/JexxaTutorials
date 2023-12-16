@@ -34,7 +34,7 @@ public class TimeApplicationService
     }
 
     /**
-     * Implements use case 2 : Shows the previously published time.
+     * Implements use case 2: Shows the previously published time.
      * @param localTime the previously published time
      */
     public void showReceivedTime(LocalTime localTime)

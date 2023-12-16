@@ -5,7 +5,7 @@ import io.jexxa.addend.applicationcore.BusinessException;
 import java.io.Serial;
 
 /**
- * Is thrown in case we try to sell a book that is currently not in stock
+ * Is thrown in case we try to sell a book currently not in stock
  */
 @BusinessException
 public class BookNotInStockException extends Exception

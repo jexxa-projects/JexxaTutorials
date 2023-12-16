@@ -1,4 +1,4 @@
-# BookStore - Pattern Language 
+# BookStore—Pattern Language 
 
 ## What You Learn
 
@@ -15,15 +15,16 @@
 *   Optional: A postgres DB   
 
 ## A pattern language for your application core 
-Most developers are aware of design pattern and use them when developing software. A pattern language 
-goes one step further. It describes which design patterns are allowed and how they may interact with 
-each other. Much like a grammar for a language, a developer uses a pattern language to navigate through code even if 
-he or she has never read it before.
+Most developers are aware of design patterns and use them when developing software. 
+A pattern language goes one step further.
+It describes which design patterns are allowed and how they may interact with each other. 
+Much like a grammar for a language, a developer uses a pattern language to navigate through 
+code even if he or she has never read it before.
 
-__Example:__ If an application uses the pattern language of DDD the execution of a typical use case looks as follows: 
+__Example:__ If an application uses the pattern language of DDD, the execution of a typical use case looks as follows: 
 *   A command, represented as `ValueObject`, is received by an `ApplicationServcice`
 *   The `ApplicationService` requests the required `Aggregate` containing the business logic from the corresponding `Repository`
-*   The `ApplicationService` executes the command ont the `Aggregate` 
+*   The `ApplicationService` executes the command on used `Aggregate` 
 *   The `Aggregate` executes the business logic, creates and publishes `DomainEvent` 
 *   Finally, the `ApplicationService` returns the `Aggregate` to Repository again 
 
@@ -45,7 +46,7 @@ system, you will get the following advantages:
 *   You can use them for code reviews and refactorings      
 *   You can automatically validate your architecture as part of your unit-tests(see [here](README-ArchitectureValidation.md))
 
-For the pattern language of DDD we recommend project [Addend](https://addend.jexxa.io/).     
+For the pattern language of DDD, we recommend project [Addend](https://addend.jexxa.io/).     
 
 The following shows the annotation of an `Aggregate`. Apart from the obvious annotation, it also uses two other 
 annotations: 
@@ -82,11 +83,11 @@ public final class Book
 
 ### Use of Java records to improve semantic meaning
 
-When implementing a business application using DDD one of the most important aspects is to provide a semantically 
+When implementing a business application using DDD, one of the most important aspects is to provide a semantically 
 elegant and consistent solution for implementing the DDD pattern elements. 
 
 One of the major changes in Java 16 is the official support for Java [records](https://openjdk.java.net/jeps/359). They 
-are especially designed for classes holding immutable data. Apart from a compact syntax they also provide two vital 
+are especially designed for classes holding immutable data. Apart from a compact syntax, they also provide two vital 
 features: 
 *   Valid implementations of `equals()`, `hashCode()`, and `toString()`.
 *   The canonical constructor must be called in any cases. This ensures that members of a record can be validated in all
@@ -110,7 +111,7 @@ public record BookSoldOut(ISBN13 isbn13)
 }
 ```
 
-As you can see, all important information of a DomainEvent can be seen in thw following two lines.
+As you can see, all important information of a DomainEvent can be seen in the following two lines.
 
 *   `@DomainEvent`: Indicates the concrete type of the pattern element.
 *   `public record BookSoldOut(ISBN13 isbn13)`: Indicates the type name `BookSoldOut` including the provided data which is `ISBN13`
@@ -120,7 +121,7 @@ The main challenge when implementing this class is to ensure that we get a valid
 number. As long as the constructor is called, we can validate given string using private method `validateChecksum`.
 
 Unfortunately, we typically have to (de-)serialize our ValueObjects to send or receive them over a network connection. 
-In order to automate this, most frameworks use reflection or a default constructor to provide a generic approach. 
+To automate this, most frameworks use reflection or a default constructor to provide a generic approach. 
 The main disadvantage is that these approaches can leverage the validation of the internal attributes, so that we could 
 end up with an invalid ValueObject and finally with an invalid state in our application.   
 
@@ -145,29 +146,31 @@ public record ISBN13(String isbn13)
         return new ISBN13(value);
     }
 
-    // implementaion of validateChecksum(String isbn13)
+    // implementation of validateChecksum(String isbn13)
 
 }
 ```
 
 ### `DomainEventSender`: Considerations on interface definition
 
-In large applications it is quite common that you have multiple domain events that have to be published to other 
-applications as so-called integration events. To solve this issue at least following solutions exist:
+In large applications, it is quite common that you have multiple domain events that have to be published to other 
+applications as so-called integration events. 
+To solve this issue, at least the following solutions exist:
 
 *   Method overloading: Provide a specific method for each type of DomainEvent in `DomainEventSender`. On the one side, 
     this ensures static type safety but could flood your interface if the number of domain events is quite large.
 
-*   Abstract `DomainEvent` class: This allows to ensure type safety in `DomainEventSender` and also providing only a 
+*   Abstract `DomainEvent` class: This allows ensuring type safety in `DomainEventSender` and also providing only a 
     single method that is implemented in a generic way. This seems to solve all issues from method overloading. The 
     problem with this approach is that you introduce an interface or abstract base class that must be implemented by all
-    kind of domain events for technical reason. At first glance, this seems to be a slightly esoteric problem. In the 
+    kinds of domain events for technical reasons. At first glance, this seems to be a slightly esoteric problem. In the 
     long run, I've learned that such classes can be a gate opener, allowing technology aspects to enter the application 
     core. Therefore, I can only recommend such an approach for teams who know how to avoid this. 
 
 *   Publishing an `Object`: An alternative solution is to provide a method accepting a domain event of type `Object`. 
-    This prevents entering technology aspects into the application core. The obvious drawback is that you loose type 
-    safety. In case you annotated all your classes you can double-check if the domain event is annotated with 
+    This prevents entering technology aspects into the application core.
+    The obvious drawback is that you lose the type-safety. 
+    In case you annotated all your classes, you can double-check if the domain event is annotated with 
     `DomainEvent`. This prevents publishing arbitrary objects, but this check is performed only during runtime.
 
 Of course, you can also combine the approaches. For example, you can use method overloading, and the implementation uses
@@ -198,7 +201,7 @@ public class DomainEventSenderImpl implements DomainEventSender {
         // We just allow sending DomainEvents
         validateDomainEvent(domainEvent);
 
-        // For publishing a DomainEvent we use a fluent API in Jexxa
+        // For publishing a DomainEvent, we use a fluent API in Jexxa
         messageSender
                 .send(domainEvent)
                 .toTopic("BookStore")
@@ -219,8 +222,9 @@ public class DomainEventSenderImpl implements DomainEventSender {
 ```
 ## Implement the Application
 
-If your application core is annotated with your pattern language, you can use it together wih Jexxa. This requires to change the initial `BookStore` application as follows:
-1.  You have to bind driving adapters using method `bindToAnnotation`. In this case alle inbound ports annotated with given annotation are bind to the driving adapter.    
+If your application core is annotated with your pattern language, you can use it together with Jexxa. 
+This requires changing the initial `BookStore` application as follows:
+1.  You have to bind driving adapters using method `bindToAnnotation`. In this case, alle inbound ports annotated with given annotation are bind to the driving adapter.    
 
 ```java 
 public final class BookStore
@@ -230,7 +234,7 @@ public final class BookStore
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                // Bootstrap all classes annotated with @DomainService. In this application this causes to get the 
+                // Bootstrap all classes annotated with @DomainService. In this application, this causes to get the 
                 // latest books via ReferenceLibrary and forward DomainEvents to a message bus via DomainEventService
                 .bootstrapAnnotation(DomainService.class)
 
@@ -251,7 +255,7 @@ public final class BookStore
 mvn clean install
 java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" target/bookstore-jar-with-dependencies.jar
 ```
-You will see following (or similar) output
+You will see the following (or similar) output
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Config Information: 
 [main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-16 15:39]
@@ -278,14 +282,14 @@ file if required.
 mvn clean install
 java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" target/bookstore-jar-with-dependencies.jar
 ```
-In contrast to the above output Jexxa will state that you use JDBC persistence strategy now:
+In contrast to the above output, Jexxa will state that you use JDBC persistence strategy now:
 ```console
 [main] INFO io.jexxa.utils.JexxaBanner - Used Repository Strategie      : [JDBCKeyValueRepository]
 ```
 
 ### Execute some commands using curl 
 
-#### Get list of books
+#### Get a list of books
 
 Command: 
 ```Console
