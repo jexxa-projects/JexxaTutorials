@@ -31,7 +31,7 @@ If you want to use the architecture tests provided by Jexxa, you need to add the
     <dependency>
       <groupId>io.jexxa.jexxatest</groupId>
       <artifactId>jexxa-test</artifactId>
-      <version>6.1.5</version>
+      <version>7.0.0</version>
       <scope>test</scope>
     </dependency>
 ```
