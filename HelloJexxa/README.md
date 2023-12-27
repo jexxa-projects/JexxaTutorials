@@ -145,7 +145,7 @@ For simplicity, we add our web page into the same project as our backend by perf
     <h1 id = "contextName">Context Name: </h1>
     
     <script>
-        const BASE_URL = window.location.protocol + '//' + location.host +'/BoundedContext';
+        const BASE_URL = location.href.substring(0, location.href.lastIndexOf('/')) ;
     
         const appendToDOM = (message) => {
             document
@@ -154,7 +154,8 @@ For simplicity, we add our web page into the same project as our backend by perf
         };
     
         const fetchGreetings = () => {
-            fetch(`${BASE_URL}/contextName`)
+            console.log(`${BASE_URL}`);
+            fetch(`${BASE_URL}/BoundedContext/contextName`)
                 .then( response => {
                     if (!response.ok) {
                         throw Error(response.statusText);
