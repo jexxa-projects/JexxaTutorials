@@ -44,17 +44,17 @@
         <maven.compiler.release>21</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa.release.version>7.0.0</jexxa.release.version>
-        <addend.version>2.0.0</addend.version>
+        <jexxa.release.version>7.0.2</jexxa.release.version>
+        <addend.version>2.0.1</addend.version>
         <activemq.artemis.client.version>2.32.0</activemq.artemis.client.version>
         <postgres.version>42.7.1</postgres.version>
-        <slf4j.simple.version>2.0.9</slf4j.simple.version>
+        <slf4j.simple.version>2.0.12</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
 
         <!-- version of test dependencies -->
-        <junit.platform.launcher.version>1.10.1</junit.platform.launcher.version>
-        <junit.jupiter.engine.version>5.10.1</junit.jupiter.engine.version>
-        <junit.jupiter.params.version>5.10.1</junit.jupiter.params.version>
+        <junit.platform.launcher.version>1.10.2</junit.platform.launcher.version>
+        <junit.jupiter.engine.version>5.10.2</junit.jupiter.engine.version>
+        <junit.jupiter.params.version>5.10.2</junit.jupiter.params.version>
         <awaitility.version>4.2.0</awaitility.version>
         <unirest.java.version>3.14.5</unirest.java.version>
 
@@ -69,12 +69,12 @@
         <maven.clean.plugin>3.3.2</maven.clean.plugin>
         <maven.compiler.plugin>3.12.1</maven.compiler.plugin>
         <maven.deploy.plugin>3.1.1</maven.deploy.plugin>
-        <maven.failsafe.plugin>3.2.3</maven.failsafe.plugin>
+        <maven.failsafe.plugin>3.2.5</maven.failsafe.plugin>
         <maven.install.plugin>3.1.1</maven.install.plugin>
         <maven.jar.plugin>3.3.0</maven.jar.plugin>
         <maven.resources.plugin>3.3.1</maven.resources.plugin>
         <maven.site.plugin>3.12.1</maven.site.plugin>
-        <maven.surefire.plugin>3.2.3</maven.surefire.plugin>
+        <maven.surefire.plugin>3.2.5</maven.surefire.plugin>
         <maven.release.plugin>3.0.0-M1</maven.release.plugin>
         <maven.jacoco.plugin>0.8.11</maven.jacoco.plugin>
         <maven.reports.plugin>3.5.0</maven.reports.plugin>
