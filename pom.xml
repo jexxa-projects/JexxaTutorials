@@ -46,7 +46,7 @@
         <!-- version of dependencies -->
         <jexxa.release.version>7.0.0</jexxa.release.version>
         <addend.version>2.0.0</addend.version>
-        <activemq.artemis.client.version>2.31.2</activemq.artemis.client.version>
+        <activemq.artemis.client.version>2.32.0</activemq.artemis.client.version>
         <postgres.version>42.7.1</postgres.version>
         <slf4j.simple.version>2.0.9</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
@@ -422,6 +422,9 @@
                                         <exclude>META-INF/*.txt</exclude>
                                         <exclude>META-INF/NOTICE</exclude>
                                         <exclude>META-INF/LICENSE</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
                                     </excludes>
                                 </filter>
                                 <filter>
