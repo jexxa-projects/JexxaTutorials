@@ -3,14 +3,14 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.persistence;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.common.drivenadapter.persistence.repository.IRepository;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
-import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
+import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.persistence.RepositoryManager.getRepository;
+import static io.jexxa.common.drivenadapter.persistence.RepositoryFactory.createRepository;
 
 
 @SuppressWarnings("unused")
@@ -21,7 +21,7 @@ public class BookRepositoryImpl implements BookRepository
 
     public BookRepositoryImpl(Properties properties)
     {
-        this.repository = getRepository(Book.class, Book::getISBN13, properties);
+        this.repository = createRepository(Book.class, Book::getISBN13, properties);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence;
 
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-
 import io.jexxa.common.drivenadapter.persistence.objectstore.IObjectStore;
 import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetadataSchema;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.persistence.ObjectStoreManager.getObjectStore;
+import static io.jexxa.common.drivenadapter.persistence.ObjectStoreFactory.createObjectStore;
 import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.booleanTag;
 import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.numericTag;
 import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.stringTag;
@@ -74,7 +73,7 @@ public class ContractRepositoryImpl implements ContractRepository
 
     public ContractRepositoryImpl(Properties properties)
     {
-        this.objectStore = getObjectStore(Contract.class, Contract::getContractNumber, ContractSchema.class, properties);
+        this.objectStore = createObjectStore(Contract.class, Contract::getContractNumber, ContractSchema.class, properties);
     }
 
     @Override

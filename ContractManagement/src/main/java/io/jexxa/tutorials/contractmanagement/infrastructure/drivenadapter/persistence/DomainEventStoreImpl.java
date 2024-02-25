@@ -1,18 +1,18 @@
 package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence;
 
 import io.jexxa.addend.infrastructure.DrivenAdapter;
+import io.jexxa.common.drivenadapter.persistence.objectstore.IObjectStore;
 import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetadataSchema;
-import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
+import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
 import io.jexxa.tutorials.contractmanagement.domainservice.DomainEventStore;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Properties;
-import io.jexxa.common.drivenadapter.persistence.objectstore.IObjectStore;
 
-import static io.jexxa.common.drivenadapter.persistence.ObjectStoreManager.getObjectStore;
+import static io.jexxa.common.drivenadapter.persistence.ObjectStoreFactory.createObjectStore;
 import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.instantTag;
 import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.numericTag;
 
@@ -55,7 +55,7 @@ public class DomainEventStoreImpl implements DomainEventStore
 
     public DomainEventStoreImpl(Properties properties)
     {
-        this.objectStore = getObjectStore(ContractSigned.class, ContractSigned::contractNumber, DomainEventSchema.class, properties);
+        this.objectStore = createObjectStore(ContractSigned.class, ContractSigned::contractNumber, DomainEventSchema.class, properties);
     }
 
     @Override

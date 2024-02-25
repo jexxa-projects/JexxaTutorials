@@ -6,7 +6,7 @@ import io.jexxa.tutorials.timeservice.domainservice.TimePublisher;
 import java.time.LocalTime;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderManager.getMessageSender;
+import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
 
 
 
@@ -26,7 +26,7 @@ public class TimePublisherImpl implements TimePublisher
     public TimePublisherImpl(Properties properties)
     {
         //Request a default message sender for the implemented interface TimePublisher
-        this.messageSender = getMessageSender(TimePublisher.class, properties);
+        this.messageSender = createMessageSender(TimePublisher.class, properties);
     }
 
     @Override
