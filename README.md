@@ -53,4 +53,4 @@ See documentation [ContractManagement](ContractManagement/README.md)
 
 ## Copyright and license
 
-Code and documentation copyright 2020–2023 Michael Repplinger. Code released under the [Unlicense](LICENSE). Docs released under [Creative Commons](https://creativecommons.org/licenses/by/3.0/).
+Code and documentation copyright 2020–2024 Michael Repplinger. Code released under the [Unlicense](LICENSE). Docs released under [Creative Commons](https://creativecommons.org/licenses/by/3.0/).
