@@ -8,7 +8,7 @@ import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
 import java.util.Objects;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderManager.getMessageSender;
+import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
 
 
 @SuppressWarnings("unused")
@@ -19,7 +19,7 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
     public IntegrationEventSenderImpl(Properties properties)
     {
         // Request a MessageSender from the framework, so that we can configure it in our properties file
-        messageSender = getMessageSender(IntegrationEventSender.class, properties);
+        messageSender = createMessageSender(IntegrationEventSender.class, properties);
     }
 
     @Override
