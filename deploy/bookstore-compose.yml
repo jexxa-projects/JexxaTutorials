@@ -4,7 +4,7 @@ services:
 
   ### Anwendung ###
   BookStore:
-    image: ghcr.io/jexxa-projects/bookstore:latest
+    image: ghcr.io/jexxa-projects/jexxatutorials/bookstore:latest
     ports:
       - "7503:7503"
 

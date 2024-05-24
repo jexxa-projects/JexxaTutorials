@@ -4,7 +4,7 @@ services:
 
   ### Anwendung ###
   ContractManagement:
-    image: ghcr.io/jexxa-projects/contractmanagement:latest
+    image: ghcr.io/jexxa-projects/jexxatutorials/contractmanagement:latest
     ports:
       - "7504:7504"
 

@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   HelloJexxa:
-    image: ghcr.io/jexxa-projects/hellojexxa:latest
+    image: ghcr.io/jexxa-projects/jexxatutorials/hellojexxa:latest
     ports:
       - "7501:7501"
       - "8081:8081"

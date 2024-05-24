@@ -5,7 +5,7 @@ services:
   ### Anwendung ###
 
   TimeService:
-    image: ghcr.io/jexxa-projects/timeservice:latest
+    image: ghcr.io/jexxa-projects/jexxatutorials/timeservice:latest
     ports:
       - "7502:7502"
 
