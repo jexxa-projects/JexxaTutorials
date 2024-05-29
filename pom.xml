@@ -33,7 +33,7 @@
 
     <properties>
         <image.repository.root>ghcr.io/jexxa-projects</image.repository.root>
-        <image.directory>${project.artifactId}</image.directory>
+        <image.directory>${parent.artifactId}</image.directory>
         <main.class>${project.groupId}.${project.name}</main.class>
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
