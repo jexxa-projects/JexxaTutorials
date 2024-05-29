@@ -33,6 +33,7 @@
 
     <properties>
         <image.repository.root>ghcr.io/jexxa-projects</image.repository.root>
+        <image.directory>${project.artifactId}</image.directory>
         <main.class>${project.groupId}.${project.name}</main.class>
         <main.http.port>7500</main.http.port>
         <main.https.port>8081</main.https.port>
@@ -84,7 +85,6 @@
         <maven.build.helper.version>3.6.0</maven.build.helper.version>
         <maven.jib.plugin>3.4.2</maven.jib.plugin>
         <maven.shade.plugin>3.5.3</maven.shade.plugin>
-
     </properties>
 
     <dependencies>
@@ -490,7 +490,7 @@
                         <image>${docker.base.image}</image>
                     </from>
                     <to>
-                        <image>${image.repository.root}/${parent.artifactId}/${project.artifactId}:${project.version}</image>
+                        <image>${image.repository.root}/${image.directory}/${project.artifactId}:${project.version}</image>
                         <tags>
                             <!--suppress UnresolvedMavenProperty -->
                             <tag>${dockerTag}</tag>
