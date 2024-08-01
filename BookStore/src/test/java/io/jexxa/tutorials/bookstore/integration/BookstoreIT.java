@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookstoreIT
 {
-    static private final String addToStock = "addToStock";
-    static private final String amountInStock = "amountInStock";
-    static private final String sell = "sell";
+    private static final String ADD_TO_STOCK = "addToStock";
+    private static final String AMOUNT_IN_STOCK = "amountInStock";
+    private static final String SELL = "sell";
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
 
 
@@ -58,11 +58,11 @@ class BookstoreIT
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
 
         var addedBooks = 5;
-        var inStock = bookStoreService.postRequest(Integer.class, amountInStock, ANY_BOOK );
+        var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
 
         //Act
-        bookStoreService.postRequest(Void.class, addToStock, ANY_BOOK, addedBooks);
-        var result = bookStoreService.postRequest(Integer.class, amountInStock, ANY_BOOK );
+        bookStoreService.postRequest(Void.class, ADD_TO_STOCK, ANY_BOOK, addedBooks);
+        var result = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
 
         //Assert
         assertEquals(inStock + addedBooks, result);
@@ -75,13 +75,13 @@ class BookstoreIT
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
         var messageListener = messageBinding.getMessageListener("BookStore", JMSConfiguration.MessagingType.TOPIC);
 
-        bookStoreService.postRequest(Void.class, addToStock, ANY_BOOK, 5);
-        var inStock = bookStoreService.postRequest(Integer.class, amountInStock, ANY_BOOK );
+        bookStoreService.postRequest(Void.class, ADD_TO_STOCK, ANY_BOOK, 5);
+        var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
 
         //Act - Sell all books in stock
         for (int i = 0; i < inStock; ++i)
         {
-            bookStoreService.postRequest(Void.class, sell, ANY_BOOK);
+            bookStoreService.postRequest(Void.class, SELL, ANY_BOOK);
         }
 
         // Receive the jms message
