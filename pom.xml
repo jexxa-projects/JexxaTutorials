@@ -4,7 +4,7 @@
 
     <name>JexxaTutorials</name>
     <groupId>io.jexxa.tutorials</groupId>
-    <version>2.0.32-SNAPSHOT</version>
+    <version>2.0.33-SNAPSHOT</version>
     <artifactId>jexxatutorials</artifactId>
     <packaging>pom</packaging>
 
@@ -45,17 +45,17 @@
         <maven.compiler.release>21</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa.release.version>8.0.3</jexxa.release.version>
+        <jexxa.release.version>8.1.0</jexxa.release.version>
         <addend.version>2.0.1</addend.version>
-        <activemq.artemis.client.version>2.34.0</activemq.artemis.client.version>
+        <activemq.artemis.client.version>2.36.0</activemq.artemis.client.version>
         <postgres.version>42.7.3</postgres.version>
         <slf4j.simple.version>2.0.13</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
 
         <!-- version of test dependencies -->
-        <junit.platform.launcher.version>1.10.2</junit.platform.launcher.version>
-        <junit.jupiter.engine.version>5.10.2</junit.jupiter.engine.version>
-        <junit.jupiter.params.version>5.10.2</junit.jupiter.params.version>
+        <junit.platform.launcher.version>1.10.3</junit.platform.launcher.version>
+        <junit.jupiter.engine.version>5.10.3</junit.jupiter.engine.version>
+        <junit.jupiter.params.version>5.10.3</junit.jupiter.params.version>
         <awaitility.version>4.2.1</awaitility.version>
         <unirest.java.version>3.14.5</unirest.java.version>
 
@@ -67,21 +67,21 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
         <!--version of  maven plugins  -->
-        <maven.clean.plugin>3.3.2</maven.clean.plugin>
+        <maven.clean.plugin>3.4.0</maven.clean.plugin>
         <maven.compiler.plugin>3.13.0</maven.compiler.plugin>
         <maven.deploy.plugin>3.1.2</maven.deploy.plugin>
-        <maven.failsafe.plugin>3.2.5</maven.failsafe.plugin>
+        <maven.failsafe.plugin>3.3.1</maven.failsafe.plugin>
         <maven.install.plugin>3.1.2</maven.install.plugin>
-        <maven.jar.plugin>3.4.1</maven.jar.plugin>
+        <maven.jar.plugin>3.4.2</maven.jar.plugin>
         <maven.resources.plugin>3.3.1</maven.resources.plugin>
         <maven.site.plugin>3.12.1</maven.site.plugin>
-        <maven.surefire.plugin>3.2.5</maven.surefire.plugin>
+        <maven.surefire.plugin>3.3.1</maven.surefire.plugin>
         <maven.release.plugin>3.0.0-M1</maven.release.plugin>
         <maven.jacoco.plugin>0.8.12</maven.jacoco.plugin>
-        <maven.reports.plugin>3.5.0</maven.reports.plugin>
+        <maven.reports.plugin>3.6.2</maven.reports.plugin>
         <maven.enforcer.plugin>3.5.0</maven.enforcer.plugin>
         <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
-        <maven.versions.plugin>2.16.2</maven.versions.plugin>
+        <maven.versions.plugin>2.17.1</maven.versions.plugin>
         <maven.build.helper.version>3.6.0</maven.build.helper.version>
         <maven.jib.plugin>3.4.3</maven.jib.plugin>
         <maven.shade.plugin>3.6.0</maven.shade.plugin>
