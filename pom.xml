@@ -488,7 +488,6 @@
                 <configuration>
                     <from>
                         <image>${docker.base.image}</image>
-                        <image>... image reference to a manifest list ...</image>
                         <platforms>
                             <platform>
                                 <architecture>amd64</architecture>
