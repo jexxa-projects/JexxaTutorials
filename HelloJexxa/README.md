@@ -29,13 +29,13 @@
        <dependency>
           <groupId>io.jexxa</groupId>
           <artifactId>jexxa-web</artifactId>
-          <version>7.0.0</version>
+          <version>8.1.11</version>
        </dependency>
        
        <dependency>
            <groupId>org.slf4j</groupId>
            <artifactId>slf4j-simple</artifactId>
-           <version>2.0.9</version>
+           <version>2.0.17</version>
        </dependency>
    </dependencies>
 </project>
@@ -105,7 +105,7 @@ As soon as you start the application, you should see the following (or similar) 
 ```
 
 ### Access the application
-To access the application, you can either use your favorite web browser, or a command line tool like `curl`. 
+To access the application, you can either use your favorite web browser or a command line tool like `curl`. 
 
 *   Check if context is up and running:
     *   URL: http://localhost:7501/BoundedContext/isRunning
