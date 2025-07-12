@@ -25,13 +25,13 @@ When writing tests for a business application, we recommend the following three 
 *   Integration tests: Finally, you should provide at least some integration tests that are executed against your running application. `jexxa-test` supports this by providing convenience classes based on the conventions of Jexxa. 
 
 For all tests, we use the arrange-act-assert pattern because it forces tests to focus on independent, 
-individual behaviors. As soon as you want to use module `jexxa-test`, you have to add following dependency.
+individual behaviors. As soon as you want to use module `jexxa-test`, you have to add the following dependency (check that you use the latest version).
 
 ```xml
     <dependency>
       <groupId>io.jexxa.jexxatest</groupId>
       <artifactId>jexxa-test</artifactId>
-      <version>5.6.0</version>
+      <version>8.1.11</version>
       <scope>test</scope>
     </dependency>
 ```
@@ -117,7 +117,7 @@ class BookStoreServiceTest
         publishedDomainEvents = jexxaTest.getMessageRecorder(DomainEventSender.class); // 2. A recorder for DomainEvents published via DomainEventSender
         bookRepository        = jexxaTest.getRepository(BookRepository.class);         // 3. Repository managing all books
 
-        // Invoke all bootstrapping services from main to ensure the same starting point
+        // Invoke all bootstrapping services from the main method to ensure the same starting point
         jexxaTest.getJexxaMain().bootstrapAnnotation(DomainService.class);
     }
 
@@ -151,7 +151,7 @@ class BookStoreServiceTest
 ```
 ## Write Integration Tests
 
-Finally, we show how to write integration tests. In this case, we assume that your application is started on your local machine. In all our tutorials and templates, this is done by maven before running the integration tests.
+Finally, we show how to write integration tests. In this case, we assume that your application is started on your local machine. In all our tutorials and templates, maven does this before running the integration tests.
 
 
 ### Initialize and shutdown the IT-tests
@@ -166,7 +166,7 @@ class BookstoreIT {
     // ... initialization of additional parameters for your tests
 
     private static JexxaIntegrationTest jexxaIntegrationTest;  // Simplified IT testing with jexxa-test
-    private static RESTBinding restBinding;                    // Binding to access application under test via REST
+    private static RESTBinding restBinding;                    // Binding to access the application under test via REST
     private static MessageBinding messageBinding;              // Binding to access application under test via JMS
 
     @BeforeAll
@@ -188,7 +188,7 @@ class BookstoreIT {
 
 
 ### Test: Sell last book
-In the following, you see how to use the `RESTBinding` to access your application. Please note that we cannot directly perform a method call since we send a REST call. 
+In the following test, you see how to use the `RESTBinding` to access your application. Please note that we cannot directly perform a method call since we send a REST call. 
 
 But similar to a method call, we provide all parameters: Return value `Void.class`, method name `addToStock` and the two parameters `ANY_BOOK, 5`
 ```java
