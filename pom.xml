@@ -541,6 +541,7 @@
     <module>TimeService</module>
     <module>BookStore</module>
     <module>ContractManagement</module>
+      <module>BookStoreCN</module>
   </modules>
 
 </project>
