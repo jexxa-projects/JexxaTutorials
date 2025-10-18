@@ -1,4 +1,6 @@
-# BookStore—Using a Repository
+# BookStoreCN — Using typical cloud native technology
+
+# TODO: REWRITE 
 
 ## What You Learn
 
@@ -184,14 +186,14 @@ Finally, we have to write our application. As you can see in the code below ther
    
 ```java
     
-public final class BookStore
+public final class BookStoreCN
 {
     static void main(String[] args)
     {
         var jexxaMain = new JexxaMain(BookStore.class);
 
         jexxaMain
-                .bootstrap(ReferenceLibrary.class).and()       // Bootstrap latest books via ReferenceLibrary
+                .bootstrap(ReferenceLibrary.class).and()       // Bootstrap the latest books via ReferenceLibrary
                 .bootstrap(IntegrationEventSender.class).with(sender -> subscribe(sender::publish)) // publish all DomainEvents as IntegrationEvents for other bounded contexts
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)        // Provide REST access to BookStoreService
@@ -232,7 +234,7 @@ You will see the following (or similar) output
 
 ### Use a postgres database
 The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a postgres 
-DB. So we have to enter following command 
+DB. So we have to enter the following command 
 
 ```console                                                          
 mvn clean install
@@ -245,7 +247,7 @@ In contrast to the above output, Jexxa will state that you use JDBC persistence 
 [main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [JMSSender]
 ```
 
-Note: In case you want to use a difference database, you have to: 
+Note: In case you want to use a different database, you have to: 
 
 1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies-section.
 2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-test.properties](src/test/resources/jexxa-test.properties).
