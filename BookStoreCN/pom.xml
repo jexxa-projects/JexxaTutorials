@@ -17,10 +17,11 @@
 
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <maven.exec.plugin>3.6.1</maven.exec.plugin>
+    <jacoco.it.port>6301</jacoco.it.port>
 
       <!-- command to start the application for integration tests -->
     <context.command.start>
-          -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${maven.jacoco.plugin}/org.jacoco.agent-${maven.jacoco.plugin}-runtime.jar=destfile=jacoco-it-app.exec,port=6300,output=tcpserver
+          -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${maven.jacoco.plugin}/org.jacoco.agent-${maven.jacoco.plugin}-runtime.jar=destfile=jacoco-it-app.exec,port=,port=${jacoco.it.port},output=tcpserver
           -jar -Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties ${project.build.directory}/${project.artifactId}-jar-with-dependencies.jar
     </context.command.start>
   </properties>

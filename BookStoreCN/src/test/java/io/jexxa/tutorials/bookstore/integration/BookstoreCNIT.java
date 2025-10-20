@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BookstoreIT
+class BookstoreCNIT
 {
     private static final String ADD_TO_STOCK = "addToStock";
     private static final String AMOUNT_IN_STOCK = "amountInStock";
