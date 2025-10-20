@@ -16,7 +16,7 @@
     <main.https.port>8084</main.https.port>
 
     <maven.javadoc.skip>true</maven.javadoc.skip>
-    <maven.exec.plugin>3.6.1</maven.exec.plugin>
+    <maven.exec.plugin>3.6.2</maven.exec.plugin>
     <jacoco.it.port>6301</jacoco.it.port>
 
       <!-- command to start the application for integration tests -->
