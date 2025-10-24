@@ -25,6 +25,22 @@
           -jar -Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties ${project.build.directory}/${project.artifactId}-jar-with-dependencies.jar
     </context.command.start>
   </properties>
+
+    <dependencies>
+        <!-- dependencies for application core -->
+        <dependency>
+            <groupId>io.jexxa.esp</groupId>
+            <artifactId>esp-adapters-core</artifactId>
+            <version>${jexxa.esp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jexxa.esp</groupId>
+            <artifactId>esp-adapters-test</artifactId>
+            <version>${jexxa.esp.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <profiles>
     <profile>
         <id>integrationTests</id>

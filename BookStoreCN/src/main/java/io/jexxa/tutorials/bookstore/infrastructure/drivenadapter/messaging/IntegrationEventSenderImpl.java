@@ -2,24 +2,24 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.addend.applicationcore.DomainEvent;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-import io.jexxa.common.drivenadapter.messaging.MessageSender;
+import io.jexxa.esp.drivenadapter.EventSender;
 import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
 
 import java.util.Objects;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
+import static io.jexxa.esp.drivenadapter.EventSenderFactory.createEventSender;
 
 
 @SuppressWarnings("unused")
 @DrivenAdapter
 public class IntegrationEventSenderImpl implements IntegrationEventSender {
-    private final MessageSender messageSender;
+    private final EventSender eventSender;
 
     public IntegrationEventSenderImpl(Properties properties)
     {
         // Request a MessageSender from the framework, so that we can configure it in our properties file
-        messageSender = createMessageSender(IntegrationEventSender.class, properties);
+        eventSender = createEventSender(IntegrationEventSender.class, properties);
     }
 
     @Override
@@ -29,11 +29,12 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
         validateDomainEvent(domainEvent);
 
         // For publishing a DomainEvent, we use a fluent API in Jexxa
-        messageSender
+        eventSender
                 .send(domainEvent)
                 .toTopic("BookStore")
                 .addHeader("Type", domainEvent.getClass().getSimpleName())
-                .asJson();
+                .asJSON();
+        System.out.println("ASEND TI KAFKA ");
     }
 
     private void validateDomainEvent(Object domainEvent)
