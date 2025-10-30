@@ -1,12 +1,10 @@
 package io.jexxa.tutorials.bookstore.domain.book;
 
+import io.jexxa.tutorials.bookstore.BookStore;
+import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-import static io.jexxa.tutorials.bookstore.domain.DomainEventPublisher.subscribe;
+import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -58,9 +56,9 @@ class BookTest {
     @Test
     void sellLastBook() {
         // Arrange
+        var jexxaTest = getJexxaTest(BookStore.class);
         var amountInStock = 1;
-        var domainEventRecorder = new DomainEventRecorder();
-        subscribe(BookSoldOut.class, domainEventRecorder::receive);
+        var domainEventRecorder = jexxaTest.getDomainEventRecorder(BookSoldOut.class, DomainEventPublisher::subscribe);
 
         var objectUnderTest = newBook(ANY_BOOK);
         objectUnderTest.addToStock(amountInStock);
@@ -70,21 +68,8 @@ class BookTest {
 
         // Assert
         assertEquals(0, objectUnderTest.amountInStock() );
-        assertEquals(1, domainEventRecorder.getDomainEvents().size() );
+        assertEquals(1, domainEventRecorder.get().size() );
     }
 
-    private static class DomainEventRecorder {
-        private final List<BookSoldOut> domainEvents = new ArrayList<>();
-
-        public void receive(BookSoldOut bookSoldOut)
-        {
-            domainEvents.add(bookSoldOut);
-        }
-
-        List<BookSoldOut> getDomainEvents()
-        {
-            return domainEvents;
-        }
-    }
 
 }

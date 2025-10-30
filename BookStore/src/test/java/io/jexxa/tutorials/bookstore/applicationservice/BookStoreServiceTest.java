@@ -1,8 +1,9 @@
 package io.jexxa.tutorials.bookstore.applicationservice;
 
+import io.jexxa.jexxatest.DomainEventRecorder;
 import io.jexxa.jexxatest.JexxaTest;
-import io.jexxa.jexxatest.infrastructure.messaging.recording.MessageRecorder;
 import io.jexxa.tutorials.bookstore.BookStore;
+import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
@@ -25,7 +26,7 @@ class BookStoreServiceTest
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
 
     private BookStoreService objectUnderTest;       // Object we want to test
-    private MessageRecorder publishedDomainEvents; // Message recorder to validate published DomainEvents
+    private DomainEventRecorder<BookSoldOut> domainEventRecorder; // Message recorder to validate published DomainEvents
     private BookRepository   bookRepository;        // Repository to validate results in the tests
 
     @BeforeAll
@@ -49,7 +50,7 @@ class BookStoreServiceTest
 
         // Request the objects needed for our tests
         objectUnderTest       = jexxaTest.getInstanceOfPort(BookStoreService.class);   // 1. We need the object we want to test
-        publishedDomainEvents = jexxaTest.getMessageRecorder(IntegrationEventSender.class); // 2. A recorder for DomainEvents published via DomainEventSender
+        domainEventRecorder   = jexxaTest.getDomainEventRecorder(BookSoldOut.class, DomainEventPublisher::subscribe); // 2. A recorder for DomainEvents published via DomainEventSender
         bookRepository        = jexxaTest.getRepository(BookRepository.class);         // 3. Repository managing all books
     }
 
@@ -65,7 +66,7 @@ class BookStoreServiceTest
         //Assert
         assertEquals( amount, objectUnderTest.amountInStock(ANY_BOOK) );      // Perform assertion against the object we test
         assertEquals( amount, bookRepository.get(ANY_BOOK).amountInStock() ); // Perform assertion against the repository
-        assertTrue( publishedDomainEvents.isEmpty() );                        // Perform assertion against published DomainEvents
+        assertTrue( domainEventRecorder.get().isEmpty() );                        // Perform assertion against published DomainEvents
     }
 
 
@@ -82,7 +83,7 @@ class BookStoreServiceTest
         //Assert
         assertEquals( amount - 1, objectUnderTest.amountInStock(ANY_BOOK) );       // Perform assertion against the object we test
         assertEquals( amount - 1, bookRepository.get(ANY_BOOK).amountInStock() );  // Perform assertion against the repository
-        assertTrue( publishedDomainEvents.isEmpty() );                                     // Perform assertion against published DomainEvents
+        assertTrue( domainEventRecorder.get().isEmpty() );                                     // Perform assertion against published DomainEvents
     }
 
     @Test
@@ -105,8 +106,8 @@ class BookStoreServiceTest
 
         //Assert
         assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );                    // Perform assertion against the object we test
-        assertEquals( 1 , publishedDomainEvents.size() );                               // Perform assertion against the repository
-        assertEquals( ANY_BOOK, publishedDomainEvents.getMessage(BookSoldOut.class).isbn13());  // Perform assertion against published DomainEvents
+        assertEquals( 1 , domainEventRecorder.get().size() );                               // Perform assertion against the repository
+        assertEquals( ANY_BOOK, domainEventRecorder.get().getFirst().isbn13());  // Perform assertion against published DomainEvents
     }
 
 }

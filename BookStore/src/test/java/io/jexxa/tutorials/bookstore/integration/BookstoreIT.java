@@ -2,7 +2,7 @@ package io.jexxa.tutorials.bookstore.integration;
 
 import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
 import io.jexxa.jexxatest.JexxaIntegrationTest;
-import io.jexxa.jexxatest.integrationtest.messaging.MessageBinding;
+import io.jexxa.jexxatest.integrationtest.messaging.JMSBinding;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
 import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
@@ -26,14 +26,14 @@ class BookstoreIT
 
 
     private static JexxaIntegrationTest jexxaIntegrationTest;  // Simplified IT testing with jexxa-test
-    private static RESTBinding restBinding;                    // Binding to access application under test via REST
-    private static MessageBinding messageBinding;              // Binding to access application under test via JMS
+    private static RESTBinding restBinding;                    // Binding to access an application under test via REST
+    private static JMSBinding jmsBinding;                      // Binding to access application under test via JMS
 
     @BeforeAll
     static void initBeforeAll()
     {
         jexxaIntegrationTest = new JexxaIntegrationTest(BookStore.class);
-        messageBinding = jexxaIntegrationTest.getMessageBinding();
+        jmsBinding = jexxaIntegrationTest.getBinding(JMSBinding.class);
         restBinding = jexxaIntegrationTest.getRESTBinding();
     }
 
@@ -73,7 +73,7 @@ class BookstoreIT
     {
         //Arrange
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
-        var messageListener = messageBinding.getMessageListener("BookStore", JMSConfiguration.MessagingType.TOPIC);
+        var messageListener = jmsBinding.getListener("BookStore", JMSConfiguration.MessagingType.TOPIC);
 
         bookStoreService.postRequest(Void.class, ADD_TO_STOCK, ANY_BOOK, 5);
         var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
