@@ -1,6 +1,6 @@
 package io.jexxa.tutorials.bookstore.integration;
 
-import io.jexxa.esp.digispine.DigiSpine;
+import io.jexxa.esp.digispine.EventBinding;
 import io.jexxa.jexxatest.JexxaIntegrationTest;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
 import io.jexxa.tutorials.bookstore.BookStoreCN;
@@ -9,15 +9,15 @@ import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class BookstoreCNIT
 {
@@ -28,12 +28,14 @@ class BookstoreCNIT
 
     private static JexxaIntegrationTest jexxaIntegrationTest;  // Simplified IT testing with jexxa-test
     private static RESTBinding restBinding;                    // Binding to access application under test via REST
+    private static EventBinding eventBinding;                    // Binding to access application under test via REST
 
     @BeforeAll
     static void initBeforeAll()
     {
         jexxaIntegrationTest = new JexxaIntegrationTest(BookStoreCN.class);
         restBinding = jexxaIntegrationTest.getRESTBinding();
+        eventBinding = jexxaIntegrationTest.getBinding(EventBinding.class);
     }
 
 
@@ -71,7 +73,10 @@ class BookstoreCNIT
     void testSellLastBook()
     {
         //Arrange
+        var result = new ArrayList<BookSoldOut>();
+
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
+        eventBinding.getListener("BookStore", result::add, String.class, BookSoldOut.class);
 
         bookStoreService.postRequest(Void.class, ADD_TO_STOCK, ANY_BOOK, 5);
         var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
@@ -82,12 +87,14 @@ class BookstoreCNIT
             bookStoreService.postRequest(Void.class, SELL, ANY_BOOK);
         }
 
-        // Receive the jms message
-      //  var result = digispine.latestMessageFromJSON("BookStore", Duration.of(5, ChronoUnit.SECONDS), BookSoldOut.class);
+        // Receive the event
+        await().atMost(5, TimeUnit.SECONDS)
+                .until(() -> !result.isEmpty());
+
 
         //Assert
-      //  assertTrue(result.isPresent());
-      //  assertEquals(ANY_BOOK, result.get().isbn13());
+        assertFalse(result.isEmpty());
+        assertEquals(ANY_BOOK, result.getFirst().isbn13());
     }
 
     @AfterAll

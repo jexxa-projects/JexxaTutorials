@@ -29,7 +29,7 @@ This application core should provide the following super simplified functionalit
 
 *   Publish `DomainEvent` `BookSoldOut` if last copy of a book is sold
 
-*   A service which gets the latest books from our reference library. For this tutorial, it is sufficient that: 
+*   A service which gets the latest books from our reference library. For this tutorial, it is enough that: 
     *   Service provides a hardcoded list
     *   Service is triggered when starting the application     
 
@@ -114,7 +114,7 @@ As soon as your domain logic and thus the number of use cases grows, it will hap
 *   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.     
 
 As you can see in the source code, all classes are annotated with the pattern language of DDD. 
-This is not required but strongly recommended. The explanation for this can be found in tutorial [pattern language](README-PatternLanguage.md). 
+This is not required but strongly recommended. The explanation for this can be found in the tutorial [pattern language](README-PatternLanguage.md). 
 
 ## 2. Publishing DomainEvents
 When sending DomainEvents, we should distinguish between two separate scenarios.
