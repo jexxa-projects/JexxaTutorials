@@ -9,7 +9,7 @@
 
   <name>BookStoreCN</name>
   <artifactId>bookstorecn</artifactId>
-  <groupId>io.jexxa.tutorials.bookstore</groupId>
+  <groupId>io.jexxa.tutorials.bookstorecn</groupId>
 
   <properties>
     <main.http.port>7504</main.http.port>
@@ -17,11 +17,11 @@
 
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <maven.exec.plugin>3.6.2</maven.exec.plugin>
-    <jacoco.it.port>6301</jacoco.it.port>
 
       <!-- command to start the application for integration tests -->
     <context.command.start>
-          -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${maven.jacoco.plugin}/org.jacoco.agent-${maven.jacoco.plugin}-runtime.jar=destfile=jacoco-it-app.exec,port=,port=${jacoco.it.port},output=tcpserver
+        --enable-native-access=ALL-UNNAMED
+        -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${maven.jacoco.plugin}/org.jacoco.agent-${maven.jacoco.plugin}-runtime.jar=destfile=jacoco-it-app.exec
           -jar -Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties ${project.build.directory}/${project.artifactId}-jar-with-dependencies.jar
     </context.command.start>
   </properties>
@@ -134,17 +134,7 @@
                             Ensures that the code coverage report for integration tests after
                             integration tests have been run.
                         -->
-                        <execution>
-                            <id>post-integration-test-dump</id>
-                            <phase>post-integration-test</phase>
-                            <goals>
-                                <goal>dump</goal>
-                            </goals>
-                            <configuration>
-                                <!-- Sets the path to the file which contains the execution data. -->
-                                <destFile>${project.build.directory}/coverage-reports/jacoco-it-application.exec</destFile>
-                            </configuration>
-                        </execution>
+
                         <execution>
                             <id>post-integration-test-report</id>
                             <phase>post-integration-test</phase>

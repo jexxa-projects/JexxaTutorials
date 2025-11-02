@@ -190,7 +190,7 @@ public final class BookStoreCN
 {
     static void main(String[] args)
     {
-        var jexxaMain = new JexxaMain(BookStore.class);
+        var jexxaMain = new JexxaMain(bookstorecn.class);
 
         jexxaMain
                 .bootstrap(ReferenceLibrary.class).and()       // Bootstrap the latest books via ReferenceLibrary
