@@ -27,7 +27,7 @@ By completing this tutorial, you will learn:
 Before you start, ensure you have:
 
 - ⏱ **~30 minutes**
-- ☕ **JDK 17 or higher**
+- ☕ **JDK 25 or higher**
 - 🧱 **Maven 3.6+**
 - 🌐 A web browser
 - 🧪 `curl` (optional, for testing endpoints)

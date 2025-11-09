@@ -11,7 +11,7 @@
 
 *   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects 
 *   60 minutes
-*   JDK 17 (or higher) installed 
+*   JDK 25 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   curl to trigger the application
 *   Optional: A postgres DB   

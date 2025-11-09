@@ -1,6 +1,6 @@
 package io.jexxa.tutorials.bookstorecn.integration;
 
-import io.jexxa.esp.digispine.EventBinding;
+import io.jexxa.esp.EventBinding;
 import io.jexxa.jexxatest.JexxaIntegrationTest;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
 import io.jexxa.tutorials.bookstorecn.BookStoreCN;
@@ -27,14 +27,14 @@ class BookstoreCNIT
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
 
     private static JexxaIntegrationTest jexxaIntegrationTest;  // Simplified IT testing with jexxa-test
-    private static RESTBinding restBinding;                    // Binding to access application under test via REST
-    private static EventBinding eventBinding;                    // Binding to access application under test via REST
+    private static RESTBinding restBinding;                    // Binding to access the application under test via REST
+    private static EventBinding eventBinding;                    // Binding to access the application under test via REST
 
     @BeforeAll
     static void initBeforeAll()
     {
         jexxaIntegrationTest = new JexxaIntegrationTest(BookStoreCN.class);
-        restBinding = jexxaIntegrationTest.getRESTBinding();
+        restBinding = jexxaIntegrationTest.getBinding(RESTBinding.class);
         eventBinding = jexxaIntegrationTest.getBinding(EventBinding.class);
     }
 

@@ -34,7 +34,7 @@ class BookstoreIT
     {
         jexxaIntegrationTest = new JexxaIntegrationTest(BookStore.class);
         jmsBinding = jexxaIntegrationTest.getBinding(JMSBinding.class);
-        restBinding = jexxaIntegrationTest.getRESTBinding();
+        restBinding = jexxaIntegrationTest.getBinding(RESTBinding.class);
     }
 
 
