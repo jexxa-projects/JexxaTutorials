@@ -27,7 +27,7 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
         // For publishing a DomainEvent, we use a fluent API in Jexxa
         eventSender
                 // In contrast to messaging, it is highly recommended to use a key, typically the aggregateID
-                .send(domainEvent)
+                .send(domainEvent.isbn13(), domainEvent)
                 .toTopic("BookStore")
                 .addHeader("Type", domainEvent.getClass().getSimpleName())
                 .asJSON();

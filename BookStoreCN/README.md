@@ -1,30 +1,41 @@
-# BookStoreCN — Using typical cloud native technology
+# BookStoreCN — Using Cloud-Native Technology with Jexxa
 
-# TODO: REWRITE 
+## What You Will Learn
 
-## What You Learn
+In this tutorial, you will learn how to extend the BookStore example using cloud-native infrastructure components:
 
-*   [How to use an S3 storage for repositories]()
-*   [How to publish DomainEvents using an event streaming platform](#1-Implementing-application-core)
-*   [How to receive (Domain)Events using an event streaming platform](#2-publishing-domainevents)      
-(#3-implement-the-infrastructure)
+*   How to use S3-compatible object storage as a persistence layer for repositories
+*   How to publish Domain Events using an event-streaming platform
+*   How to consume Domain Events using an event-streaming platform
 
-## What you need
+---
 
-*   Understand tutorial `BookStore`
-*   60 minutes
-*   JDK 25 (or higher) installed 
+## Prerequisites
+
+Before you begin, you should have:
+
+*   Completed and understood the **BookStore** tutorial
+*   ~60 minutes of time
+*   JDK 25 (or higher) installed
 *   Maven 3.6 (or higher) installed
-*   curl to trigger the application
-*   Optional: A postgres DB   
+*   `curl` to interact with the running application
+*    A running S3-Storage
 
-## How to use an S3 storage for repositories
-The properties file [jexxa-application.properties](src/main/resources/jexxa-application.properties)
+---
 
-- remove all properties starting with io.jexxa.jdbc
+## Using S3 Storage for Repositories
 
-- add the following properties, and adjust values
-```
+To switch from JDBC-based persistence to an S3-compatible object store, open the file  
+[`jexxa-application.properties`](src/main/resources/jexxa-application.properties) and update it as follows:
+
+1. **Remove all properties starting with**:
+   ```
+   io.jexxa.jdbc
+   ```
+
+2. **Add the following S3 configuration and adjust values as needed**:
+
+```properties
 # Settings for S3-Repository connection
 io.jexxa.s3.endpoint=http://s3-storage:8100
 io.jexxa.s3.bucket=bookstore-cn
@@ -33,12 +44,26 @@ io.jexxa.s3.secret-key=minioadmin
 io.jexxa.s3.path-style-access=true
 ```
 
-TODO: Brief discussion when to use S3-Storage for DDD-Agreggates and when not
+### When Should You Use S3 Storage for DDD Aggregates?
 
+S3-based storage is particularly useful when:
 
-## How to publish DomainEvents using an event streaming platform
+| ✅ Good Fit | ❌ Not Recommended |
+|-------------|---------------------|
+| Aggregates are relatively small but numerous | Aggregates need complex or cross-entity transactions |
+| You need cheap, highly durable storage | Strong consistency guarantees are required |
+| Your service runs in a cloud environment and persistence must scale horizontally | You need high-performance read-write operations with low latency |
+| Event-sourced architecture or immutable document storage is preferred | You rely on relational queries or multi-aggregate joins |
 
-This is completely analog as sending a message. Instead of requesting a `MessageSender` sender, you have to request an `EventSender` as you can see in the following example. 
+**Rule of thumb:**  
+Use S3 storage when your aggregates can be represented as independent documents that don’t require transactional consistency across entities.
+
+---
+
+## Publishing Domain Events Using an Event-Streaming Platform
+
+Publishing Domain Events works similarly to sending messages.  
+The only difference: instead of requesting a `MessageSender`, you request an `EventSender`.
 
 ```java
 @DrivenAdapter
@@ -47,17 +72,17 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
 
     public IntegrationEventSenderImpl(Properties properties)
     {
-        // Request an EventSender and configure it to given properties
+        // Request an EventSender and configure it using the application's properties
         eventSender = createEventSender(IntegrationEventSender.class, properties);
     }
 
     @Override
     public void publish(BookSoldOut domainEvent)
     {
-        // For publishing a DomainEvent, we use a fluent API in Jexxa
+        // Publishing a DomainEvent in Jexxa is done via a fluent API
         eventSender
-                // In contrast to messaging, it is highly recommended to use a key, typically the aggregateID
                 .send(domainEvent)
+                // For events, it is strongly recommended to use a key (usually the aggregateId)
                 .toTopic("BookStore")
                 .addHeader("Type", domainEvent.getClass().getSimpleName())
                 .asJSON();
@@ -65,111 +90,120 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
 }
 ```
 
+---
 
-## How to receive (Domain)Events using an event streaming platform
+## Receiving Domain Events Using an Event-Streaming Platform
 
-Receiving an Event is also as easy as receiving a message.
+Consuming Domain Events is equally straightforward.
 
-First, you implement the Listener: 
+### Step 1: Implement an Event Listener
 
 ```java
 @DrivingAdapter
 public class BookSoldOutListener extends TypedEventListener<ISBN13, BookSoldOut> {
     private final BookStoreService bookStoreService;
+
     public BookSoldOutListener(BookStoreService bookStoreService)
     {
         super(ISBN13.class, BookSoldOut.class);
         this.bookStoreService = bookStoreService;
     }
+
     @Override
     protected void onEvent(BookSoldOut value) {
-        SLF4jLogger.getLogger(BookSoldOutListener.class).warn("Book with ISBN {} is sold out", value.isbn13());
+        SLF4jLogger.getLogger(BookSoldOutListener.class)
+                .warn("Book with ISBN {} is sold out", value.isbn13());
     }
 
     @Override
     public String topic() {
         return "BookStore";
     }
-
 }
-
 ```
 
-In main, then you just add : 
+### Step 2: Register the Listener in the Application
 
 ```java
-        jexxaMain
-                 // ... 
-                .bind(KafkaAdapter.class).to(BookSoldOutListener.class)
-                .run(); // Finally, run the application
-    }
-
+jexxaMain
+        // ...
+        .bind(KafkaAdapter.class).to(BookSoldOutListener.class)
+        .run(); // Start the application
 ```
-## Example
-The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a local s3.endpoint and kafka locally. So we have to enter the following command 
 
-```console                                                          
+---
+
+## Running the Example
+
+The file  
+[`jexxa-test.properties`](src/test/resources/jexxa-test.properties)  
+is preconfigured to use:
+
+* A local S3 endpoint (e.g., MinIO)
+* A local Kafka instance
+
+Run the following command to start the application:
+
+```console
 mvn clean install
 java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
 ```
-In contrast to the above output, Jexxa will state that you use JDBC persistence strategy now:
+
+On startup, you should now see that Jexxa uses the **S3** persistence strategy:
+
 ```console
-[2025-11-09T13:00Z] INFO io.jexxa.common.facade.logger.ApplicationBanner - Context Version                : VersionInfo[version=2.0.50-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/bookstorecn, projectName=BookStoreCN, buildTimestamp=2025-11-03 06:42]
-[2025-11-09T13:00Z] INFO io.jexxa.common.facade.logger.ApplicationBanner - Used Driving Adapter           : [KafkaAdapter, RESTfulRPCAdapter]
-[2025-11-09T13:00Z] INFO io.jexxa.common.facade.logger.ApplicationBanner - Used Properties Files          : [/jexxa-application.properties, ./src/test/resources/jexxa-test.properties]
-[2025-11-09T13:00Z] INFO io.jexxa.common.facade.logger.ApplicationBanner - Used Repository Strategie      : [S3KeyValueRepository]
-[2025-11-09T13:00Z] INFO io.jexxa.common.facade.logger.ApplicationBanner - Used Message Sender Strategie  : [KafkaSender]
+[2025-11-09T13:00Z] INFO io.jexxa.common.facade.logger.ApplicationBanner - Used Repository Strategy      : [S3KeyValueRepository]
+[2025-11-09T13:00Z] INFO io.jexxa.common.facade.logger.ApplicationBanner - Used Message Sender Strategy  : [KafkaSender]
 ```
 
-### Execute some commands using curl 
+---
 
-#### Get a list of all books
+## Using the API via `curl`
 
-Command: 
-```Console
-curl -X GET  http://localhost:7506/BookStoreService/getBooks
+### List all books
+
+```console
+curl -X GET http://localhost:7506/BookStoreService/getBooks
 ```
 
-Response: 
-```Console
+**Response:**
+```json
 [
- {"isbn13":"978-1-60309-322-4"},{"isbn13":"978-1-891830-85-3"},
- {"isbn13":"978-1-60309-047-6"},{"isbn13":"978-1-60309-025-4"},
- {"isbn13":"978-1-60309-016-2"},{"isbn13":"978-1-60309-265-4"}
+ {"isbn13":"978-1-60309-322-4"},
+ {"isbn13":"978-1-891830-85-3"},
+ {"isbn13":"978-1-60309-047-6"},
+ {"isbn13":"978-1-60309-025-4"},
+ {"isbn13":"978-1-60309-016-2"},
+ {"isbn13":"978-1-60309-265-4"}
 ]
 ```
 
-#### Query available books
-Command:
-```Console
-curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
-     http://localhost:7506/BookStoreService/inStock       
+### Check if a book is in stock
+
+```console
+curl -X POST -H "Content-Type: application/json"      -d '{"isbn13":"978-1-891830-85-3"}'      http://localhost:7506/BookStoreService/inStock
 ```
 
-Response: 
-```Console
+**Response:**
+```json
 false
 ```
 
-#### Add some books
-Command:
-```Console
-curl -X POST -H "Content-Type: application/json" -d "[{isbn13: "978-1-891830-85-3"}, 5]" \
-     http://localhost:7506/BookStoreService/addToStock
+### Add books to stock
+
+```console
+curl -X POST -H "Content-Type: application/json"      -d '[{"isbn13":"978-1-891830-85-3"}, 5]'      http://localhost:7506/BookStoreService/addToStock
 ```
 
-Response: No output  
-```Console
+(no response body)
+
+### Check stock again
+
+```console
+curl -X POST -H "Content-Type: application/json"      -d '{"isbn13":"978-1-891830-85-3"}'      http://localhost:7506/BookStoreService/inStock
 ```
 
-#### Ask again if a specific book is in stock
-Command:
-```Console
-curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"}' \
-     http://localhost:7506/BookStoreService/inStock       
-```
-
-Response: 
-```Console
+**Response:**
+```json
 true
 ```
