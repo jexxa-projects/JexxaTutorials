@@ -11,7 +11,7 @@
 *   Understand tutorial [`BookStore - Using a Repository`](README.md)
 *   Writing tests with JUnit
 *   45 minutes
-*   JDK 17 (or higher) installed
+*   JDK 25 (or higher) installed
 *   Maven 3.6 (or higher) installed
 
 ## General Note

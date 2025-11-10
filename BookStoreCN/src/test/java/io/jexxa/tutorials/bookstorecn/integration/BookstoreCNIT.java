@@ -1,40 +1,41 @@
-package io.jexxa.tutorials.bookstore.integration;
+package io.jexxa.tutorials.bookstorecn.integration;
 
-import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
+import io.jexxa.esp.EventBinding;
 import io.jexxa.jexxatest.JexxaIntegrationTest;
-import io.jexxa.jexxatest.integrationtest.messaging.JMSBinding;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
-import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
-import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
-import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
+import io.jexxa.tutorials.bookstorecn.BookStoreCN;
+import io.jexxa.tutorials.bookstorecn.applicationservice.BookStoreService;
+import io.jexxa.tutorials.bookstorecn.domain.book.BookSoldOut;
+import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
+import static io.jexxa.tutorials.bookstorecn.domain.book.ISBN13.createISBN;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class BookstoreIT
+class BookstoreCNIT
 {
     private static final String ADD_TO_STOCK = "addToStock";
     private static final String AMOUNT_IN_STOCK = "amountInStock";
     private static final String SELL = "sell";
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
 
-
     private static JexxaIntegrationTest jexxaIntegrationTest;  // Simplified IT testing with jexxa-test
-    private static RESTBinding restBinding;                    // Binding to access an application under test via REST
-    private static JMSBinding jmsBinding;                      // Binding to access application under test via JMS
+    private static RESTBinding restBinding;                    // Binding to access the application under test via REST
+    private static EventBinding eventBinding;                    // Binding to access the application under test via REST
 
     @BeforeAll
     static void initBeforeAll()
     {
-        jexxaIntegrationTest = new JexxaIntegrationTest(BookStore.class);
-        jmsBinding = jexxaIntegrationTest.getBinding(JMSBinding.class);
+        jexxaIntegrationTest = new JexxaIntegrationTest(BookStoreCN.class);
         restBinding = jexxaIntegrationTest.getBinding(RESTBinding.class);
+        eventBinding = jexxaIntegrationTest.getBinding(EventBinding.class);
     }
 
 
@@ -48,7 +49,7 @@ class BookstoreIT
         var result = boundedContext.contextName();
 
         //Assert
-        assertEquals(BookStore.class.getSimpleName(), result);
+        assertEquals(BookStoreCN.class.getSimpleName(), result);
     }
 
     @Test
@@ -72,8 +73,10 @@ class BookstoreIT
     void testSellLastBook()
     {
         //Arrange
+        var result = new ArrayList<BookSoldOut>();
+
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
-        var messageListener = jmsBinding.getListener("BookStore", JMSConfiguration.MessagingType.TOPIC);
+        eventBinding.getListener("BookStore", result::add, ISBN13.class, BookSoldOut.class);
 
         bookStoreService.postRequest(Void.class, ADD_TO_STOCK, ANY_BOOK, 5);
         var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
@@ -84,13 +87,14 @@ class BookstoreIT
             bookStoreService.postRequest(Void.class, SELL, ANY_BOOK);
         }
 
-        // Receive the jms message
-        var result = messageListener
-                .awaitMessage(5, TimeUnit.SECONDS)
-                .pop(BookSoldOut.class);
+        // Receive the event
+        await().atMost(15, TimeUnit.SECONDS)
+                .until(() -> !result.isEmpty());
+
 
         //Assert
-        assertEquals(ANY_BOOK, result.isbn13());
+        assertFalse(result.isEmpty());
+        assertEquals(ANY_BOOK, result.getFirst().isbn13());
     }
 
     @AfterAll
