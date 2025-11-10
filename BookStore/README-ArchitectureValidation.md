@@ -8,7 +8,7 @@
 
 *   Understand tutorial [`BookStore - Pattern Language`](README-PatternLanguage.md)
 *   20 minutes
-*   JDK 17 (or higher) installed
+*   JDK 25 (or higher) installed
 *   Maven 3.6 (or higher) installed
 
 ## Validate the Architecture

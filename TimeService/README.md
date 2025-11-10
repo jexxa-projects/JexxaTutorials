@@ -11,7 +11,7 @@
 
 *   Understand tutorial `HelloJexxa` because we explain only new aspects 
 *   60 minutes
-*   JDK 17 (or higher) installed 
+*   JDK 25 (or higher) installed 
 *   Maven 3.6 (or higher) installed
 *   A running ActiveMQ instance (at least if you start the application with infrastructure)
 *   curl to trigger the application  

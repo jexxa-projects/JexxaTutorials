@@ -9,7 +9,7 @@
 
 *   Understand tutorial [`BookStore - Using a Repository`](README.md) because we explain only new aspects 
 *   30 minutes
-*   JDK 17 (or higher) installed
+*   JDK 25 (or higher) installed
 *   [Swagger UI](https://swagger.io/tools/swagger-ui/)    
 *   Maven 3.6 (or higher) installed
 *   A postgres DB (if you start the application with running infrastructure)  
