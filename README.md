@@ -53,6 +53,10 @@ See documentation: [BookStore — Writing Tests](BookStore/README-JexxaTest.md)
 ## BookStore — OpenAPI Support
 See documentation: [BookStore — With OpenAPI Support](BookStore/README-OPENAPI.md)
 
+## BookStoreCN — Using Cloud-Native Technology with Jexxa
+See documentation: [BookStoreCN — Using Cloud-Native Technology with Jexxa](BookStoreCN/README.md)
+
+
 ## ContractManagement — Using an ObjectStore
 See documentation: [ContractManagement](ContractManagement/README.md)
 
