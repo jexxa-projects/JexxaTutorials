@@ -23,17 +23,90 @@ The properties file [jexxa-application.properties](src/main/resources/jexxa-appl
 
 - remove all properties starting with io.jexxa.jdbc
 
-- add the following properties 
+- add the following properties, and adjust values
+```
 # Settings for S3-Repository connection
 io.jexxa.s3.endpoint=http://s3-storage:8100
 io.jexxa.s3.bucket=bookstore-cn
 io.jexxa.s3.access-key=minioadmin
 io.jexxa.s3.secret-key=minioadmin
 io.jexxa.s3.path-style-access=true
+```
+
+TODO: Brief discussion when to use S3-Storage for DDD-Agreggates and when not
 
 
-The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a local s3.endpoint 
-. So we have to enter the following command 
+## How to publish DomainEvents using an event streaming platform
+
+This is completely analog as sending a message. Instead of requesting a `MessageSender` sender, you have to request an `EventSender` as you can see in the following example. 
+
+```java
+@DrivenAdapter
+public class IntegrationEventSenderImpl implements IntegrationEventSender {
+    private final EventSender eventSender;
+
+    public IntegrationEventSenderImpl(Properties properties)
+    {
+        // Request an EventSender and configure it to given properties
+        eventSender = createEventSender(IntegrationEventSender.class, properties);
+    }
+
+    @Override
+    public void publish(BookSoldOut domainEvent)
+    {
+        // For publishing a DomainEvent, we use a fluent API in Jexxa
+        eventSender
+                // In contrast to messaging, it is highly recommended to use a key, typically the aggregateID
+                .send(domainEvent)
+                .toTopic("BookStore")
+                .addHeader("Type", domainEvent.getClass().getSimpleName())
+                .asJSON();
+    }
+}
+```
+
+
+## How to receive (Domain)Events using an event streaming platform
+
+Receiving an Event is also as easy as receiving a message.
+
+First, you implement the Listener: 
+
+```java
+@DrivingAdapter
+public class BookSoldOutListener extends TypedEventListener<ISBN13, BookSoldOut> {
+    private final BookStoreService bookStoreService;
+    public BookSoldOutListener(BookStoreService bookStoreService)
+    {
+        super(ISBN13.class, BookSoldOut.class);
+        this.bookStoreService = bookStoreService;
+    }
+    @Override
+    protected void onEvent(BookSoldOut value) {
+        SLF4jLogger.getLogger(BookSoldOutListener.class).warn("Book with ISBN {} is sold out", value.isbn13());
+    }
+
+    @Override
+    public String topic() {
+        return "BookStore";
+    }
+
+}
+
+```
+
+In main, then you just add : 
+
+```java
+        jexxaMain
+                 // ... 
+                .bind(KafkaAdapter.class).to(BookSoldOutListener.class)
+                .run(); // Finally, run the application
+    }
+
+```
+## Example
+The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a local s3.endpoint and kafka locally. So we have to enter the following command 
 
 ```console                                                          
 mvn clean install

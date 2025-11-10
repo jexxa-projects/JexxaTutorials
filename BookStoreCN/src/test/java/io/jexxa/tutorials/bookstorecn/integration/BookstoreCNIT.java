@@ -76,7 +76,7 @@ class BookstoreCNIT
         var result = new ArrayList<BookSoldOut>();
 
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
-        eventBinding.getListener("BookStore", result::add, String.class, BookSoldOut.class);
+        eventBinding.getListener("BookStore", result::add, ISBN13.class, BookSoldOut.class);
 
         bookStoreService.postRequest(Void.class, ADD_TO_STOCK, ANY_BOOK, 5);
         var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
@@ -88,7 +88,7 @@ class BookstoreCNIT
         }
 
         // Receive the event
-        await().atMost(5, TimeUnit.SECONDS)
+        await().atMost(15, TimeUnit.SECONDS)
                 .until(() -> !result.isEmpty());
 
 

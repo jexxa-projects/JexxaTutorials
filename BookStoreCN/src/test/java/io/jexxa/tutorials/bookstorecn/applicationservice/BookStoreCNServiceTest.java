@@ -1,6 +1,6 @@
 package io.jexxa.tutorials.bookstorecn.applicationservice;
 
-import io.jexxa.esp.digispine.DigiSpine;
+import io.jexxa.esp.EventStreamingPlatform;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstorecn.BookStoreCN;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookNotInStockException;
@@ -29,7 +29,7 @@ class BookStoreCNServiceTest
 
     private BookStoreService objectUnderTest;       // Object we want to test
     private BookRepository   bookRepository;        // Repository to validate results in the tests
-    private static final DigiSpine digispine = new DigiSpine();
+    private static final EventStreamingPlatform digispine = new EventStreamingPlatform();
 
     @BeforeAll
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -62,7 +62,7 @@ class BookStoreCNServiceTest
 
         // Request the objects needed for our tests
         objectUnderTest       = jexxaTest.getInstanceOfPort(BookStoreService.class);   // 1. We need the object we want to test
-        bookRepository        = jexxaTest.getRepository(BookRepository.class);         // 3. Repository managing all books
+        bookRepository        = jexxaTest.getRepository(BookRepository.class);         // 2. Repository managing all books
     }
 
     @Test
