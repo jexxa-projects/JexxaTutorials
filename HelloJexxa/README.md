@@ -50,7 +50,7 @@ Add the following dependencies in your `pom.xml`:
         <dependency>
             <groupId>io.jexxa</groupId>
             <artifactId>jexxa-web</artifactId>
-            <version>8.1.11</version>
+            <version>9.0.0</version>
         </dependency>
 
         <!-- Log output to the console -->
