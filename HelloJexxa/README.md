@@ -130,7 +130,7 @@ mvn clean install
 Start the application from your IDE or via:
 
 ```bash
-java -jar target/*.jar
+java -jar target//hellojexxa-jar-with-dependencies.jar
 ```
 
 Expected console output:
@@ -210,7 +210,7 @@ Create `src/main/resources/public/index.html`:
     const fetchContextName = () => {
         fetch(`${BASE_URL}/BoundedContext/contextName`)
             .then(response => {
-                if (!response.ok) throw Error(response.statusText);
+                if (!response.ok) throw new Error(response.statusText);
                 return response.json();
             })
             .then(data => appendToDOM(data))
