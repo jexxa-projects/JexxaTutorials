@@ -49,7 +49,7 @@
         <jexxa.esp.version>0.7.1</jexxa.esp.version>
         <addend.version>2.0.3</addend.version>
         <activemq.artemis.client.version>2.44.0</activemq.artemis.client.version>
-        <postgres.version>42.7.8</postgres.version>
+        <postgres.version>42.7.9</postgres.version>
         <slf4j.simple.version>2.0.17</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
 
