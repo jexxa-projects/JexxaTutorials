@@ -146,7 +146,7 @@ Run the following command to start the application:
 
 ```console
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstore-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/bookstorecn-jar-with-dependencies.jar
 ```
 
 On startup, you should now see that Jexxa uses the **S3** persistence strategy:
