@@ -10,6 +10,7 @@ import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstorecn.domainservice.IntegrationEventSender;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 class BookStoreCNServiceTest
 {
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );

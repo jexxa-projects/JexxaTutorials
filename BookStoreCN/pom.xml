@@ -33,6 +33,13 @@
             <artifactId>esp-adapters-core</artifactId>
             <version>${jexxa.esp.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.jexxa.esp</groupId>
             <artifactId>esp-adapters-test</artifactId>
@@ -40,7 +47,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven</url>
+        </repository>
+    </repositories>
     <profiles>
     <profile>
         <id>integrationTests</id>
