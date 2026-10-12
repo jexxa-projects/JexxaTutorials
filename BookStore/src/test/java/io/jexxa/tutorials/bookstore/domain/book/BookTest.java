@@ -28,17 +28,19 @@ class BookTest {
     }
 
     @Test
-    void sell() {
+    void sell() throws BookNotInStockException {
         // Arrange
         var objectUnderTest = newBook(ANY_BOOK);
         var amountInStock = 5;
         objectUnderTest.addToStock(amountInStock);
 
         // Act / Assert
-        assertDoesNotThrow(objectUnderTest::sell);
+        var result = objectUnderTest.sell();
+
 
         // Assert
         assertEquals(amountInStock - 1, objectUnderTest.amountInStock());
+        assertInstanceOf(BookEvent.BookSold.class, result);
         assertTrue(objectUnderTest.inStock());
     }
 
