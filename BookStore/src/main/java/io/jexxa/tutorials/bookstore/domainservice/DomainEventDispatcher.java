@@ -9,11 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @DomainService
-public final class DomainEventPublisher {
+public final class DomainEventDispatcher {
     private final Map<Class<?>, Set<Consumer<?>>> subscribers = new ConcurrentHashMap<>();
-    private static final DomainEventPublisher DOMAIN_EVENT_PUBLISHER = new DomainEventPublisher();
+    private static final DomainEventDispatcher DOMAIN_EVENT_PUBLISHER = new DomainEventDispatcher();
 
-    public static DomainEventPublisher instance()
+    public static DomainEventDispatcher instance()
     {
         return DOMAIN_EVENT_PUBLISHER;
     }
@@ -41,7 +41,7 @@ public final class DomainEventPublisher {
         subscribe(Object.class, subscriber);
     }
 
-    private DomainEventPublisher()
+    private DomainEventDispatcher()
     {
         //Private constructor
     }

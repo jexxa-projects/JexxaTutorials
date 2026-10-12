@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.jexxatest.DomainEventRecorder;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.domainservice.DomainEventPublisher;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstore.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
-import static io.jexxa.tutorials.bookstore.domainservice.DomainEventPublisher.subscribe;
+import static io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher.subscribe;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,7 +51,7 @@ class BookStoreServiceTest
 
         // Request the objects needed for our tests
         objectUnderTest       = jexxaTest.getInstanceOfPort(BookStoreService.class);   // 1. We need the object we want to test
-        domainEventRecorder   = jexxaTest.getDomainEventRecorder(BookEvent.class, DomainEventPublisher::subscribe); // 2. A recorder for DomainEvents published via DomainEventSender
+        domainEventRecorder   = jexxaTest.getDomainEventRecorder(BookEvent.class, DomainEventDispatcher::subscribe); // 2. A recorder for DomainEvents published via DomainEventSender
         bookRepository        = jexxaTest.getRepository(BookRepository.class);         // 3. Repository managing all books
     }
 

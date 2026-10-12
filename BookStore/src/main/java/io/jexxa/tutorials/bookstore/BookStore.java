@@ -7,7 +7,7 @@ import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
 import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
 import io.jexxa.tutorials.bookstore.domainservice.ReferenceLibrary;
 
-import static io.jexxa.tutorials.bookstore.domainservice.DomainEventPublisher.subscribe;
+import static io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher.subscribe;
 
 public final class BookStore
 {

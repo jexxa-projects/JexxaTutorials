@@ -51,7 +51,7 @@ First, we map the functionality of the application to DDD patterns
      *   `BookNotInStockException`: Is a `BusinessException` in case we try to sell a book that is currently not available
 
 *   `DomainService`:
-     *   `DomainEventPublisher`: Is a `DomainService` that registers for all `DomainEvents` and forwards them to an external message bus.
+     * `DomainEventDispatcher`: Is a `DomainService` that registers for all `DomainEvents` and forwards them to an external message bus.
      *   `ReferenceLibrary`: Is a `DomainService` that provides primary data for our bookstore and returns the latest books. 
      *   `IntegrationEventSender`: Is an `InfrastructureService` that sends `DomainEvents` to a message bus.
 
