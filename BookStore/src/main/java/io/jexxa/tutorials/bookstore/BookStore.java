@@ -7,11 +7,11 @@ import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
 import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
 import io.jexxa.tutorials.bookstore.domainservice.ReferenceLibrary;
 
-import static io.jexxa.tutorials.bookstore.domain.DomainEventPublisher.subscribe;
+import static io.jexxa.tutorials.bookstore.domainservice.DomainEventPublisher.subscribe;
 
 public final class BookStore
 {
-    public static void main(String[] args)
+    public static void main()
     {
         var jexxaMain = new JexxaMain(BookStore.class);
 

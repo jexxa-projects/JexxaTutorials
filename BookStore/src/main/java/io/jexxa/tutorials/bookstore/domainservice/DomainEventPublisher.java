@@ -1,6 +1,6 @@
-package io.jexxa.tutorials.bookstore.domain;
+package io.jexxa.tutorials.bookstore.domainservice;
 
-import io.jexxa.addend.applicationcore.Observer;
+import io.jexxa.addend.applicationcore.DomainService;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-@Observer
+@DomainService
 public final class DomainEventPublisher {
     private final Map<Class<?>, Set<Consumer<?>>> subscribers = new ConcurrentHashMap<>();
     private static final DomainEventPublisher DOMAIN_EVENT_PUBLISHER = new DomainEventPublisher();
