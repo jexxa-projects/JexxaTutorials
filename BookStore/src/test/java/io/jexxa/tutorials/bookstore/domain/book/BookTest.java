@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
