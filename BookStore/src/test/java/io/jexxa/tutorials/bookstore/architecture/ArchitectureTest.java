@@ -1,7 +1,6 @@
 package io.jexxa.tutorials.bookstore.architecture;
 
 import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.domain.book.BookEvent;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jexxatest.architecture.ArchitectureRules.aggregateRules;
@@ -35,9 +34,7 @@ class ArchitectureTest {
     @Test
     void validatePatternLanguage()
     {
-        var patternLanguage = patternLanguage(BookStore.class);
-        patternLanguage.ignoreClass(BookEvent.class);
-        patternLanguage.validate();
+        patternLanguage(BookStore.class).validate();
     }
 
     @Test

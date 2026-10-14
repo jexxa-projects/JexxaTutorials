@@ -10,12 +10,12 @@ public sealed interface BookEvent {
     UUID eventId();
     ISBN13 isbn13();
 
-    // Eingebettete Records sind AUTOMATISCH public und static!
     @DomainEvent
-    record BookSold(UUID eventId, ISBN13 isbn13) implements BookEvent {}
+    record BookSold(UUID eventId, ISBN13 isbn13)    implements BookEvent {}
     @DomainEvent
     record BookSoldOut(UUID eventId, ISBN13 isbn13) implements BookEvent {}
-    static BookSoldOut bookSoldOut(UUID eventId, ISBN13 isbn13) {return new BookSoldOut(eventId, isbn13); }
-    static BookSold bookSold(UUID eventId, ISBN13 isbn13) {return new BookSold(eventId, isbn13); }
+
+    static BookSoldOut bookSoldOut(UUID eventId, ISBN13 isbn13) { return new BookSoldOut(eventId, isbn13); }
+    static BookSold bookSold(UUID eventId, ISBN13 isbn13)       { return new BookSold(eventId, isbn13); }
 }
 
