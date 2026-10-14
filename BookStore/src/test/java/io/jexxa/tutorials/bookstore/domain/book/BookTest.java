@@ -1,14 +1,11 @@
 package io.jexxa.tutorials.bookstore.domain.book;
 
-import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.domain.DomainEventPublisher;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,17 +27,19 @@ class BookTest {
     }
 
     @Test
-    void sell() {
+    void sell() throws BookNotInStockException {
         // Arrange
         var objectUnderTest = newBook(ANY_BOOK);
         var amountInStock = 5;
         objectUnderTest.addToStock(amountInStock);
 
         // Act / Assert
-        assertDoesNotThrow(objectUnderTest::sell);
+        var result = objectUnderTest.sell();
+
 
         // Assert
         assertEquals(amountInStock - 1, objectUnderTest.amountInStock());
+        assertInstanceOf(BookEvent.BookSold.class, result);
         assertTrue(objectUnderTest.inStock());
     }
 
@@ -54,21 +53,19 @@ class BookTest {
     }
 
     @Test
-    void sellLastBook() {
+    void sellLastBook() throws BookNotInStockException {
         // Arrange
-        var jexxaTest = getJexxaTest(BookStore.class);
         var amountInStock = 1;
-        var domainEventRecorder = jexxaTest.getDomainEventRecorder(BookSoldOut.class, DomainEventPublisher::subscribe);
-
         var objectUnderTest = newBook(ANY_BOOK);
         objectUnderTest.addToStock(amountInStock);
 
         // Act / Assert
-        assertDoesNotThrow(objectUnderTest::sell);
+        var result = objectUnderTest.sell();
 
         // Assert
+        var soldOutEvent = assertInstanceOf(BookEvent.BookSoldOut.class, result);
+        assertEquals(ANY_BOOK, soldOutEvent.isbn13());
         assertEquals(0, objectUnderTest.amountInStock() );
-        assertEquals(1, domainEventRecorder.get().size() );
     }
 
 

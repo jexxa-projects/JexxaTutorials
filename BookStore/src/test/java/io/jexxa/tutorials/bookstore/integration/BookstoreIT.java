@@ -6,16 +6,20 @@ import io.jexxa.jexxatest.integrationtest.messaging.JMSBinding;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
 import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
-import io.jexxa.tutorials.bookstore.domain.book.BookSoldOut;
+import io.jexxa.tutorials.bookstore.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.stream.IntStream;
 
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class BookstoreIT
 {
@@ -79,18 +83,30 @@ class BookstoreIT
         var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );
 
         //Act - Sell all books in stock
-        for (int i = 0; i < inStock; ++i)
+        for (int i = 0; i < inStock ; ++i)
         {
             bookStoreService.postRequest(Void.class, SELL, ANY_BOOK);
         }
 
-        // Receive the jms message
-        var result = messageListener
-                .awaitMessage(5, TimeUnit.SECONDS)
-                .pop(BookSoldOut.class);
+        // Await 5 messages from JMS
+        await()
+                .atMost(Duration.ofSeconds(5))
+                .pollInterval(Duration.ofMillis(50)) // Prüft alle 50ms den Zustand
+                .until(() -> messageListener.getAll().size() == inStock);
 
-        //Assert
-        assertEquals(ANY_BOOK, result.isbn13());
+        //Validate first 4 of type BookSold.class
+        IntStream.range(0, inStock - 1)
+                .mapToObj(_ -> messageListener.pop(BookEvent.BookSold.class))
+                .forEach(event -> assertEquals(ANY_BOOK, event.isbn13()));
+
+        //Validate first 4 of type BookSoldOut.class
+        var finalEvent = messageListener.pop(BookEvent.BookSoldOut.class);
+
+        // Nutzt assertAll für ein schönes, gruppiertes Fehlerprotokoll
+        assertAll("Finale Event validation",
+                () -> assertNotNull(finalEvent),
+                () -> assertEquals(ANY_BOOK, finalEvent.isbn13())
+        );
     }
 
     @AfterAll

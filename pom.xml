@@ -46,7 +46,7 @@
 
         <!-- version of dependencies -->
         <jexxa.release.version>9.1.0</jexxa.release.version>
-        <jexxa.esp.version>1.0.3</jexxa.esp.version>
+        <jexxa.esp.version>2.0.7</jexxa.esp.version>
         <addend.version>2.1.0</addend.version>
         <activemq.artemis.client.version>2.57.0</activemq.artemis.client.version>
         <postgres.version>42.7.14</postgres.version>
@@ -116,7 +116,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.activemq</groupId>
+            <groupId>org.apache.artemis</groupId>
             <artifactId>artemis-jms-client</artifactId>
             <version>${activemq.artemis.client.version}</version>
         </dependency>
