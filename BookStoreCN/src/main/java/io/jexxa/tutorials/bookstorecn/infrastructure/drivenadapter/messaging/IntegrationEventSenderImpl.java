@@ -2,7 +2,7 @@ package io.jexxa.tutorials.bookstorecn.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.esp.drivenadapter.EventSender;
-import io.jexxa.tutorials.bookstorecn.domain.book.BookSoldOut;
+import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstorecn.domainservice.IntegrationEventSender;
 
 import java.util.Properties;
@@ -22,7 +22,7 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
     }
 
     @Override
-    public void publish(BookSoldOut domainEvent)
+    public void publish(BookEvent domainEvent)
     {
         // For publishing a DomainEvent, we use a fluent API in Jexxa
         eventSender

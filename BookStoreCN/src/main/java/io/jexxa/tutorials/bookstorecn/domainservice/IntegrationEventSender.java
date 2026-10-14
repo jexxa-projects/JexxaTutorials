@@ -1,10 +1,10 @@
 package io.jexxa.tutorials.bookstorecn.domainservice;
 
 import io.jexxa.addend.applicationcore.InfrastructureService;
-import io.jexxa.tutorials.bookstorecn.domain.book.BookSoldOut;
+import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 
 @InfrastructureService
 public interface IntegrationEventSender
 {
-    void publish(BookSoldOut domainEvent);
+    void publish(BookEvent domainEvent);
 }

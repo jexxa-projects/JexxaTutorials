@@ -5,7 +5,7 @@ import io.jexxa.jexxatest.JexxaIntegrationTest;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
 import io.jexxa.tutorials.bookstorecn.BookStoreCN;
 import io.jexxa.tutorials.bookstorecn.applicationservice.BookStoreService;
-import io.jexxa.tutorials.bookstorecn.domain.book.BookSoldOut;
+import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -73,10 +73,10 @@ class BookstoreCNIT
     void testSellLastBook()
     {
         //Arrange
-        var result = new ArrayList<BookSoldOut>();
+        var result = new ArrayList<BookEvent.BookSoldOut>();
 
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
-        eventBinding.getListener("BookStore", result::add, ISBN13.class, BookSoldOut.class);
+        eventBinding.getListener("BookStore", result::add, ISBN13.class, BookEvent.BookSoldOut.class);
 
         bookStoreService.postRequest(Void.class, ADD_TO_STOCK, ANY_BOOK, 5);
         var inStock = bookStoreService.postRequest(Integer.class, AMOUNT_IN_STOCK, ANY_BOOK );

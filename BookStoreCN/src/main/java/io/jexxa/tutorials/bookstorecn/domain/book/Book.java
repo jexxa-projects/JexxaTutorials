@@ -6,8 +6,8 @@ import io.jexxa.addend.applicationcore.AggregateID;
 
 import java.util.UUID;
 
-import static io.jexxa.tutorials.bookstorecn.domain.book.BookSoldOut.bookSoldOut;
-import static io.jexxa.tutorials.bookstorecn.domain.DomainEventPublisher.publish;
+import static io.jexxa.tutorials.bookstorecn.domain.book.BookEvent.bookSold;
+import static io.jexxa.tutorials.bookstorecn.domain.book.BookEvent.bookSoldOut;
 
 @Aggregate
 public final class Book
@@ -41,7 +41,7 @@ public final class Book
         amountInStock += amount;
     }
 
-    public void sell() throws BookNotInStockException
+    public BookEvent sell() throws BookNotInStockException
     {
         if ( ! inStock() )
         {
@@ -50,10 +50,12 @@ public final class Book
 
         amountInStock -= 1;
 
-        if ( ! inStock() )
-        {
-            publish(bookSoldOut( UUID.randomUUID(), isbn13));
+        if ( amountInStock <= 0 ) {
+            return bookSoldOut(UUID.randomUUID(), isbn13);
+        } else  {
+            return bookSold(UUID.randomUUID(), isbn13);
         }
+
     }
 
     @AggregateFactory(Book.class)

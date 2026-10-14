@@ -5,6 +5,7 @@ import io.jexxa.tutorials.bookstorecn.domain.book.Book;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
+import io.jexxa.tutorials.bookstorecn.domainservice.DomainEventDispatcher;
 
 import java.util.List;
 
@@ -63,9 +64,10 @@ public class BookStoreService
                 .search(isbn13)
                 .orElseThrow(BookNotInStockException::new);
 
-        book.sell();
+        var bookEvent = book.sell();
 
         bookRepository.update(book);
+        DomainEventDispatcher.publish(bookEvent);
     }
 
     public List<ISBN13> getBooks()

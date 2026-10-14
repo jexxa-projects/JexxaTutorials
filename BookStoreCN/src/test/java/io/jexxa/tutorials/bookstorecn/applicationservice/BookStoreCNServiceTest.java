@@ -3,9 +3,9 @@ package io.jexxa.tutorials.bookstorecn.applicationservice;
 import io.jexxa.esp.EventStreamingPlatform;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstorecn.BookStoreCN;
+import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookRepository;
-import io.jexxa.tutorials.bookstorecn.domain.book.BookSoldOut;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 import io.jexxa.tutorials.bookstorecn.domainservice.IntegrationEventSender;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
-import static io.jexxa.tutorials.bookstorecn.domain.DomainEventPublisher.subscribe;
+import static io.jexxa.tutorials.bookstorecn.domainservice.DomainEventDispatcher.subscribe;
 import static io.jexxa.tutorials.bookstorecn.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +45,7 @@ class BookStoreCNServiceTest
 
         getJexxaTest(BookStoreCN.class)
                 .getJexxaMain()
-                .bootstrap(IntegrationEventSender.class).with(sender -> subscribe(BookSoldOut.class, sender::publish));
+                .bootstrap(IntegrationEventSender.class).with(sender -> subscribe(BookEvent.BookSoldOut.class, sender::publish));
     }
 
     @BeforeEach
@@ -75,7 +75,7 @@ class BookStoreCNServiceTest
 
         //Act
         objectUnderTest.addToStock(ANY_BOOK, amount);
-        var result = digispine.latestMessageFromJSON("BookStore", Duration.of(500, ChronoUnit.MILLIS), BookSoldOut.class);
+        var result = digispine.latestMessageFromJSON("BookStore", Duration.of(500, ChronoUnit.MILLIS), BookEvent.BookSoldOut.class);
 
         //Assert
         assertEquals( amount, objectUnderTest.amountInStock(ANY_BOOK) );      // Perform assertion against the object we test
@@ -93,7 +93,7 @@ class BookStoreCNServiceTest
 
         //Act / Assert
         assertDoesNotThrow(() -> objectUnderTest.sell(ANY_BOOK));
-        var result = digispine.latestMessageFromJSON("BookStore", Duration.of(500, ChronoUnit.MILLIS), BookSoldOut.class);
+        var result = digispine.latestMessageFromJSON("BookStore", Duration.of(500, ChronoUnit.MILLIS), BookEvent.BookSoldOut.class);
 
         //Assert
         assertEquals( amount - 1, objectUnderTest.amountInStock(ANY_BOOK) );       // Perform assertion against the object we test
@@ -120,7 +120,7 @@ class BookStoreCNServiceTest
         assertDoesNotThrow(() -> objectUnderTest.sell(ANY_BOOK));
 
         // Receive the jms message
-        var result = digispine.latestMessageFromJSON("BookStore", Duration.of(5, ChronoUnit.SECONDS), BookSoldOut.class);
+        var result = digispine.latestMessageFromJSON("BookStore", Duration.of(5, ChronoUnit.SECONDS), BookEvent.BookSoldOut.class);
 
         //Assert
         assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );                    // Perform assertion against the object we test
