@@ -22,6 +22,7 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
         messageSender = createMessageSender(IntegrationEventSender.class, properties);
     }
 
+
     @Override
     public void publish(Object domainEvent)
     {

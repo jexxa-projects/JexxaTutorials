@@ -3,18 +3,15 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.jexxatest.DomainEventRecorder;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstore.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
-import org.junit.jupiter.api.BeforeAll;
+import io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
-import static io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher.subscribe;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,17 +27,6 @@ class BookStoreServiceTest
     private DomainEventRecorder<BookEvent> domainEventRecorder; // Message recorder to validate published DomainEvents
     private BookRepository   bookRepository;        // Repository to validate results in the tests
 
-    @BeforeAll
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    static void initBeforeAll()
-    {
-        // JexxaTest is created for each test. It provides stubs for running your tests so that no
-        // mock framework is required. It expects the class name your application!
-        getJexxaTest(BookStore.class)
-                .getJexxaMain()
-                .bootstrap(IntegrationEventSender.class).with(sender -> subscribe(BookEvent.class, sender::publish));
-    }
-
 
     @BeforeEach
     void initTest()
@@ -48,10 +34,12 @@ class BookStoreServiceTest
         // JexxaTest is created for each test. It provides stubs for running your tests so that no
         // mock framework is required. It expects the class name your application!
         JexxaTest jexxaTest = getJexxaTest(BookStore.class);
+        var domainEventDispatcher = jexxaTest.getInstanceOfPort(DomainEventDispatcher.class);
+
 
         // Request the objects needed for our tests
         objectUnderTest       = jexxaTest.getInstanceOfPort(BookStoreService.class);   // 1. We need the object we want to test
-        domainEventRecorder   = jexxaTest.getDomainEventRecorder(BookEvent.class, DomainEventDispatcher::subscribe); // 2. A recorder for DomainEvents published via DomainEventSender
+        domainEventRecorder   = jexxaTest.getDomainEventRecorder(BookEvent.class, domainEventDispatcher::subscribe); // 2. A recorder for DomainEvents published via DomainEventSender
         bookRepository        = jexxaTest.getRepository(BookRepository.class);         // 3. Repository managing all books
     }
 

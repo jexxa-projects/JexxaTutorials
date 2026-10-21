@@ -16,10 +16,13 @@ import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 public class BookStoreService
 {
     private final BookRepository bookRepository;
+    private final DomainEventDispatcher domainEventDispatcher;
 
-    public BookStoreService (BookRepository bookRepository)
+    public BookStoreService (BookRepository bookRepository, DomainEventDispatcher domainEventDispatcher)
     {
+        System.out.println("BookStoreService" +  bookRepository.getClass().getName());
         this.bookRepository = bookRepository;
+        this.domainEventDispatcher = domainEventDispatcher;
     }
 
     public void addToStock(ISBN13 isbn13, int amount)
@@ -67,7 +70,7 @@ public class BookStoreService
         var bookEvent = book.sell();
 
         bookRepository.update(book);
-        DomainEventDispatcher.publish(bookEvent);
+        domainEventDispatcher.publish(bookEvent);
     }
 
     public List<ISBN13> getBooks()
