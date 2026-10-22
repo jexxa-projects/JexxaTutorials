@@ -1,7 +1,10 @@
 package io.jexxa.tutorials.bookstore.application.port.outbound;
 
+import io.jexxa.addend.applicationcore.InfrastructureService;
+
 import java.util.function.Consumer;
 
+@InfrastructureService
 public interface DomainEventDispatcher {
     <T> void publish(T domainEvent);
 

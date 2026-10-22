@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 
-@ApplicationService
+
 @SuppressWarnings("unused")
 public class ReferenceLibrary
 {
