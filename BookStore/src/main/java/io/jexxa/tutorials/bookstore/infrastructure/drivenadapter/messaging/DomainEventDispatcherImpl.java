@@ -1,6 +1,7 @@
-package io.jexxa.tutorials.bookstore.domainservice;
+package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 
-import io.jexxa.addend.applicationcore.DomainService;
+import io.jexxa.addend.infrastructure.DrivenAdapter;
+import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventDispatcher;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -8,21 +9,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-@DomainService
-public final class DomainEventDispatcher  {
+@DrivenAdapter
+public final class DomainEventDispatcherImpl implements DomainEventDispatcher {
     private final Map<Class<?>, Set<Consumer<?>>> subscribers = new ConcurrentHashMap<>();
-    private static final DomainEventDispatcher DOMAIN_EVENT_PUBLISHER = new DomainEventDispatcher();
 
-    public static DomainEventDispatcher instance()
-    {
-        return DOMAIN_EVENT_PUBLISHER;
-    }
-
-    @SuppressWarnings("unchecked") // We check if the given domainEvent is assignable to a listener. Therefore, the unchecked cast is safe
+    @SuppressWarnings("unchecked")
+    @Override
     public synchronized <T> void publish(final T domainEvent)
     {
-        instance()
-                .subscribers
+        subscribers
                 .entrySet()
                 .stream()
                 .filter(element -> element.getKey().isAssignableFrom(domainEvent.getClass()))
@@ -30,15 +25,17 @@ public final class DomainEventDispatcher  {
                 .forEach(element -> ((Consumer<T>) element).accept(domainEvent));
     }
 
+    @Override
     public synchronized <T> void subscribe(Class<T> domainEvent, Consumer<T> subscriber)
     {
-        instance().subscribers.putIfAbsent(domainEvent, new HashSet<>());
-        instance().subscribers.get(domainEvent).add(subscriber);
+        subscribers.putIfAbsent(domainEvent, new HashSet<>());
+        subscribers.get(domainEvent).add(subscriber);
     }
 
+    @Override
     public synchronized void subscribe(Consumer<Object> subscriber)
     {
-        instance().subscribe(Object.class, subscriber);
+        subscribe(Object.class, subscriber);
     }
 
 }

@@ -3,10 +3,11 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
+import io.jexxa.tutorials.bookstore.application.service.BookStoreService;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher;
+import io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging.DomainEventDispatcherImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ class BookStoreServiceMockTest
         JexxaTest jexxaTest = getJexxaTest(BookStore.class);
 
         // register our mock repository
-        jexxaTest.resetStubsTo(BookRepositoryMock.class, DomainEventDispatcher.class);
+        jexxaTest.resetStubsTo(BookRepositoryMock.class, DomainEventDispatcherImpl.class);
 
         //The mock instance uses the following values
         int expectedAmountOfBooks = 1; //initialized by the mock

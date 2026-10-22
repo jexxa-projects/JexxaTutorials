@@ -1,11 +1,11 @@
-package io.jexxa.tutorials.bookstore.applicationservice;
+package io.jexxa.tutorials.bookstore.application.service;
 
 import io.jexxa.addend.applicationcore.ApplicationService;
+import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher;
 
 import java.util.List;
 
@@ -20,7 +20,6 @@ public class BookStoreService
 
     public BookStoreService (BookRepository bookRepository, DomainEventDispatcher domainEventDispatcher)
     {
-        System.out.println("BookStoreService" +  bookRepository.getClass().getName());
         this.bookRepository = bookRepository;
         this.domainEventDispatcher = domainEventDispatcher;
     }

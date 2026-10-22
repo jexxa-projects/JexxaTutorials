@@ -5,7 +5,7 @@ import io.jexxa.jexxatest.JexxaIntegrationTest;
 import io.jexxa.jexxatest.integrationtest.messaging.JMSBinding;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
 import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.applicationservice.BookStoreService;
+import io.jexxa.tutorials.bookstore.application.service.BookStoreService;
 import io.jexxa.tutorials.bookstore.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 import org.junit.jupiter.api.AfterAll;

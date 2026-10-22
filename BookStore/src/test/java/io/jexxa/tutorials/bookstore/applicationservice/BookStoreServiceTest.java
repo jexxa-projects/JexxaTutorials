@@ -3,11 +3,12 @@ package io.jexxa.tutorials.bookstore.applicationservice;
 import io.jexxa.jexxatest.DomainEventRecorder;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
+import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventDispatcher;
+import io.jexxa.tutorials.bookstore.application.service.BookStoreService;
 import io.jexxa.tutorials.bookstore.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstore.domainservice.DomainEventDispatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
-package io.jexxa.tutorials.bookstore.domainservice;
+package io.jexxa.tutorials.bookstore.infrastructure.bootstrap;
 
-import io.jexxa.addend.applicationcore.DomainService;
+import io.jexxa.addend.applicationcore.ApplicationService;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
 
@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 
-@DomainService
+@ApplicationService
 @SuppressWarnings("unused")
 public class ReferenceLibrary
 {

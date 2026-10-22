@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 import io.jexxa.addend.applicationcore.DomainEvent;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
-import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
+import io.jexxa.tutorials.bookstore.application.port.outbound.IntegrationEventSender;
 
 import java.util.Objects;
 import java.util.Properties;

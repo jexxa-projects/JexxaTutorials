@@ -2,21 +2,22 @@
 
 ## What You Learn
 
-*   [How to design and implement an application core](#1-Implementing-application-core)
-*   [How to publish Domain Events within the application core](#2-publishing-domainevents)      
-*   [How to implement a Repository](#3-implement-the-infrastructure)
-*   [Changes to the main method](#4-implement-the-application)     
+- [How to model the application core with DDD](#1-implementing-the-application-core)
+- [How to distinguish Domain Events from Integration Events](#2-publishing-domain-events)
+- [How to implement a repository and messaging adapter](#3-implement-the-infrastructure)
+- [How to wire adapters and event subscriptions in the composition root](#4-implement-the-application)
+- [How to run the application](#run-the-application)
 
 ## What you need
 
-*   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects 
+*   Understand tutorial `HelloJexxa` and `TimeService` because we explain only new aspects
 *   60 minutes
-*   JDK 25 (or higher) installed 
+*   JDK 25 (or higher) installed
 *   Maven 3.6 (or higher) installed
 *   curl to trigger the application
-*   Optional: A postgres DB   
+*   Optional: A postgres DB
 
-## Requirements to the application core
+## Requirements for the application core
 This application core should provide the following super simplified functionality:
 
 *   Manage available books in the store which means to add, sell, and query books
@@ -25,119 +26,120 @@ This application core should provide the following super simplified functionalit
 
 *   For each book we store the number of available copies in stock
 
-*   Publish `DomainEvent` `BookSoldOut` if last copy of a book is sold
+*   Produce a `BookSoldOut` domain event when the last copy of a book is sold
 
-*   A service which gets the latest books from our reference library. For this tutorial, it is sufficient that: 
-    *   Service provides a hardcoded list
-    *   Service is triggered when starting the application     
+*   A bootstrap component that provides sample books. For this tutorial, it is sufficient that:
+    *   It provides a hardcoded list
+    *   It is triggered when starting the application
 
-## 1. Implementing application core
+## 1. Implementing the application core
 
-General note: There are several books, courses, tutorials available describing how to implement an application core using the patterns of DDD. 
-The approach used in this tutorial should not be considered as reference. It serves only for demonstration purpose how to realize your decisions 
-with Jexxa.       
+This tutorial illustrates one possible combination of Domain-Driven Design (DDD) and Ports & Adapters using Jexxa. It is deliberately small and should not be treated as a mandatory reference architecture.
 
-### Mapping to DDD patterns 
+### Mapping to DDD and Ports & Adapters
 
-First, we map the functionality of the application to DDD patterns   
-<details>
-  <summary>Show mapping to DDD patterns</summary>
+| Component                 | Responsibility                                                                  | Classification                              |
+|---------------------------|---------------------------------------------------------------------------------|---------------------------------------------|
+| `Book`                    | Enforces book stock rules and produces `BookSoldOut` when the last copy is sold | Domain aggregate                            |
+| `ISBN13`                  | Identifies a book                                                               | Domain value object                         |
+| `BookSoldOut`             | Describes a meaningful occurrence in the bookstore domain                       | Domain event                                |
+| `BookNotInStockException` | Signals a domain rule violation                                                 | Domain exception                            |
+| `BookRepository`          | Provides domain-oriented access to books                                        | Repository interface in the domain          |
+| `BookStoreService`        | Coordinates use cases such as adding stock and selling books                    | Application service                         |
+| `IDomainEventDispatcher`  | Allows application code to publish and subscribe to domain events               | Application port (outbound for publication) |
+| `DomainEventDispatcher`   | Distributes domain events synchronously to registered subscribers               | Infrastructure driven adapter               |
+| `IntegrationEventSender`  | Sends events through the configured messaging infrastructure                    | Infrastructure driven adapter               |
+| `ReferenceLibrary`        | Seeds a hardcoded list of books at startup                                      | Bootstrap / sample-data component           |
 
-*   `Domain`:
-     *   `Book`: Is an `Aggregate` because it has a life-cycle that changes over time.
-     *   `BookRepository`: Is a `Repository` that manages `Book` instances.  
-     *   `ISBN13`: Is a `ValueObject` that is immutable and identifies a book     
-     *   `BookSoldOut`: Is a `DomainEvent` that informs us if a book is no longer in stock   
-     *   `BookNotInStockException`: Is a `BusinessException` in case we try to sell a book that is currently not available
-
-*   `DomainService`:
-     * `DomainEventDispatcher`: Is a `DomainService` that registers for all `DomainEvents` and forwards them to an external message bus.
-     *   `ReferenceLibrary`: Is a `DomainService` that provides primary data for our bookstore and returns the latest books. 
-     *   `IntegrationEventSender`: Is an `InfrastructureService` that sends `DomainEvents` to a message bus.
-
-*   `ApplicationService`:
-     *   `BookStoreService:` Is an `ApplicationService` that provides typical use cases such as selling a book. 
-</details>
+A **Domain Service** is appropriate only when genuine domain behavior does not naturally belong to an aggregate or value object. This example does not require one. In particular, a dispatcher is not a Domain Service simply because it handles Domain Events.
 
 ### Package structure
 
-Based on the mapping to DDD patterns,
-we derive the following package structure which is quite common in the DDD community: 
+The following structure separates domain rules, use-case coordination, ports, and technical adapters:
 
-<details>
-  <summary>Show package structure</summary>
+```text
+io.jexxa.tutorials.bookstore
+├── application
+│   ├── service
+│   │   └── BookStoreService
+│   └── port
+│       └── outbound
+│           └── IDomainEventDispatcher
+├── domain
+│   └── book
+│       ├── Book
+│       ├── ISBN13
+│       ├── BookSoldOut
+│       ├── BookNotInStockException
+│       └── BookRepository
+└── infrastructure
+    ├── bootstrap
+    │   └── ReferenceLibrary
+    ├── drivingadapter
+    │   └── (REST adapter supplied by Jexxa)
+    └── drivenadapter
+        ├── persistence
+        │   └── BookRepositoryImpl
+        └── messaging
+            ├── DomainEventDispatcher
+            └── IntegrationEventSender
+```
 
-*   `applicationservice`
+The package structure is illustrative: the concrete source tree and Jexxa bootstrap registration must be kept in sync when refactoring existing code.
 
-*   `domainservice`
+The `domain.book` package groups concepts that change together around the book model. It is not necessary to create a new domain package for every application-service method. Apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles) to identify meaningful domain boundaries rather than creating generic `common` packages.
 
-*   `domain` 
-    *   `<use case 1>`
-    *   `...`
-    *   `<use case n>`
+The domain defines `BookRepository` because it is a domain-oriented repository abstraction. `IDomainEventDispatcher` belongs to the application boundary because `BookStoreService` uses it to publish events; its implementation belongs to infrastructure.
 
-*   `infrastructure`
-    *   `drivenadapter`
-    *   `drivingadapter` 
-</details>
+### A note on implementing DDD patterns
 
-Please note that a package for a specific use case includes all required domain classes.
-As you can see in the examples, these are typically the corresponding of type `Aggregate`,`ValueObject`,
-`DomainEvent`, `BusinessException`, and `Repository`.
-The reason for this is
-that you should apply the [Common Closure Principle](https://en.wikipedia.org/wiki/Package_principles)
-so that changing classes within such a package is a change in the use case.
-In addition, it should not affect any other use-cases.  
-
-Structuring your domain-package this way provides the following benefits: 
-*   Use cases are represented explicitly which allows a clear view into the application
-*   Use cases remain strictly separated which simplifies adding, removing or changing use cases 
-*   When designing your application, this approach supports discussing what kind of functionality belongs to a use case or not
-
-As soon as your domain logic and thus the number of use cases grows, it will happen that ValueObjects will be used by multiple use cases. This is quite normal. The challenge is to group these ValueObjects and find a domain specific main term which is not `common` or something like this. As soon as you have this name, create a corresponding package within `domain`.   
-
-
-### A note on implementing DDD patterns  
-
-*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to the following reasons:  
+*   `ValueObject` and `DomainEvent`: Are implemented using Java records due to the following reasons:
     *   They are immutable and compared based on their internal values.
-    *   They must not have set-methods. So all fields are final. 
+    *   They must not have set-methods. So all fields are final.
     *   They must provide a valid implementation of equals() and hashcode().
-    *   They must not include any business logic, but they can validate their input data.
-    *   Using records ensures that the canonical constructor is called, even if they are deserialized. So you can validate given values in constructor without considering serialization methods.   
+    *   Value objects may also contain domain behavior; records are suitable when value semantics and immutability are appropriate.
+    *   Using records ensures that the canonical constructor is called, even if they are deserialized. So you can validate given values in constructor without considering serialization methods.
 
 *   `Aggregate`: Is identified by a unique `AggregateID` which is a `ValueObject`
-    *   `Book` uses an `ISBN13` object     
+    *   `Book` uses an `ISBN13` object
 
-*   `Repositroy` when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.     
+*   `Repository`: when defining any interface within the application core ensure that you use the domain language for all methods. Resist the temptation to use the language of the used technology stack that you use to implement this interface.
 
-As you can see in the source code, all classes are annotated with the pattern language of DDD. 
-This is not required but strongly recommended. The explanation for this can be found in tutorial [pattern language](README-PatternLanguage.md). 
+As you can see in the source code, all classes are annotated with the pattern language of DDD.
+This is not required but strongly recommended. The explanation for this can be found in tutorial [pattern language](README-PatternLanguage.md).
 
-## 2. Publishing DomainEvents
-When sending DomainEvents, we should distinguish between two separate scenarios.
-*   `DomainEvent`: Used to inform the application core that something happened which is then typically handled by an `ApplicationService` or a `DomainService`. 
-*   `IntegrationEvent`: Used to inform other bounded contexts that something important happened. These events are typically forwarded by an `InfrastructureService`. 
+## 2. Publishing Domain Events
 
-Within the DDD community, there are essentially three different approaches on how to implement sending DomainEvents. 
-An overview and discussion of these approaches can be found [here](http://www.kamilgrzybek.com/design/how-to-publish-and-handle-domain-events/).
+**Domain Events** describe facts within a bounded context. **Integration Events** are deliberately exposed contracts for other bounded contexts. They are related, but they are not necessarily identical: external contracts may require selection, mapping, versioning, and reliable delivery.
 
-Jexxa itself supports all of these approaches.
-In these tutorials, the approach with static methods is used because it 
-is also used in the book ___Implementing Domain-Driven Design___ and described in great detail.
-It therefore forms an exceptional basis for the initial 
-implementation of a DDD application, from which teams can then work out for their own approach.
+In this tutorial, `Book.sell()` returns a domain event when the last copy is sold. The application service persists the updated aggregate and then publishes the event:
 
-     
+```java
+var bookEvent = book.sell();
+bookRepository.update(book);
+domainEventDispatcher.publish(bookEvent);
+```
+
+This keeps event distribution out of the aggregate. The dispatcher is an in-memory, synchronous implementation of `IDomainEventDispatcher`, located in `infrastructure.drivenadapter.messaging` and annotated `@DrivenAdapter`.
+
+For the tutorial, the composition root subscribes the integration sender to the `BookSoldOut` event type:
+
+```java
+domainEventDispatcher.subscribe(BookSoldOut.class, sender::publish);
+```
+
+This is **wiring**, not a separate application use case. There is no need for an additional `ApplicationService` merely to connect two components. If a domain event must be transformed into a stable external event contract, a dedicated application-layer event handler can perform that mapping while the composition root still registers the subscription.
+
+> **Scope and limitations:** The current dispatcher calls subscribers synchronously, in the publisher's thread. It does not provide durable delivery, retries, subscriber failure isolation, or a transaction spanning repository updates and message publication. Production integration may require explicit event mapping and a transactional outbox or equivalent mechanism. Only forward a domain event directly as an integration event when that simplified contract is intentional.
+
 ## 3. Implement the infrastructure
 
-The implementation of interface `IntegrationEventSender` is quite similar to message sender in tutorial [TimeService](../TimeService/README.md).
-So we don't discuss it here. 
+The `IntegrationEventSender` is a concrete messaging adapter, similar to the message sender in tutorial [TimeService](../TimeService/README.md). The event dispatcher is another driven adapter, implementing `IDomainEventDispatcher`. Both are technical mechanisms rather than Domain Services.
 
-### Implement the repository 
+### Implement the repository
 To simplify the implementation of a `Repository` Jexxa provides strategies that can be used. For example, the `IRepository`
-interface provides typical CRUD operations and is especially designed to handle an `Aggregate` as you can see below:   
-  
+interface provides typical CRUD operations and is especially designed to handle an `Aggregate` as you can see below:
+
 ```java
   
 @SuppressWarnings("unused")
@@ -173,39 +175,42 @@ public class BookRepositoryImpl implements BookRepository
 }
 ```
 
-**Important**: 
-As you can see, the implementation of a repository and a message sender is straight forward. So it is a good starting point for junior developers. See [here](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html#_strategy_pattern_for_driven_adapters) how you can use it to develop your junior developers.     
+**Important**:
+As you can see, the implementation of a repository and a message sender is straight forward. So it is a good starting point for junior developers. See [here](https://jexxa-projects.github.io/Jexxa/jexxa_architecture.html#_strategy_pattern_for_driven_adapters) how you can use it to develop your junior developers.
 
 ## 4. Implement the application
 
-Finally, we have to write our application. As you can see in the code below there is one difference compared to `HelloJexxa` and `TimeService`:
+`BookStore.main()` is the **composition root**. It creates the Jexxa application, registers startup initialization, connects event subscribers to publishers, binds REST adapters, and runs the application.
 
-*   Add a bootstrap service which is directly called to initialize domain-specific aspects.   
-   
 ```java
-    
 public final class BookStore
 {
-    static void main(String[] args)
+    static void main()
     {
         var jexxaMain = new JexxaMain(BookStore.class);
+        var domainEventDispatcher =
+                jexxaMain.getInstanceOfPort(IDomainEventDispatcher.class);
 
         jexxaMain
-                .bootstrap(ReferenceLibrary.class).and()       // Bootstrap latest books via ReferenceLibrary
-                .bootstrap(IntegrationEventSender.class).with(sender -> subscribe(sender::publish)) // publish all DomainEvents as IntegrationEvents for other bounded contexts
+                .bootstrap(ReferenceLibrary.class).and()
+                .bootstrap(IntegrationEventSender.class)
+                    .with(sender -> domainEventDispatcher.subscribe(
+                            BookSoldOut.class, sender::publish))
 
-                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)        // Provide REST access to BookStoreService
-                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext()) // Provide REST access to BoundedContext
+                .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
 
-                .run(); // Finally, run the application
+                .run();
     }
 }
 ```
 
-That's it. 
+`ReferenceLibrary` initializes tutorial data at startup; it is not a Domain Service. Its initialization should be explicit rather than performed as an unexpected constructor side effect. The shown bootstrap call assumes the corresponding Jexxa bootstrap registration is configured.
+
+The event subscription forwards only `BookSoldOut`, rather than publishing every internal Domain Event externally. The sample intentionally uses direct forwarding; a production system should define its external event contract explicitly.
 
 ## Run the application
- 
+
 ### Use an in memory database
 
 ```console                                                          
@@ -231,8 +236,8 @@ You will see the following (or similar) output
 ```          
 
 ### Use a postgres database
-The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a postgres 
-DB. So we have to enter following command 
+The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a postgres
+DB. So we have to enter following command
 
 ```console                                                          
 mvn clean install
@@ -245,21 +250,21 @@ In contrast to the above output, Jexxa will state that you use JDBC persistence 
 [main] INFO io.jexxa.utils.JexxaBanner - Used Message Sender Strategie  : [JMSSender]
 ```
 
-Note: In case you want to use a difference database, you have to: 
+Note: In case you want to use a difference database, you have to:
 
 1.  Add the corresponding jdbc driver to [pom.xml](pom.xml) to dependencies-section.
 2.  Adjust the section `#Settings for JDBCConnection to postgres DB` in [jexxa-test.properties](src/test/resources/jexxa-test.properties).
 
-### Execute some commands using curl 
+### Execute some commands using curl
 
 #### Get a list of all books
 
-Command: 
+Command:
 ```Console
 curl -X GET  http://localhost:7503/BookStoreService/getBooks
 ```
 
-Response: 
+Response:
 ```Console
 [
  {"isbn13":"978-1-60309-322-4"},{"isbn13":"978-1-891830-85-3"},
@@ -275,7 +280,7 @@ curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"
      http://localhost:7503/BookStoreService/inStock       
 ```
 
-Response: 
+Response:
 ```Console
 false
 ```
@@ -287,7 +292,7 @@ curl -X POST -H "Content-Type: application/json" -d "[{isbn13: "978-1-891830-85-
      http://localhost:7503/BookStoreService/addToStock
 ```
 
-Response: No output  
+Response: No output
 ```Console
 ```
 
@@ -298,7 +303,7 @@ curl -X POST -H "Content-Type: application/json" -d '{isbn13:"978-1-891830-85-3"
      http://localhost:7503/BookStoreService/inStock       
 ```
 
-Response: 
+Response:
 ```Console
 true
 ```
