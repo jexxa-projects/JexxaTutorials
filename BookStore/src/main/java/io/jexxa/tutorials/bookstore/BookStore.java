@@ -11,7 +11,7 @@ import io.jexxa.tutorials.bookstore.infrastructure.bootstrap.ReferenceLibrary;
 
 public final class BookStore
 {
-    public static void main()
+    static void main()
     {
         var jexxaMain = new JexxaMain(BookStore.class);
         var domainEventDispatcher = jexxaMain.getInstanceOfPort(DomainEventDispatcher.class);
@@ -28,10 +28,5 @@ public final class BookStore
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext()) // Provide REST access to BoundedContext
 
                 .run(); // Finally, run the application
-    }
-
-    private BookStore()
-    {
-        //Private constructor since we only offer main
     }
 }
