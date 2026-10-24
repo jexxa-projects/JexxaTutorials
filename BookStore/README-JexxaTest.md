@@ -86,7 +86,7 @@ class BookTest {
 
 Writing some stub tests with Jexxa is quite easy. The main difference to a pure unit test is the initialization phase for each test.
 
-The complete test class can be found [here](src/test/java/io/jexxa/tutorials/bookstore/applicationservice/BookStoreServiceTest.java).
+The complete test class can be found [here](src/test/java/io/jexxa/tutorials/bookstore/application/service/BookStoreServiceTest.java).
 
 
 ### Initialize the tests 

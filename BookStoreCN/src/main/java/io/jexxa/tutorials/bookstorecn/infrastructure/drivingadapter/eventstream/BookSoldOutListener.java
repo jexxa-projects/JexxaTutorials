@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstorecn.infrastructure.drivingadapter.eventstream
 import io.jexxa.addend.infrastructure.DrivingAdapter;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.esp.drivingadapter.TypedEventListener;
-import io.jexxa.tutorials.bookstorecn.applicationservice.BookStoreService;
+import io.jexxa.tutorials.bookstorecn.application.service.BookStoreService;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 

@@ -1,4 +1,4 @@
-package io.jexxa.tutorials.bookstorecn.domainservice;
+package io.jexxa.tutorials.bookstorecn.application.port.outbound;
 
 import io.jexxa.addend.applicationcore.InfrastructureService;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;

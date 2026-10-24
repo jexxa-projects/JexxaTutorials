@@ -1,25 +1,29 @@
-package io.jexxa.tutorials.bookstorecn.applicationservice;
+package io.jexxa.tutorials.bookstorecn.application.service;
 
 import io.jexxa.addend.applicationcore.ApplicationService;
+import io.jexxa.tutorials.bookstorecn.application.port.outbound.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstorecn.domain.book.Book;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstorecn.domainservice.DomainEventDispatcher;
+
 
 import java.util.List;
 
 import static io.jexxa.tutorials.bookstorecn.domain.book.Book.newBook;
+
 
 @SuppressWarnings("unused")
 @ApplicationService
 public class BookStoreService
 {
     private final BookRepository bookRepository;
+    private final DomainEventDispatcher domainEventDispatcher;
 
-    public BookStoreService (BookRepository bookRepository)
+    public BookStoreService (BookRepository bookRepository, DomainEventDispatcher domainEventDispatcher)
     {
         this.bookRepository = bookRepository;
+        this.domainEventDispatcher = domainEventDispatcher;
     }
 
     public void addToStock(ISBN13 isbn13, int amount)
@@ -67,7 +71,7 @@ public class BookStoreService
         var bookEvent = book.sell();
 
         bookRepository.update(book);
-        DomainEventDispatcher.publish(bookEvent);
+        domainEventDispatcher.publish(bookEvent);
     }
 
     public List<ISBN13> getBooks()

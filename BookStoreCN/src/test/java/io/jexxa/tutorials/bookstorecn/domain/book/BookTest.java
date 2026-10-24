@@ -2,17 +2,12 @@ package io.jexxa.tutorials.bookstorecn.domain.book;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-import static io.jexxa.tutorials.bookstorecn.domainservice.DomainEventDispatcher.subscribe;
 import static io.jexxa.tutorials.bookstorecn.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstorecn.domain.book.ISBN13.createISBN;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static io.smallrye.common.constraint.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookTest {
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
@@ -32,17 +27,19 @@ class BookTest {
     }
 
     @Test
-    void sell() {
+    void sell() throws BookNotInStockException {
         // Arrange
         var objectUnderTest = newBook(ANY_BOOK);
         var amountInStock = 5;
         objectUnderTest.addToStock(amountInStock);
 
         // Act / Assert
-        assertDoesNotThrow(objectUnderTest::sell);
+        var result = objectUnderTest.sell();
+
 
         // Assert
         assertEquals(amountInStock - 1, objectUnderTest.amountInStock());
+        assertInstanceOf(BookEvent.BookSold.class, result);
         assertTrue(objectUnderTest.inStock());
     }
 
@@ -56,35 +53,20 @@ class BookTest {
     }
 
     @Test
-    void sellLastBook() {
+    void sellLastBook() throws BookNotInStockException {
         // Arrange
         var amountInStock = 1;
-        var domainEventRecorder = new DomainEventRecorder();
-        subscribe(BookEvent.BookSoldOut.class, domainEventRecorder::receive);
-
         var objectUnderTest = newBook(ANY_BOOK);
         objectUnderTest.addToStock(amountInStock);
 
         // Act / Assert
-        var result = assertDoesNotThrow(objectUnderTest::sell);
+        var result = objectUnderTest.sell();
 
         // Assert
+        var soldOutEvent = assertInstanceOf(BookEvent.BookSoldOut.class, result);
+        assertEquals(ANY_BOOK, soldOutEvent.isbn13());
         assertEquals(0, objectUnderTest.amountInStock() );
-        assertEquals(ANY_BOOK, result.isbn13() );
     }
 
-    private static class DomainEventRecorder {
-        private final List<BookEvent.BookSoldOut> domainEvents = new ArrayList<>();
-
-        public void receive(BookEvent.BookSoldOut bookSoldOut)
-        {
-            domainEvents.add(bookSoldOut);
-        }
-
-        List<BookEvent.BookSoldOut> getDomainEvents()
-        {
-            return domainEvents;
-        }
-    }
 
 }

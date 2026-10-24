@@ -2,8 +2,8 @@ package io.jexxa.tutorials.bookstorecn.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.addend.infrastructure.DrivenAdapter;
 import io.jexxa.esp.drivenadapter.EventSender;
+import io.jexxa.tutorials.bookstorecn.application.port.outbound.IntegrationEventSender;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
-import io.jexxa.tutorials.bookstorecn.domainservice.IntegrationEventSender;
 
 import java.util.Properties;
 
