@@ -1,227 +1,407 @@
-# BookStore - Writing Tests
+# BookStore – Writing Tests
 
-## What You Learn
-   
-*   [How to write unit tests for your aggregates](#Write-unit-tests-for-aggregates)
-*   [How to write test using stubs](#Write-tests-using-stubs)
-*   [How to write integration tests](#Write-integration-tests)
+This tutorial demonstrates how to test a Jexxa application at different levels while keeping business logic independent of infrastructure and technology.
 
-## What you need
+## What You Will Learn
 
-*   Understand tutorial [`BookStore - Using a Repository`](README.md)
-*   Writing tests with JUnit
-*   45 minutes
-*   JDK 25 (or higher) installed
-*   Maven 3.6 (or higher) installed
+- How to write unit tests for domain aggregates
+- How to test application services using stubs
+- How to write integration tests against a running application
+- How to verify domain events and externally published messages
+- How to apply the **Arrange–Act–Assert** pattern consistently
 
-## General Note
+## Prerequisites
 
-When writing tests for a business application, we recommend the following three types of tests:
-  
-*   Unit tests: In general, you should write pure unit tests as much as possible, especially for your aggregates. This ensures that your business tests remain independent of any technology. In addition, you avoid the anti-pattern `anemic model` and accidentally put business logic into an application- or domain service. For these tests, you need JUnit. 
+- Familiarity with [BookStore – Using a Repository](README.md)
+- Basic knowledge of JUnit 5
+- JDK 25 or later
+- Maven 3.6 or later
+- Approximately 45 minutes
 
-*   Stub tests: Sometimes, it is necessary to test an application or domain service that requires a technology stack, such as a `Repository`.  In this case, we recommend using stubs instead of mocks. The reason for this is that mock tests can lead to validating execution steps within the domain core instead of the domain-specific use cases. Therefore, `jexxa-test` automatically provides stubs for all your driven adapters if you use Jexxa's driven adapter strategies.
+## Testing Strategy
 
-*   Integration tests: Finally, you should provide at least some integration tests that are executed against your running application. `jexxa-test` supports this by providing convenience classes based on the conventions of Jexxa. 
+We recommend three complementary types of tests for applications built with Jexxa.
 
-For all tests, we use the arrange-act-assert pattern because it forces tests to focus on independent, 
-individual behaviors. As soon as you want to use module `jexxa-test`, you have to add the following dependency (check that you use the latest version).
+| Test type         | Focus                              | Dependencies                  | Purpose                                                 |
+|-------------------|------------------------------------|-------------------------------|---------------------------------------------------------|
+| Unit tests        | Domain model and aggregates        | JUnit                         | Verify business rules and invariants                    |
+| Tests with stubs  | Application services and use cases | JUnit, Jexxa-Test             | Verify application behavior without real infrastructure |
+| Integration tests | Running application                | Jexxa-Test, external services | Verify communication and infrastructure integration     |
+
+The goal is not to test every behavior at every level. Instead, each test should provide confidence in a specific responsibility.
+
+### 1. Unit Tests – Verify Business Behavior
+
+Domain aggregates encapsulate business rules and protect invariants.
+
+Their tests should be fast, deterministic, and independent of databases, messaging systems, application frameworks, or other infrastructure.
+
+For example, a `Book` aggregate should be testable without starting Jexxa or configuring a repository.
+
+Keeping business behavior directly testable also helps identify misplaced domain logic. If a business rule can only be tested through an application service, it may be worth reconsidering where that rule belongs.
+
+### 2. Tests with Stubs – Verify Use Cases
+
+Application services coordinate domain objects and interact with external resources through ports.
+
+For example, `BookStoreService` may use a repository to load a book, invoke its business behavior, save the resulting state, and publish a domain event.
+
+Jexxa-Test provides support for testing these interactions using stubs for supported driven-adapter strategies.
+
+We generally prefer stubs over interaction-heavy mocks when testing use cases. Stubs allow tests to focus on observable outcomes rather than prescribing the internal sequence of method calls.
+
+Mocks are still useful when verifying a specific interaction is itself a requirement.
+
+### 3. Integration Tests – Verify System Integration
+
+Integration tests exercise the running application through its public interfaces.
+
+For BookStore, this includes invoking use cases through REST and verifying messages published through JMS.
+
+These tests provide confidence that application configuration, adapters, serialization, and external communication work together.
+
+They are typically slower than unit tests and tests with stubs, so they should complement rather than replace them.
+
+## Arrange–Act–Assert
+
+All examples in this tutorial follow the Arrange–Act–Assert pattern:
+
+- **Arrange:** Prepare the object under test, its dependencies, and the initial state.
+- **Act:** Execute the behavior being tested.
+- **Assert:** Verify the expected observable outcome.
+
+Each test should focus on one behavior, even when several assertions are needed to describe its result.
+
+## Add the Test Dependency
+
+Add `jexxa-test` to your Maven project when you want to use Jexxa's testing support.
 
 ```xml
-    <dependency>
-      <groupId>io.jexxa.jexxatest</groupId>
-      <artifactId>jexxa-test</artifactId>
-      <version>8.1.11</version>
-      <scope>test</scope>
-    </dependency>
+<dependency>
+    <groupId>io.jexxa.jexxatest</groupId>
+    <artifactId>jexxa-test</artifactId>
+    <version>8.1.11</version>
+    <scope>test</scope>
+</dependency>
 ```
+
+The version above reflects the version used in this tutorial. Check Maven Central for the latest compatible release.
+
+---
 
 ## Write Unit Tests for Aggregates
 
- A simple example of unit-tests for the aggregate
-`Book` can be found [here](src/test/java/io/jexxa/tutorials/bookstore/domain/book/BookTest.java).
+The `Book` aggregate is responsible for enforcing business rules related to books and their inventory.
 
-In the following example, we show how to validate DomainEvents generated by the aggregate.
-For this purpose, we add a class `DomainEventRecorder` that subscribes either to a specific
-or to all domain events. In the `Arrange` step, we first create an instance of this class and register it 
-by the [`DomainEventDispatcherImpl`](src/main/java/io/jexxa/tutorials/bookstore/domain/DomainEventPublisher.java) which is part of our domain. In the `Assert` step we can then validate the sending of expected domain events.  
+One important scenario occurs when the last available book is sold.
 
-The complete test class can be found [here](src/test/java/io/jexxa/tutorials/bookstore/domain/book/BookTest.java).
+The expected behavior is:
+
+1. The sale succeeds.
+2. The remaining stock becomes zero.
+3. The aggregate produces a `BookSoldOut` domain event.
+
+### Testing Domain Events
+
+A domain event represents something meaningful that happened in the domain.
+
+An aggregate should not need a message broker, an event dispatcher, or any other infrastructure component to express such an event.
+
+In this example, the aggregate returns the event as part of the result of the business operation. The application service is responsible for publishing it.
 
 ```java
-class BookTest { 
+class BookTest
+{
     @Test
-    void sellLastBook() {
+    void sellLastBook()
+    {
         // Arrange
-        var amountInStock = 1;
-        var domainEventRecorder = new DomainEventRecorder();
-        subscribe(BookSoldOut.class, domainEventRecorder::receive);
+        var book = newBook(ANY_BOOK);
+        book.addToStock(1);
 
-        var objectUnderTest = newBook(ANY_BOOK);
-        objectUnderTest.addToStock(amountInStock);
-
-        // Act / Assert
-        assertDoesNotThrow(objectUnderTest::sell);
+        // Act
+        var domainEvent = book.sell();
 
         // Assert
-        assertEquals(0, objectUnderTest.amountInStock() );
-        assertEquals(1, domainEventRecorder.getDomainEvents().size() );
-    }
-
-    private static class DomainEventRecorder {
-        private final List<BookSoldOut> domainEvents = new ArrayList<>();
-
-        public void receive(BookSoldOut bookSoldOut) {
-            domainEvents.add(bookSoldOut);
-        }
-
-        List<BookSoldOut> getDomainEvents()  {
-            return domainEvents;
-        }
+        assertEquals(0, book.amountInStock());
+        assertEquals(BookSoldOut.bookSoldOut(ANY_BOOK), domainEvent);
     }
 }
 ```
 
-## Write Tests using Stubs
+This example illustrates an aggregate API that returns a domain event. If the actual `Book.sell()` method returns a different result type, adapt the assertion accordingly.
 
-Writing some stub tests with Jexxa is quite easy. The main difference to a pure unit test is the initialization phase for each test.
+The important principle remains the same: **the domain behavior can be tested without an event dispatcher or infrastructure dependency.**
 
-The complete test class can be found [here](src/test/java/io/jexxa/tutorials/bookstore/application/service/BookStoreServiceTest.java).
+### Why Not Use a Domain Event Dispatcher in the Aggregate Test?
 
+A dispatcher is responsible for distributing events to interested subscribers. It does not define the business behavior that produces those events.
 
-### Initialize the tests 
+Keeping event production separate from event distribution provides several benefits:
 
-As a first step, you initialize your tests by calling `initTest()` by annotating it with `@BeforeEach`: 
-*    Create a JexxaTest before each test 
-*    Initialize and request all objects you need for testing and validation 
-*    Bootstrap all services as in your main method to ensure the same initial setup as you start your application
+- Aggregate tests remain independent of messaging infrastructure.
+- Business behavior is easier to understand and test.
+- Application services can control when events are published.
+- The same domain model can be reused with different event-distribution mechanisms.
+
+For example, an application may use `InProcessPubSub` to distribute domain events within the same process or a messaging adapter to communicate with external systems.
+
+Neither mechanism needs to be referenced by the aggregate itself.
+
+---
+
+## Write Tests Using Stubs
+
+Unit tests verify individual domain objects. The next step is to test complete use cases implemented by application services.
+
+In BookStore, `BookStoreService` coordinates the domain model and its outgoing dependencies.
+
+Jexxa-Test helps create an isolated testing environment using stubs instead of real infrastructure.
+
+### Initialize the Test Environment
+
+Create a new `JexxaTest` instance before each test and obtain the objects required for execution and verification.
 
 ```java
 class BookStoreServiceTest
 {
-    private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8");
+    private static final ISBN13 ANY_BOOK =
+            createISBN("978-3-86490-387-8");
 
-    private BookStoreService objectUnderTest;       // Object we want to test
-    private MessageRecorder  publishedDomainEvents; // Message recorder to validate published DomainEvents
-    private BookRepository   bookRepository;        // Repository to validate results in the tests
-    
+    private BookStoreService objectUnderTest;
+    private MessageRecorder publishedDomainEvents;
+    private BookRepository bookRepository;
+
     @BeforeEach
     void initTest()
     {
-        // JexxaTest is created for each test. It provides stubs for running your tests so that no
-        // mock framework is required. It expects the class name your application!
+        // Arrange: Create an isolated test environment
         JexxaTest jexxaTest = getJexxaTest(BookStore.class);
 
-        // Request the objects needed for our tests
-        objectUnderTest       = jexxaTest.getInstanceOfPort(BookStoreService.class);   // 1. We need the object we want to test
-        publishedDomainEvents = jexxaTest.getMessageRecorder(DomainEventSender.class); // 2. A recorder for DomainEvents published via DomainEventSender
-        bookRepository        = jexxaTest.getRepository(BookRepository.class);         // 3. Repository managing all books
+        // Obtain the application service under test
+        objectUnderTest =
+                jexxaTest.getInstanceOfPort(BookStoreService.class);
 
-        // Invoke all bootstrapping services from the main method to ensure the same starting point
-        jexxaTest.getJexxaMain().bootstrapAnnotation(DomainService.class);
+        // Obtain a recorder for published domain events
+        publishedDomainEvents =
+                jexxaTest.getMessageRecorder(DomainEventSender.class);
+
+        // Obtain the repository stub
+        bookRepository =
+                jexxaTest.getRepository(BookRepository.class);
     }
-
-    //...
 }
 ```
 
-### Test: Sell last book
-In the following sample, you see that your tests can then be written quite similarly to pure unit tests.
+The `DomainEventSender` and `MessageRecorder` names shown here reflect the existing testing approach. Their exact configuration must match the outbound port and event-publishing adapter used by the current BookStore implementation.
+
+### Bootstrap Test Data Explicitly
+
+If a test requires reference data, initialize that data through the application's bootstrap mechanism.
+
+For example, BookStore may use a `ReferenceLibrary` bootstrap component to populate its initial collection of books.
+
+This is infrastructure initialization, not domain behavior.
+
+Tests should explicitly initialize only the data they require. Avoid bootstrapping every domain service merely to establish the initial state.
+
+### Test: Sell the Last Book
+
+The following test verifies the observable result of selling the last available book.
+
 ```java
-class BookStoreServiceTest 
+@Test
+void sellLastBook()
 {
-   // ... initialization of tests
+    // Arrange
+    objectUnderTest.addToStock(ANY_BOOK, 1);
 
-    @Test
-    void sellLastBook() 
-    {
-        //Arrange
-        objectUnderTest.addToStock(ANY_BOOK, 1);
+    // Act
+    objectUnderTest.sell(ANY_BOOK);
 
-        // Act / Assert
-        assertDoesNotThrow(() -> objectUnderTest.sell(ANY_BOOK));
-        
-        //Assert
-        assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );                        // Perform assertion against the object we test
-        assertEquals( 1 , publishedDomainEvents.size() );                                   // Perform assertion against the repository
-        assertEquals( bookSoldOut(ANY_BOOK), publishedDomainEvents.getMessage(BookSoldOut.class));  // Perform assertion against published DomainEvents
-    }
+    // Assert
+    assertEquals(0, objectUnderTest.amountInStock(ANY_BOOK));
 
+    assertEquals(1, publishedDomainEvents.size());
+
+    assertEquals(
+            BookSoldOut.bookSoldOut(ANY_BOOK),
+            publishedDomainEvents.getMessage(BookSoldOut.class)
+    );
 }
 ```
+
+The test verifies two outcomes:
+
+- The inventory reflects the completed sale.
+- The expected domain event was published.
+
+It does not verify the internal order in which the application service accesses the repository, invokes the aggregate, or publishes the event.
+
+That distinction is intentional. The test describes the expected behavior of the use case rather than its implementation details.
+
+### What About InProcessPubSub?
+
+`InProcessPubSub` is a reusable infrastructure component for synchronous, in-process message distribution.
+
+It can be used by a driven adapter implementing the application's domain-event publishing port.
+
+However, application-service tests should generally interact with the **application-defined port**, not with the concrete `InProcessPubSub` implementation.
+
+This preserves the separation between application behavior and technical infrastructure.
+
+---
+
 ## Write Integration Tests
 
-Finally, we show how to write integration tests. In this case, we assume that your application is started on your local machine. In all our tutorials and templates, maven does this before running the integration tests.
+Integration tests verify the running application through its externally accessible interfaces.
 
+Unlike tests with stubs, these tests use real adapters and may require external services such as a message broker.
 
-### Initialize and shutdown the IT-tests
+In the BookStore example, we use:
 
-In the following you see how to initialize and shutdown class `JexxaIntegrationTest` which is the starting point for your integration test. From this class you request:
-*    A `RESTBinding` to access your running application via `RESTFulRCPAdapter`
-*    A `JMSBinding` to access application under test via JMS  
+- **RESTBinding** to invoke application use cases through REST.
+- **MessageBinding** to receive messages through JMS.
 
+The examples assume that BookStore and its required infrastructure are running before the integration tests execute.
+
+### Initialize and Shut Down the Test Environment
+
+`JexxaIntegrationTest` provides convenient access to the application's external interfaces.
 
 ```java
-class BookstoreIT {
-    // ... initialization of additional parameters for your tests
-
-    private static JexxaIntegrationTest jexxaIntegrationTest;  // Simplified IT testing with jexxa-test
-    private static RESTBinding restBinding;                    // Binding to access the application under test via REST
-    private static MessageBinding messageBinding;              // Binding to access application under test via JMS
+class BookstoreIT
+{
+    private static JexxaIntegrationTest jexxaIntegrationTest;
+    private static RESTBinding restBinding;
+    private static MessageBinding messageBinding;
 
     @BeforeAll
-    static void initBeforeAll() {
-        jexxaIntegrationTest = new JexxaIntegrationTest(BookStore.class);
-        messageBinding = jexxaIntegrationTest.getMessageBinding();
-        restBinding = jexxaIntegrationTest.getRESTBinding();
+    static void initBeforeAll()
+    {
+        jexxaIntegrationTest =
+                new JexxaIntegrationTest(BookStore.class);
+
+        restBinding =
+                jexxaIntegrationTest.getRESTBinding();
+
+        messageBinding =
+                jexxaIntegrationTest.getMessageBinding();
     }
-    
-    // Add your tests here 
+
+    // Integration tests go here
 
     @AfterAll
     static void shutDown()
     {
         jexxaIntegrationTest.shutDown();
     }
-}    
-```
-
-
-### Test: Sell last book
-In the following test, you see how to use the `RESTBinding` to access your application. Please note that we cannot directly perform a method call since we send a REST call. 
-
-But similar to a method call, we provide all parameters: Return value `Void.class`, method name `addToStock` and the two parameters `ANY_BOOK, 5`
-```java
-        bookStoreService.postRequest(Void.class, addToStock, ANY_BOOK, 5);
-```
-The JMSBinding provides the possibility to send and receive messages. 
-The complete test looks as follows. The complete test can be found [here](src/test/java/io/jexxa/tutorials/bookstore/integration/BookstoreIT.java)
-
-```java
-class BookstoreIT {
-    // ... initialization of the test  
-    @Test
-    void testSellLastBook() {
-        //Arrange
-        var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
-        var messageListener = messageBinding.getMessageListener("BookStoreTopic", JMSConfiguration.MessagingType.TOPIC);
-    
-        bookStoreService.postRequest(Void.class, addToStock, ANY_BOOK, 5);
-        var inStock = bookStoreService.postRequest(Integer.class, amountInStock, ANY_BOOK );
-
-        //Act - Sell all books in stock
-        for (int i = 0; i < inStock; ++i)
-        {
-            bookStoreService.postRequest(Void.class, sell, ANY_BOOK);
-        }
-
-        // Receive the jms message
-        var result = messageListener
-                .awaitMessage(5, TimeUnit.SECONDS)
-                .pop(BookSoldOut.class);
-
-        //Assert
-        assertEquals(BookSoldOut.bookSoldOut(ANY_BOOK), result);
-    }
 }
 ```
+
+The test infrastructure is initialized once for the test class and released after all tests have completed.
+
+### Test: Sell the Last Book
+
+This test exercises BookStore through REST and verifies that selling the last book results in an externally published message.
+
+```java
+@Test
+void testSellLastBook()
+{
+    // Arrange
+    var bookStoreService =
+            restBinding.getRESTHandler(BookStoreService.class);
+
+    var messageListener = messageBinding.getMessageListener(
+            "BookStoreTopic",
+            JMSConfiguration.MessagingType.TOPIC
+    );
+
+    bookStoreService.postRequest(
+            Void.class,
+            addToStock,
+            ANY_BOOK,
+            5
+    );
+
+    var inStock = bookStoreService.postRequest(
+            Integer.class,
+            amountInStock,
+            ANY_BOOK
+    );
+
+    // Act
+    for (int i = 0; i < inStock; ++i)
+    {
+        bookStoreService.postRequest(
+                Void.class,
+                sell,
+                ANY_BOOK
+        );
+    }
+
+    // Assert
+    var result = messageListener
+            .awaitMessage(5, TimeUnit.SECONDS)
+            .pop(BookSoldOut.class);
+
+    assertEquals(
+            BookSoldOut.bookSoldOut(ANY_BOOK),
+            result
+    );
+}
+```
+
+The test verifies the interaction between multiple architectural components:
+
+1. The REST adapter receives the request.
+2. The application service executes the use case.
+3. The domain model performs the business operation.
+4. The application publishes the resulting domain event.
+5. The configured messaging integration publishes a message.
+6. The test receives and verifies that message through JMS.
+
+### Domain Events vs. Integration Events
+
+A domain event describes something that happened within the domain.
+
+An integration event communicates information to external systems.
+
+These events may contain similar information, but they have different responsibilities and may require different contracts.
+
+In a simple tutorial, `BookSoldOut` may be published directly through JMS to keep the example easy to follow.
+
+In larger applications, it is often preferable to explicitly select or transform domain events into integration events.
+
+This keeps internal domain contracts independent of externally published message formats.
+
+### A Note on Reliable Message Publication
+
+Receiving a JMS message confirms that the messaging integration worked for the tested scenario.
+
+It does not, by itself, guarantee reliable delivery across failures.
+
+Applications requiring reliable event publication may use patterns such as the **Transactional Outbox** to coordinate state changes and outgoing messages.
+
+Likewise, consumers may require idempotent processing to handle duplicate deliveries.
+
+These concerns belong to the infrastructure and integration design, not to the aggregate's business logic.
+
+---
+
+## Summary
+
+The three test levels complement each other:
+
+| Level                               | Main question                                                 |
+|-------------------------------------|---------------------------------------------------------------|
+| Aggregate unit test                 | Does the domain model behave correctly?                       |
+| Application-service test with stubs | Does the use case produce the expected result?                |
+| Integration test                    | Do the application and its external interfaces work together? |
+
+The underlying architectural principle is consistent across all three levels:
+
+**Test business behavior as close to the domain as possible, and introduce infrastructure only where it is relevant to the responsibility being tested.**
+
+This keeps tests understandable, maintainable, and resilient to implementation changes.
