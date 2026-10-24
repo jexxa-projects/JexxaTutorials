@@ -80,7 +80,7 @@ Add `jexxa-test` to your Maven project when you want to use Jexxa's testing supp
 <dependency>
     <groupId>io.jexxa.jexxatest</groupId>
     <artifactId>jexxa-test</artifactId>
-    <version>8.1.11</version>
+    <version>9.1.10</version>
     <scope>test</scope>
 </dependency>
 ```
