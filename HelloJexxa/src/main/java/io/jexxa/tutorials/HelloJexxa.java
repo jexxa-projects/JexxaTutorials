@@ -12,7 +12,7 @@ public final class HelloJexxa
         return "Hello Jexxa";
     }
 
-    public static void main(String[] args)
+    static void main()
     {
         //Create your jexxaMain for this application
         var jexxaMain = new JexxaMain(HelloJexxa.class);
