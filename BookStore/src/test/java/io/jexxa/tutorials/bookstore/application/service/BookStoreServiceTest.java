@@ -95,8 +95,8 @@ class BookStoreServiceTest
         assertDoesNotThrow(() -> objectUnderTest.sell(ANY_BOOK));
 
         //Assert
-        assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );                    // Perform assertion against the object we test
-        assertEquals( 1 , domainEventRecorder.get().size() );                               // Perform assertion against the repository
+        assertEquals( 0 , objectUnderTest.amountInStock(ANY_BOOK) );    // Perform assertion against the object we test
+        assertEquals( 1 , domainEventRecorder.get().size() );           // Perform assertion against the repository
         assertEquals( ANY_BOOK, domainEventRecorder.get().getFirst().isbn13());  // Perform assertion against published DomainEvents
     }
 
