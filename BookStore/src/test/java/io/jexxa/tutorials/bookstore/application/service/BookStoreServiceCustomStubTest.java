@@ -6,7 +6,6 @@ import io.jexxa.tutorials.bookstore.BookStore;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;
-import io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging.DomainEventDispatcherImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import static io.jexxa.jexxatest.JexxaTest.getJexxaTest;
 import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BookStoreServiceMockTest
+class BookStoreServiceCustomStubTest
 {
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
 
@@ -31,7 +30,7 @@ class BookStoreServiceMockTest
         JexxaTest jexxaTest = getJexxaTest(BookStore.class);
 
         // register our mock repository
-        jexxaTest.resetStubsTo(BookRepositoryMock.class, DomainEventDispatcherImpl.class);
+        jexxaTest.resetStubsTo(BookRepositoryStub.class);
 
         //The mock instance uses the following values
         int expectedAmountOfBooks = 1; //initialized by the mock
@@ -47,13 +46,13 @@ class BookStoreServiceMockTest
 
 
     /* This class is a mock repository used in our test */
-    public static class BookRepositoryMock implements BookRepository
+    public static class BookRepositoryStub implements BookRepository
     {
         private final List<Book> books = new ArrayList<>();
 
-        public BookRepositoryMock()
+        public BookRepositoryStub()
         {
-            SLF4jLogger.getLogger(BookRepositoryMock.class).info("Create Mock-Registry");
+            SLF4jLogger.getLogger(BookRepositoryStub.class).info("Create Stub-Registry");
             books.add(Book.newBook(ANY_BOOK));
         }
 

@@ -15,7 +15,7 @@
 *   JDK 25 (or higher) installed
 *   Maven 3.6 (or higher) installed
 *   curl to trigger the application
-*   Optional: A postgres DB
+*   Optional: A Postgres DB
 
 ## Requirements for the application core
 This application core should provide the following super simplified functionality:
@@ -38,18 +38,18 @@ This tutorial illustrates one possible combination of Domain-Driven Design (DDD)
 
 ### Mapping to DDD and Ports & Adapters
 
-| Component                 | Responsibility                                                                  | Classification                              |
-|---------------------------|---------------------------------------------------------------------------------|---------------------------------------------|
-| `Book`                    | Enforces book stock rules and produces `BookSoldOut` when the last copy is sold | Domain aggregate                            |
-| `ISBN13`                  | Identifies a book                                                               | Domain value object                         |
-| `BookSoldOut`             | Describes a meaningful occurrence in the bookstore domain                       | Domain event                                |
-| `BookNotInStockException` | Signals a domain rule violation                                                 | Domain exception                            |
-| `BookRepository`          | Provides domain-oriented access to books                                        | Repository interface in the domain          |
-| `BookStoreService`        | Coordinates use cases such as adding stock and selling books                    | Application service                         |
-| `IDomainEventDispatcher`  | Allows application code to publish and subscribe to domain events               | Application port (outbound for publication) |
-| `DomainEventDispatcher`   | Distributes domain events synchronously to registered subscribers               | Infrastructure driven adapter               |
-| `IntegrationEventSender`  | Sends events through the configured messaging infrastructure                    | Infrastructure driven adapter               |
-| `ReferenceLibrary`        | Seeds a hardcoded list of books at startup                                      | Bootstrap / sample-data component           |
+| Component                   | Responsibility                                                                  | Classification                              |
+|-----------------------------|---------------------------------------------------------------------------------|---------------------------------------------|
+| `Book`                      | Enforces book stock rules and produces `BookSoldOut` when the last copy is sold | Domain aggregate                            |
+| `ISBN13`                    | Identifies a book                                                               | Domain value object                         |
+| `BookEvent`                 | Describes meaningful occurrences in the bookstore domain                        | Domain event                                |
+| `BookNotInStockException`   | Signals a domain rule violation                                                 | Domain exception                            |
+| `BookRepository`            | Provides domain-oriented access to books                                        | Repository interface in the domain          |
+| `BookStoreService`          | Coordinates use cases such as adding stock and selling books                    | Application service                         |
+| `DomainEventDispatcher`     | Allows application code to publish and subscribe to domain events               | Application port (outbound for publication) |
+| `DomainEventDispatcherImpl` | Distributes domain events synchronously to registered subscribers               | Infrastructure driven adapter               |
+| `IntegrationEventSender`    | Sends events through the configured messaging infrastructure                    | Infrastructure driven adapter               |
+| `ReferenceLibrary`          | Seeds a hardcoded list of books at startup                                      | Bootstrap / sample-data component           |
 
 A **Domain Service** is appropriate only when genuine domain behavior does not naturally belong to an aggregate or value object. This example does not require one. In particular, a dispatcher is not a Domain Service simply because it handles Domain Events.
 
@@ -65,11 +65,12 @@ io.jexxa.tutorials.bookstore
 │   └── port
 │       └── outbound
 │           └── IDomainEventDispatcher
+│           └── IntegrationEventSender
 ├── domain
 │   └── book
 │       ├── Book
 │       ├── ISBN13
-│       ├── BookSoldOut
+│       ├── BookEvent
 │       ├── BookNotInStockException
 │       └── BookRepository
 └── infrastructure
@@ -81,8 +82,8 @@ io.jexxa.tutorials.bookstore
         ├── persistence
         │   └── BookRepositoryImpl
         └── messaging
-            ├── DomainEventDispatcher
-            └── IntegrationEventSender
+            ├── DomainEventDispatcherImpl
+            └── IntegrationEventSenderImpl
 ```
 
 The package structure is illustrative: the concrete source tree and Jexxa bootstrap registration must be kept in sync when refactoring existing code.
