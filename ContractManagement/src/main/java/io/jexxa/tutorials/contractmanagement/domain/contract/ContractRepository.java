@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@SuppressWarnings("unused")
 public interface ContractRepository
 {
     void add(Contract contract);

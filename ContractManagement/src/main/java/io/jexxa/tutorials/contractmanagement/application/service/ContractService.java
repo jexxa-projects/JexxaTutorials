@@ -1,31 +1,30 @@
-package io.jexxa.tutorials.contractmanagement.applicationservice;
+package io.jexxa.tutorials.contractmanagement.application.service;
 
 import io.jexxa.addend.applicationcore.ApplicationService;
+import io.jexxa.tutorials.contractmanagement.application.port.outbound.DomainEventDispatcher;
 import io.jexxa.tutorials.contractmanagement.domain.contract.Contract;
-import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractRepository;
-import io.jexxa.tutorials.contractmanagement.domainservice.DomainEventStore;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import static io.jexxa.tutorials.contractmanagement.domain.contract.Contract.newContract;
+import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("unused")
 @ApplicationService
 public class ContractService
 {
     private final ContractRepository contractRepository;
-    private final DomainEventStore domainEventStore;
+    private final DomainEventDispatcher domainEventDispatcher;
 
-    public ContractService(ContractRepository contractRepository, DomainEventStore domainEventStore)
+
+    public ContractService(
+            ContractRepository contractRepository,
+            DomainEventDispatcher domainEventDispatcher)
     {
-        this.contractRepository = contractRepository;
-        this.domainEventStore = domainEventStore;
+        this.contractRepository = requireNonNull(contractRepository);
+        this.domainEventDispatcher = requireNonNull(domainEventDispatcher);
     }
 
     public ContractNumber createNewContract(String advisor)
@@ -38,8 +37,9 @@ public class ContractService
     public void signContract( ContractNumber contractNumber )
     {
         var contract = contractRepository.get(contractNumber);
-        contract.sign();
+        var result = contract.sign();
         contractRepository.update(contract);
+        domainEventDispatcher.publish(result);
     }
 
     public List<ContractNumber> getUnsignedContracts()
@@ -51,20 +51,6 @@ public class ContractService
                 .toList();
     }
 
-    public List<ContractSigned> getAllSignedContracts()
-    {
-        return domainEventStore.get();
-    }
-
-    public List<ContractSigned> getSignedContracts(int month, int year)
-    {
-        var startDate = LocalDate.of(year, month, 1);
-        var endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
-
-        return domainEventStore.get(
-                startDate.atStartOfDay().toInstant(ZoneOffset.UTC),
-                endDate.atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC));
-    }
 
     public List<ContractNumber> getContractsByAdvisor(String advisor)
     {

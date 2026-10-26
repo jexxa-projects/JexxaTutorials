@@ -6,7 +6,7 @@ import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTag;
 import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetadataSchema;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
-import io.jexxa.tutorials.contractmanagement.domainservice.DomainEventStore;
+import io.jexxa.tutorials.contractmanagement.application.port.outbound.DomainEventStore;
 
 import java.time.Instant;
 import java.util.List;

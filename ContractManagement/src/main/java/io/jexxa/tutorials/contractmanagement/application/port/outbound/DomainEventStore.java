@@ -1,4 +1,4 @@
-package io.jexxa.tutorials.contractmanagement.domainservice;
+package io.jexxa.tutorials.contractmanagement.application.port.outbound;
 
 import io.jexxa.addend.applicationcore.InfrastructureService;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;

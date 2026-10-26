@@ -1,277 +1,425 @@
-# Contract Management—Using an ObjectStore 
+# Contract Management – Using an ObjectStore
 
-## What You Learn
+This tutorial shows how to use Jexxa's `IObjectStore` strategy when a domain repository needs more than lookup by a unique identifier. It also demonstrates how an application service can react to a domain event and maintain a queryable audit history.
 
-*   [When to use Repository or ObjectStore](#Repository-vs-ObjectStore)
-*   [How to use Jexxa's ObjectStore](#Example-ContractManagement)
+## What You Will Learn
 
-## What you need
+- [When to choose `IRepository` or `IObjectStore`](#repository-vs-objectstore)
+- [How to define metadata for ObjectStore queries](#implementing-the-contract-repository)
+- [How to separate contract management from audit-history queries](#application-services-and-domain-events)
+- [How to bootstrap an event handler explicitly](#application-bootstrap)
+- [How to run the example](#run-the-application)
 
-*   Understand tutorial [`BookStore - Using a Repository`](../BookStore/README.md) because we explain only new aspects
-*   30 minutes
-*   JDK 25 (or higher) installed
-*   Maven 3.6 (or higher) installed
-*   curl to trigger the application
-*   (Optional) A postgres DB 
+## Prerequisites
 
-##  Repository vs. ObjectStore
+- Familiarity with [BookStore – Using a Repository](../BookStore/README.md)
+- JDK 25 or later
+- Maven 3.6 or later
+- `curl` for invoking the REST API
+- Optional: a running PostgreSQL database
+- Approximately 30 minutes
 
-When developing a business application, you should focus on the business domain and how to represent
-it within your application. Technical aspects such as the database schema should be hidden as good as possible. 
-Within Jexxa, we support this by providing different strategies for implementing a Repository.   
+## Repository vs. ObjectStore
 
-### Driven Adapter Strategy: `IRepository`  
+The Application Core should express persistence needs through **application-defined repository interfaces**, rather than database schemas or query APIs. JexxaAdapters offers reusable strategies that implement these interfaces in the infrastructure layer.
 
-The `IRepository` interface is very limited regarding querying a managed object. Either you query an object by its 
-unique key. If you want to offer advanced querying mechanisms, you have to implement them by yourself by querying all 
-objects in a first step. Even though this sounds very limiting choosing an `IRepository` for your object should be your 
-first choice. Especially during the development phase of a new application or bounded context, it gives you the time to 
-learn which query interface you really need from the application point of view. 
+### `IRepository`: Start with the simplest strategy
 
-In general, you should use an `IRepository` in following scenarios: 
+`IRepository` is suitable when objects are primarily accessed by their unique identifiers. For less common queries, a small collection can also be retrieved and filtered in application code.
 
-*   You query the managed objects only be their unique key.
-*   In case you need more advanced query operations, the lifetime of the aggregates should be short, so that their 
-    number is relative. This allows you to read all data from the database. 
+Prefer `IRepository` when:
 
-Especially the second case happens quite often in production systems, especially in batch systems. Here, it is quite 
-common that software controlling a specific manufacturing unit requires only knowing the batches that are currently 
-processed. As soon as the processing step is finished, a corresponding `DomainEvent` is published and the aggregate can 
-be removed from the repository.         
-                                                                                      
-Please do not underestimate this aspect because it supports you separating your production data from your archive data.  
+- Most operations load an aggregate by its unique key.
+- The number of objects to inspect is small or bounded.
+- Query requirements are still evolving and do not yet justify a more specialized persistence strategy.
 
-### Driven Adapter Strategy: `IObjectStore`
-                               
-The `IObjectStore` provides more sophisticated interfaces to query managed objects by all kinds of data. 
-Available strategies make explicit use of the underlying technology so that the performance depends 
-on chosen technology stack. This kind of repository should be your second choice. As soon as you see that an 
-`IRepository` is not sufficient, you should switch the implementation of the driven adapter to an `IObjectStore`. 
-Please note that this step should be transparent to the application core because it uses a single interface which is 
-not affected. Only the underlying strategy is changed.
+For example, a manufacturing application may only need to manage the batches currently being processed. Once processing finishes, a domain event can record the outcome and the completed batch can be removed from the active repository. This can help distinguish active operational data from historical records.
 
-In general, you should use an `IObjectStore` in following scenarios:
+> **Design principle:** Start with the simplest repository strategy that satisfies the use cases. Do not introduce database-specific querying before it is needed.
 
-*   You need several ways to request managed objects and
-*   the lifetime of the managed objects is high, so that the number of managed objects will continuously increase.
-*   The metadata to find objects is fixed and will not change over time.  
+### `IObjectStore`: Query objects by metadata
 
-At first thought, the last requirement sounds like a severe restriction. Especially this kind of change typically 
-happens some time after the software is in production. But please keep in mind that your application core is protected 
-by your application-specific interface. So changing the implementation will not affect the application core itself. 
-If a change request occurs, you have a lot of knowledge based on production and other change requests which underlying
-technology or database stack should be used. Now it is the right point in time to switch to a specific implementation
-without using a specific strategy or to provide your own strategy using technologies such as liquibase for versioning 
-your database schema.    
+`IObjectStore` adds metadata-based queries, allowing infrastructure implementations to use capabilities of the selected storage technology.
 
-Typical use cases to select an `IObjectStore` are:
-*   An archive of the domain events.
-*   A bounded context managing objects with a very long lifetime, which mostly happens within a DomainService. 
+Consider `IObjectStore` when:
 
-### Strategies for `IRepository` and `IObjectStore`
+- The application needs several query criteria beyond an object's unique key.
+- The number of stored objects grows over time, making full scans undesirable.
+- Queryable metadata can be defined explicitly.
 
-At the moment, Jexxa provides driven adapter strategies for in-memory storage and JDBC. 
-To query an `IRegistry` or `IObjectStore` you use the `RegistryManager` or `ObjectStoreManager` 
-respectively.
-A significant advantage of using these strategies is to write tests against your 
-Repository without the need of a database.
-This typically speeds up your tests significantly.   
+The metadata schema is part of the **driven adapter**, not the domain model. The Application Core continues to depend on its own repository interface, so a persistence-strategy change need not affect domain code.
 
-By default, both manager classes select a strategy depending on your application configuration and the `Property` 
-object passed to Jexxa as follows: 
+An event archive is one example: it may need queries by event type or time range. Long-lived contracts are another example: they may be queried by advisor, signing status, or contract number.
 
-1.  Check if the application defined a strategy for a specific object type is registered.
-2.  Check if the application defined a default strategy for all kinds of objects. 
-3.  Check if the `Property` object defines a JDBC driver. In this case the `JDBCKeyValueRepository` or `JDBCObjectStore` is used.
-4.  Otherwise, an in memory strategy `IMDBKeyValueRepository` or `IMDBObjectStore` is used. 
+### Available persistence strategies
 
-## Example ContractManagement
+The tutorial uses Jexxa's in-memory and JDBC-backed strategies. The selection described in the existing example follows this precedence:
 
-This tutorial defines the following requirements: 
-*   `IContractRepository`: Manage contracts with a very high lifetime and must be searched by different metadata.  
-*   `IDomainEventStore`: Archive all domain events that must be searched by different metadata.    
+1. An explicitly registered strategy for the object type.
+2. An application-wide default strategy.
+3. A JDBC strategy when the supplied configuration specifies a JDBC driver.
+4. Otherwise, an in-memory strategy (`IMDBKeyValueRepository` or `IMDBObjectStore`).
 
-Based on the requirements, both interfaces should be implemented using an `IObjectStore`. 
-In the rest of this section we describe the implementation of `IContractRepositroy`. 
-Since the implementation of `IDomainEventStore` is quite similar please refer to its source code.  
+This makes it possible to run many tests without a database while using JDBC for integration scenarios. Strategy selection and exact configuration keys depend on the Jexxa version used by the project.
 
-### Implementing `IContractRepositroy`
+## Example: ContractManagement
 
-Using an ObjectStore is quite similar to a Repository. The main difference is in defining the metadata used to query 
-objects. To ensure type safety, Jexxa requires that all metadata is defined as enum together with a `MetaTag` used for 
-converting the value into a base type such as a numeric or string representation. In the following example, we define 
-the three different values to query objects. Please note that the following code belongs to the infrastructure of your 
-application which means that your application just sees the `IContractRepository` and not the schema specification:
+The example has two distinct persistence needs:
+
+| Application-defined port | Purpose                                              | Why `IObjectStore`?                                   |
+|--------------------------|------------------------------------------------------|-------------------------------------------------------|
+| `ContractRepository`     | Stores the current state of contracts                | Query by advisor, signing status, and contract number |
+| `DomainEventStore`       | Stores `ContractSigned` events for the audit history | Query events by date range                            |
+
+Both interfaces belong to the Application Core (or domain, where appropriate); their `IObjectStore`-based implementations belong to infrastructure.
+
+### Architectural overview
+
+```text
+                         Application Core
+  ┌────────────────────────────────────────────────────────┐
+  │                                                        │
+  │  ContractService                 ContractAuditService  │
+  │  - createNewContract()           - handle(event)       │
+  │  - signContract()                - getAllSigned...()   │
+  │  - contract queries              - getSigned...()      │
+  │         │                                  │           │
+  │         │ uses                             │ uses      │
+  │         ▼                                  ▼           │
+  │  ContractRepository                 DomainEventStore   │
+  │         │                                  ▲           │
+  │         │ Contract.sign()                  │           │
+  │         └── ContractSigned ── publish ─────┤           │
+  │                        via DomainEventDispatcher       │
+  └────────────────────────────────────────────────────────┘
+           │                                  │
+           ▼                                  ▼
+  ContractRepositoryImpl              DomainEventStoreImpl
+           │                                  │
+           └────────── IObjectStore ──────────┘
+                     JexxaAdapters
+```
+
+The diagram is conceptual: `ContractService` publishes the event through an application-defined `DomainEventDispatcher` port; `ContractAuditService` subscribes to that port and persists the event through `DomainEventStore`.
+
+**This is not Event Sourcing.** The contract's current state is stored in `ContractRepository`; `DomainEventStore` maintains a separate history of signed contracts.
+
+## Implementing the Contract Repository
+
+The `ContractRepository` interface expresses the application's query needs. Its infrastructure implementation defines the metadata needed by `IObjectStore`.
+
+### Define queryable metadata
+
+For contracts, the queryable fields are:
+
+- Contract number
+- Signing status
+- Advisor
+
+The following excerpt shows the metadata concept used by the existing tutorial:
 
 ```java
 public class ContractRepositoryImpl implements ContractRepository
 {
-    /**
-     * Here we define the values to query contracts. Apart from their key, elements should be queried by the following information: <br>
-     * <ol>
-     *    <li>Contract number</li>
-     *    <li>Contract signed flag</li>
-     *    <li>Advisor of the contract</li>
-     * </ol>
-     */
-    enum ContractSchema implements MetadataSchema
+    enum ContractMetadata implements MetadataSchema
     {
-        /**
-         * This MetaTag represents the contract number. Since it is a numeric value, we use a numberTag. As most
-         * predefined {@link MetaTag} class, we just provide an accessor function to get the value from the managed object.
-         */
-        CONTRACT_NUMBER(numericTag(element -> element.getContractNumber().value())),
-
-        /**
-         * This MetaTag represents a boolean if the contract is signed or not.  Here, we use booleanTag together with the
-         * corresponding accessor function.
-         */
+        CONTRACT_NUMBER(numericTag(contract -> contract.getContractNumber().value())),
         CONTRACT_SIGNED(booleanTag(Contract::isSigned)),
-
-        /**
-         * This MetaTag allows for searching for the advisor of the contract. Here, we use stringTag together with the corresponding
-         * accessor function.
-         */
         ADVISOR(stringTag(Contract::getAdvisor));
 
-        // The remaining code is always the same for all metadata specifications
-        private final MetaTag<Contract, ?, ? > metaTag;
+        private final MetaTag<Contract, ?, ?> metaTag;
 
-        ContractSchema(MetaTag<Contract,?, ?> metaTag)
+        ContractMetadata(MetaTag<Contract, ?, ?> metaTag)
         {
             this.metaTag = metaTag;
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public MetaTag<Contract, ?, ?> getTag()
         {
             return metaTag;
         }
     }
 
-    // ...
+    // Repository implementation follows ...
 }
 ```
 
-After defining the metadata, we can implement the interface.
+The metadata describes how a stored `Contract` can be indexed and queried. It is **not** part of the aggregate's business rules.
+
+> The original tutorial alternated between `ContractSchema` and `ContractMetadata`. This README consistently uses `ContractMetadata`; check the exact enum name and imports against the source before copying the excerpt.
+
+### Obtain an ObjectStore
 
 ```java
-public class ContractRepositoryImpl  implements ContractRepository
+private final IObjectStore<Contract, ContractNumber, ContractMetadata> objectStore;
+
+public ContractRepositoryImpl(Properties properties)
 {
-    // ...
+    this.objectStore = ObjectStoreManager.getObjectStore(
+            Contract.class,
+            Contract::getContractNumber,
+            ContractMetadata.class,
+            properties);
+}
+```
 
-    private final IObjectStore<Contract, ContractNumber, ContractMetadata> objectStore;
+The parameters identify the stored type, its unique key, its query metadata, and the application configuration.
 
-    public ContractRepositoryImpl(Properties properties)
+### Implement application-specific queries
+
+```java
+@Override
+public List<Contract> getByAdvisor(String advisor)
+{
+    return objectStore
+            .getStringQuery(ADVISOR, String.class)
+            .isEqualTo(advisor);
+}
+
+@Override
+public List<Contract> getSignedContracts()
+{
+    return objectStore
+            .getNumericQuery(CONTRACT_SIGNED, Boolean.class)
+            .isEqualTo(true);
+}
+
+@Override
+public List<Contract> getUnsignedContracts()
+{
+    return objectStore
+            .getNumericQuery(CONTRACT_SIGNED, Boolean.class)
+            .isEqualTo(false);
+}
+
+@Override
+public Optional<Contract> getHighestContractNumber()
+{
+    return objectStore
+            .getNumericQuery(CONTRACT_NUMBER, Integer.class)
+            .getDescending(1)
+            .stream()
+            .findFirst();
+}
+```
+
+These excerpts retain the query API used in the supplied tutorial. Verify the boolean-query method and generic types against the current JexxaAdapters version; they have not been compiled as part of this README revision.
+
+`DomainEventStoreImpl` uses the same general approach to persist and query audit events; refer to its implementation for the event-specific metadata.
+
+## Application Services and Domain Events
+
+The example separates two application responsibilities without introducing an extra package:
+
+- `ContractService` manages contracts and executes use cases such as `signContract()`.
+- `ContractAuditService` handles `ContractSigned` events and provides queries over the audit history.
+
+Both are application services. The audit service is **not a Domain Service**: it does not implement a business decision that belongs outside an aggregate. It acts as a **Domain Event Handler** and exposes audit-history queries.
+
+### Sign a contract
+
+```java
+@ApplicationService
+public class ContractService
+{
+    private final ContractRepository contractRepository;
+    private final DomainEventDispatcher domainEventDispatcher;
+
+    public ContractService(
+            ContractRepository contractRepository,
+            DomainEventDispatcher domainEventDispatcher)
     {
-        // To request an ObjectStore strategy, we need to pass the following information to the manager: 
-        this.objectStore = ObjectStoreManager.getObjectStore(
-                Contract.class,                // 1. Type information of the managed object
-                Contract::getContractNumber,   // 2. Method to get the unique key
-                ContractMetadata.class,        // 3. The previous defined metadata
-                properties);                   // 4. Finally, the application-specific Property file
+        this.contractRepository = requireNonNull(contractRepository);
+        this.domainEventDispatcher = requireNonNull(domainEventDispatcher);
     }
 
-    // We skip the implementation of the IRepository methods here and focus on the methods
-    // using the extension in IObjectStore.
-    // ...
-
-    // Implementing the specific query methods is straight forward.     
-    @Override
-    public List<Contract> getByAdvisor(String advisor)
+    public void signContract(ContractNumber contractNumber)
     {
-        return objectStore
-                .getStringQuery(ADVISOR, String.class)
-                .isEqualTo(advisor);
-    }
-    
-    @Override
-    public List<Contract> getSignedContracts()
-    {
-        return objectStore
-                .getNumericQuery(CONTRACT_SIGNED, Boolean.class)
-                .isEqualTo(true);
+        var contract = contractRepository.get(contractNumber);
+        var event = contract.sign();
+        contractRepository.update(contract);
+        domainEventDispatcher.publish(event);
     }
 
-    @Override
-    public List<Contract> getUnsignedContracts()
+    // Other contract operations omitted ...
+}
+```
+
+The aggregate performs the domain operation and returns `ContractSigned`. The application service persists the updated contract and publishes the event through its own outbound port. The aggregate itself does not know about the dispatcher.
+
+### Maintain and query the audit history
+
+```java
+@ApplicationService
+public class ContractAuditService
+{
+    private final DomainEventStore domainEventStore;
+    private final DomainEventDispatcher domainEventDispatcher;
+
+    public ContractAuditService(
+            DomainEventDispatcher domainEventDispatcher,
+            DomainEventStore domainEventStore)
     {
-        return objectStore
-                .getNumericQuery(CONTRACT_SIGNED, Boolean.class)
-                .isEqualTo(false);
+        this.domainEventStore = requireNonNull(domainEventStore);
+        this.domainEventDispatcher = requireNonNull(domainEventDispatcher);
     }
 
-    @Override
-    public Optional<Contract> getHighestContractNumber()
+    public void handle(ContractSigned event)
     {
-        return objectStore
-                .getNumericQuery(CONTRACT_NUMBER, Integer.class)
-                .getDescending(1)
-                .stream()
-                .findFirst();
+        domainEventStore.add(event);
+    }
+
+    public List<ContractSigned> getAllSignedContracts()
+    {
+        return domainEventStore.get();
+    }
+
+    public List<ContractSigned> getSignedContracts(int month, int year)
+    {
+        var startDate = LocalDate.of(year, month, 1);
+        var endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
+
+        return domainEventStore.get(
+                startDate.atStartOfDay().toInstant(ZoneOffset.UTC),
+                endDate.atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC));
+    }
+
+    public void initialize()
+    {
+        domainEventDispatcher.subscribe(ContractSigned.class, this::handle);
     }
 }
 ```
-## Run the application
 
-### Use an in memory database
+This service has one cohesive responsibility: maintaining and exposing the history of signed contracts. The constructor only receives dependencies; `initialize()` activates the subscription explicitly.
 
-```console                                                          
+**Important:** The example uses UTC calendar boundaries. If the business defines months in another time zone, those boundaries must be calculated in that zone. The inclusive end-of-day range also follows the original example; a half-open range (`startInclusive`, `nextMonthStartExclusive`) is often preferable when the store supports it.
+
+### Application bootstrap
+
+The `main()` method wires the event handler before exposing application services through REST:
+
+```java
+void main()
+{
+    var jexxaMain = new JexxaMain(ContractManagement.class);
+
+    jexxaMain
+            .bootstrap(ContractAuditService.class)
+                .with(ContractAuditService::initialize)
+
+            .bind(RESTfulRPCAdapter.class).to(ContractService.class)
+            .bind(RESTfulRPCAdapter.class).to(ContractAuditService.class)
+            .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
+
+            .run();
+}
+```
+
+The explicit bootstrap makes the event subscription visible and ensures it is registered before the REST bindings start accepting requests, assuming the documented Jexxa lifecycle executes bootstrap steps before adapter startup.
+
+> **REST exposure:** Check how `RESTfulRPCAdapter` selects operations. `handle(ContractSigned)` and `initialize()` are lifecycle/event-handling methods, not intended public REST operations. If all public methods are exposed automatically, restrict the binding or expose only the audit query API.
+
+### Event delivery and consistency
+
+The in-process dispatcher delivers events synchronously. This keeps the example simple, but it does **not** make the contract update and audit-history update one atomic operation. If publishing or persisting the audit event fails after the contract is updated, the two stores may diverge.
+
+For a production application that requires reliable audit history, consider transaction boundaries and a mechanism such as the **Transactional Outbox Pattern**. This tutorial focuses on ObjectStore queries and application wiring rather than reliable event delivery.
+
+## Run the Application
+
+### Use in-memory persistence
+
+From the ContractManagement project directory:
+
+```shell
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" ./target/contractmanagement-jar-with-dependencies.jar```
-You will see following (or similar) output
-```console
-[main] INFO io.jexxa.utils.JexxaBanner - Jexxa Version                  : VersionInfo[version=5.0.0-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/Jexxa.git/jexxa-core, projectName=Jexxa-Core, buildTimestamp=2022-06-06 07:08]
-[main] INFO io.jexxa.utils.JexxaBanner - Context Version                : VersionInfo[version=1.0.16-SNAPSHOT, repository=scm:git:https://github.com/jexxa-projects/JexxaTutorials.git/contractmanagement, projectName=ContractManagement, buildTimestamp=2022-06-06 07:16]
-[main] INFO io.jexxa.utils.JexxaBanner - Used Driving Adapter           : [RESTfulRPCAdapter]
-[main] INFO io.jexxa.utils.JexxaBanner - Used ObjectStore Strategie     : IMDBObjectStore
-...
-```          
+java -Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties \
+     -jar ./target/contractmanagement-jar-with-dependencies.jar
+```
 
-### Use a Postgres database
+The configuration should select the in-memory strategy, such as `IMDBObjectStore`. Check the startup log for the effective persistence strategy; exact log messages vary by version.
 
-The properties file [jexxa-test.properties](src/test/resources/jexxa-test.properties) is configured to use a postgres
-DB. So we have to enter following command
+### Use PostgreSQL
 
+Start a PostgreSQL database with the settings expected by the supplied configuration file, then run:
 
-```console                                                          
+```shell
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" ./target/contractmanagement-jar-with-dependencies.jar
-```
-In contrast to the above output, Jexxa will state that you use JDBC persistence strategy now:
-```console
-[main] INFO io.jexxa.tutorials.contractmanagement.ContractManagement - Use persistence strategy: JDBCObjectStore 
+java -Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties \
+     -jar ./target/contractmanagement-jar-with-dependencies.jar
 ```
 
-### Execute some commands using curl
+The original tutorial uses `src/test/resources/jexxa-test.properties` for JDBC-backed persistence. Verify the database URL, credentials, and required schema before starting. The expected strategy is `JDBCObjectStore`.
 
-#### Create a new contract which is managed by Paul 
+### Invoke the REST API with curl
 
-Command:
-```Console
-curl -X POST -H "Content-Type: application/json" \
-    -d '"Paul"' \
-    http://localhost:7504/ContractService/createNewContract                 
+The following requests assume the application is available on port `7504` and the REST adapter exposes the shown service methods.
+
+#### Create a contract for Paul
+
+```shell
+curl -X POST -H 'Content-Type: application/json' \
+     -d '"Paul"' \
+     http://localhost:7504/ContractService/createNewContract
 ```
 
-Response: The number of the contract
-```Console
+Example response:
+
+```json
 {"value":1}
 ```
 
-Note: This command can be repeated several times to create more contracts 
+Repeat the request to create more contracts.
 
-#### Query for a specific advisor 
+#### Query contracts by advisor
 
-Command:
-```Console
-curl -X POST -H "Content-Type: application/json" \
-    -d '"Paul"' \
-    http://localhost:7504/ContractService/getContractsByAdvisor                 
+```shell
+curl -X POST -H 'Content-Type: application/json' \
+     -d '"Paul"' \
+     http://localhost:7504/ContractService/getContractsByAdvisor
 ```
-Response: The contract numbers of all contracts managed by Paul. Note that we called the previous method 9 times.  
-```Console
-[{"value":1},{"value":2},{"value":4},{"value":5},{"value":6},{"value":7},{"value":3},{"value":8},{"value":9}]
 
+Example response after creating three contracts:
+
+```json
+[{"value":1},{"value":2},{"value":3}]
 ```
+
+The order depends on the repository query; do not rely on it unless the application explicitly defines ordering.
+
+
+```shell
+curl -X POST -H 'Content-Type: application/json'      -d '{"value":1}'      http://localhost:7504/ContractService/signContract
+```
+
+#### Query the audit history
+
+After signing contracts through the application's supported API, audit-history queries are available from `ContractAuditService` if those methods are exposed by the REST binding:
+
+```text
+ContractAuditService/getAllSignedContracts
+ContractAuditService/getSignedContracts
+```
+
+```shell
+curl   http://localhost:7504/ContractAuditService/getAllSignedContracts
+```
+Example response looks like:
+
+```json
+[{"contractNumber":{"value":1},"signatureDate":{"seconds":1793022377,"nanos":826240320}}]
+```
+
+
+The exact request body for `getSignedContracts(int month, int year)` depends on the REST adapter's parameter-serialization convention; consult the current REST binding tests before invoking it with `curl`.
+
+## Summary
+
+- **`IRepository`** is the first choice when lookup by unique key is sufficient.
+- **`IObjectStore`** supports richer metadata-based queries while keeping storage details out of the Application Core.
+- **`ContractService`** manages contracts; **`ContractAuditService`** maintains and queries the signed-contract audit history.
+- **`ContractSigned`** is a Domain Event produced by the aggregate and published by the application service.
+- **Bootstrap** activates the audit handler explicitly before REST adapters start.
+- In-memory and JDBC-backed strategies can be selected without changing the application-defined repository interfaces.
