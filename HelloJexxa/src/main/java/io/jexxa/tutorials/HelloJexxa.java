@@ -5,13 +5,6 @@ import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
 
 public final class HelloJexxa
 {
-    @SuppressWarnings({"java:S3400", "unused"})
-    // Our business logic ;-)
-    public String greetings()
-    {
-        return "Hello Jexxa";
-    }
-
     static void main()
     {
         //Create your jexxaMain for this application
@@ -19,7 +12,7 @@ public final class HelloJexxa
 
         jexxaMain
                 // Bind a REST adapter to expose parts of the application
-                .bind(RESTfulRPCAdapter.class).to(HelloJexxa.class)               // Get greetings: http://localhost:7501/HelloJexxa/greetings
+                .bind(RESTfulRPCAdapter.class).to(GreetingService.class)          // Get greetings: http://localhost:7501/GreetingService/greetings
                 .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())  // Get stats: http://localhost:7501/BoundedContext/isRunning
 
                 // Run your application until Ctrl-C is pressed
