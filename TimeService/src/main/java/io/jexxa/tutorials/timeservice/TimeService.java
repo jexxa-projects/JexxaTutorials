@@ -4,12 +4,12 @@ import io.jexxa.core.JexxaMain;
 
 import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
 import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
-import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
+import io.jexxa.tutorials.timeservice.application.service.TimeApplicationService;
 import io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging.TimeListener;
 
 public final class TimeService
 {
-    public static void main(String[] args)
+    static void main()
     {
         //Create your jexxaMain for this application
         var jexxaMain = new JexxaMain(TimeService.class);
@@ -21,13 +21,7 @@ public final class TimeService
 
                 // Bind the JMSAdapter to our message listener
                 .bind(JMSAdapter.class).to(TimeListener.class)
-                .bind(JMSAdapter.class).to(TimeListener.class)
 
                 .run();
-    }
-
-    private TimeService()
-    {
-        //Private constructor since we only offer main
     }
 }

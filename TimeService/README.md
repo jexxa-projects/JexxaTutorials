@@ -1,121 +1,96 @@
-# TimeService - Asynchronous Messaging with Jexxa
+# TimeService: Asynchronous Messaging with Jexxa
 
-This tutorial demonstrates how to build an application with a **clean
-separation between domain logic and technology stacks** using Jexxa.
-We implement two simple use cases:
+In about 60 minutes you build an application that publishes the current time as a message and receives it again. The point is not the clock. The point is that your business logic stays free of any messaging code, and you can prove it.
 
--   **Use Case 1:** Publish the current time.
--   **Use Case 2:** Receive and display the published time.
+**What you build**
 
-------------------------------------------------------------------------
+```
+                    ┌──────────────── Application Core ────────────────┐
+ curl ──REST──▶ RESTfulRPCAdapter ──▶ TimeApplicationService            │
+                                          │            ▲                │
+                      uses interfaces:    ▼            │                │
+                                    TimePublisher   TimeDisplay         │
+                    └─────────────────────┬────────────┬────────────────┘
+                                          ▼            ▼
+                                 TimePublisherImpl  TimeDisplayImpl
+                                  (sends to JMS)     (writes to log)
+                                          │
+                                       JMS topic
+                                          │
+                                          ▼
+ TimeListener (driving adapter) ──▶ TimeApplicationService.showReceivedTime(...)
+```
 
-## What You Will Learn
+**Two use cases**
 
--   [How to implement an application core defining the use
-    cases](#1-implement-the-application-core)
--   [How to implement required driven
-    adapters](#2-implement-the-infrastructure)
--   [How to implement required driving
-    adapters](#3-receive-localtime-again-driving-adapter)
--   [How to compose the full application with
-    Jexxa](#4-implement-the-application)
+1. Publish the current time (triggered via REST).
+2. Receive the published time and display it (triggered by a JMS message).
 
-------------------------------------------------------------------------
+**Requirements**
 
-## Requirements
+- You completed the **HelloJexxa** tutorial. Binding adapters and REST are not explained again here.
+- JDK 25 or higher, Maven 3.6+, `curl`
+- Optional: a running ActiveMQ (Artemis) broker, only for the last step
 
-Before starting, ensure that you:
+---
 
--   Understand the `HelloJexxa` tutorial (this tutorial focuses on new
-    concepts)
--   Have approx. *60 minutes*
--   Installed **JDK 25** or higher
--   Installed **Maven 3.6** or higher
--   Have a running **ActiveMQ** instance (for running with real
-    infrastructure)
--   Installed **curl** (for triggering the application)
+## The New Concepts
 
-------------------------------------------------------------------------
+| Term                 | Meaning                                                                 | In this tutorial                                         |
+|----------------------|-------------------------------------------------------------------------|----------------------------------------------------------|
+| **Application core** | Use cases and the interfaces they need. No technology.                  | `TimeApplicationService`, `TimePublisher`, `TimeDisplay` |
+| **Driven adapter**   | Technology that your core *calls* by implementing one of its interfaces | `TimePublisherImpl`, `TimeDisplayImpl`                   |
+| **Driving adapter**  | Technology that *calls* your core                                       | `RESTfulRPCAdapter`, `TimeListener`                      |
 
-## Motivation
+The **dependency rule** is the most important sentence of this tutorial: infrastructure depends on the core, never the other way around. The core defines what it needs (`TimePublisher`), and the infrastructure fulfills it. Because of this, you can replace JMS by something else without touching a line of the core.
 
-This tutorial illustrates how to structure your application following
-Domain-Driven Design (DDD) principles and how Jexxa helps to keep your
-domain logic clean and technology‑agnostic.
+---
 
-We deliberately follow two small use cases that demonstrate:
+## Step 0: Project Layout
 
-1.  Publishing the current local time
-2.  Receiving the published time and displaying it
+Create a Maven project as in HelloJexxa. The `pom.xml` is the same, plus the JMS dependency required by your broker. Then create this package structure:
 
-------------------------------------------------------------------------
+```
+io.jexxa.tutorials.timeservice
+├── applicationservice          use cases
+├── domainservice               interfaces the core needs
+├── domain                      domain objects (empty in this tutorial)
+├── infrastructure
+│   ├── drivenadapter
+│   │   ├── display             TimeDisplayImpl
+│   │   └── messaging           TimePublisherImpl
+│   └── drivingadapter
+│       └── messaging           TimeListener
+└── TimeService.java            composition of everything
+```
 
-## 0. Project Setup
+Notice the split: everything outside `infrastructure` is the application core.
 
-To organize the code following DDD, we use the following package
-structure:
+> Imports are omitted in the code below for brevity. Your IDE resolves them.
 
--   `applicationservice` - Declares application services for each use
-    case
--   `domainservice` - Contains domain-specific services that do not
-    belong to a single entity
--   `domain` - Holds core domain objects (not required for this
-    tutorial)
--   `infrastructure` - Implements driven and driving adapters
+---
 
-Inside `infrastructure`, we create:
+## Step 1: Write the Application Core
 
--   `drivenadapter/display`
--   `drivenadapter/messaging`
--   `drivingadapter/messaging`
+Start with the core, before any technology is chosen.
 
-Example structure:
+**The two interfaces** (package `domainservice`):
 
-    (io.jexxa.tutorials.timeservice)
-        applicationservice
-        domain
-        domainservice
-        infrastructure
-        |    drivenadapter
-        |    |    display
-        |    |    messaging
-        |    drivingadapter
-        |    |    messaging
-        Main.java
-
-------------------------------------------------------------------------
-
-## 1. Implement the Application Core
-
-The application core stays free from any technology‑specific details.
-
-### `TimePublisher` interface
-
-Located in `domainservice`.\
-Responsible for publishing a `LocalTime`.
-
-``` java
+```java
 public interface TimePublisher {
     void publish(LocalTime localTime);
 }
 ```
 
-### `TimeDisplay` interface
-
-Located in `domainservice`.\
-Responsible for displaying a received `LocalTime`.
-
-``` java
+```java
 public interface TimeDisplay {
     void show(LocalTime localTime);
 }
 ```
 
-### `TimeApplicationService`
+**The use cases** (package `applicationservice`):
 
-Implements both use cases by delegating to the interfaces above.
-
-``` java
+```java
 public class TimeApplicationService {
     private final TimePublisher timePublisher;
     private final TimeDisplay timeDisplay;
@@ -125,26 +100,49 @@ public class TimeApplicationService {
         this.timeDisplay = Objects.requireNonNull(timeDisplay);
     }
 
+    // Use case 1
     public void publishTime() {
         timePublisher.publish(LocalTime.now());
     }
 
+    // Use case 2
     public void showReceivedTime(LocalTime localTime) {
         timeDisplay.show(localTime);
     }
 }
 ```
 
-------------------------------------------------------------------------
+The service only knows the interfaces. It receives them through its constructor, and Jexxa provides matching implementations when it creates the service.
 
-## 2. Implement the Infrastructure
+### Prove It: Test the Core Without Any Infrastructure
 
-### `TimeDisplayImpl` (Driven Adapter)
+Both interfaces have a single method, so lambdas are enough as test doubles (JUnit 5 required):
 
-Logs the received time to the console.
+```java
+class TimeApplicationServiceTest {
+    @Test
+    void publishTimeSendsCurrentTime() {
+        var published = new ArrayList<LocalTime>();
+        var service = new TimeApplicationService(published::add, time -> {});
 
-``` java
+        service.publishTime();
+
+        assertEquals(1, published.size());
+    }
+}
+```
+
+**Checkpoint:** the test passes. You tested a use case without a broker, a port or a framework.
+
+---
+
+## Step 2: Implement the Driven Adapters
+
+### Display: writes to the log
+
+```java
 public class TimeDisplayImpl implements TimeDisplay {
+    @Override
     public void show(LocalTime localTime) {
         var msg = "New time received: " + localTime.format(DateTimeFormatter.ISO_TIME);
         SLF4jLogger.getLogger(TimeDisplayImpl.class).info(msg);
@@ -152,11 +150,9 @@ public class TimeDisplayImpl implements TimeDisplay {
 }
 ```
 
-### `TimePublisherImpl` (Driven Adapter)
+### Publisher: sends to a JMS topic
 
-Publishes times to a JMS topic (`TimeService`).
-
-``` java
+```java
 public class TimePublisherImpl implements TimePublisher {
     public static final String TIME_TOPIC = "TimeService";
     private final MessageSender messageSender;
@@ -175,26 +171,25 @@ public class TimePublisherImpl implements TimePublisher {
 }
 ```
 
-Property configuration (`jexxa-application.properties`):
+The `Properties` constructor argument carries the connection settings from `jexxa-application.properties`. Your adapter never hard-codes them:
 
-``` properties
+```properties
 java.naming.factory.initial=org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory
 java.naming.provider.url=tcp://localhost:61616
 java.naming.user=admin
 java.naming.password=admin
 ```
 
-------------------------------------------------------------------------
+---
 
-## 3. Receive LocalTime Again (Driving Adapter)
+## Step 3: Implement the Driving Adapter
 
-We implement a JMS listener that calls the Application Service once a
-message is received.
+The listener is the mirror image of the publisher: it receives a message and calls the application service.
 
-``` java
+```java
 public final class TimeListener extends TypedMessageListener<LocalTime> {
-    private final TimeApplicationService timeApplicationService;
     private static final String TIME_TOPIC = "TimeService";
+    private final TimeApplicationService timeApplicationService;
 
     public TimeListener(TimeApplicationService timeApplicationService) {
         super(LocalTime.class);
@@ -209,67 +204,106 @@ public final class TimeListener extends TypedMessageListener<LocalTime> {
 }
 ```
 
-------------------------------------------------------------------------
+The listener contains no logic. It translates "a message arrived" into "call this use case".
 
-## 4. Implement the Application
+> The topic name appears twice, in publisher and listener. Both adapters live in the infrastructure, and they must agree on it. Keeping the constant out of the core is intentional: the topic is a technical detail.
 
-Finally, we bootstrap Jexxa and bind all required adapters.
+---
 
-``` java
+## Step 4: Compose the Application
+
+```java
 public final class TimeService {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         var jexxaMain = new JexxaMain(TimeService.class);
 
         jexxaMain
-                .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)
-                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext())
-                .bind(JMSAdapter.class).to(TimeListener.class)
+                .bind(RESTfulRPCAdapter.class).to(TimeApplicationService.class)  // trigger use case 1
+                .bind(RESTfulRPCAdapter.class).to(jexxaMain.getBoundedContext()) // health check
+                .bind(JMSAdapter.class).to(TimeListener.class)                   // trigger use case 2
                 .run();
     }
 }
 ```
 
-------------------------------------------------------------------------
+There are three bindings and no wiring code. Jexxa finds the implementations of `TimePublisher` and `TimeDisplay` in your packages and passes them to the `TimeApplicationService` constructor.
 
-## Running the Application (Console Mode)
+Compare this with HelloJexxa. Only the number of adapters has grown; the principle is the same.
 
-``` bash
+---
+
+## Step 5: Run It
+
+The application can run in two modes. Which one you get is decided only by the properties file you import, not by code.
+
+### Mode A: Local, without a broker
+
+```bash
 mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties"      ./target/timeservice-jar-with-dependencies.jar
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-local.properties" \
+     ./target/timeservice-jar-with-dependencies.jar
 ```
 
-You can publish a time using:
+Trigger use case 1:
 
-``` bash
+```bash
 curl -X POST http://localhost:7502/TimeApplicationService/publishTime
 ```
 
-------------------------------------------------------------------------
+**Checkpoint:** the console shows `New time received: ...`.
 
-## Running the Application with JMS
+### Mode B: With a real ActiveMQ broker
 
-``` bash
-mvn clean install
-java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties"      ./target/timeservice-jar-with-dependencies.jar
+Start a broker whose credentials match your properties (user `admin`, password `admin`). For example with Docker:
+
+```bash
+docker run --rm -p 61616:61616 -p 8161:8161 \
+  -e ARTEMIS_USER=admin -e ARTEMIS_PASSWORD=admin \
+  apache/activemq-artemis:latest
 ```
 
-Publishing a time via curl:
+Then start the application with the other configuration and repeat the `curl` call:
 
-``` bash
-curl -X POST http://localhost:7502/TimeApplicationService/publishTime
+```bash
+java -jar "-Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties" \
+     ./target/timeservice-jar-with-dependencies.jar
 ```
 
-------------------------------------------------------------------------
+**Checkpoint:** you get the same log output as in Mode A. The application code is identical, and only the configuration and the infrastructure behind it changed.
 
-## Summary
+---
 
-You have successfully implemented:
+## What You Have Learned
 
--   A clean Application Core
--   Driven Adapters (JMS publisher, console display)
--   A Driving Adapter (JMS listener)
--   An assembled application using Jexxa
+- The core declares what it needs as interfaces, and adapters implement them.
+- Driven adapters are called by the core, and driving adapters call the core.
+- Jexxa composes the application with `bind(...).to(...)` and injects implementations through constructors.
+- The same code runs against different infrastructure, selected by configuration.
 
-This example demonstrates how Jexxa enforces clear architecture
-boundaries and simplifies working with infrastructure components such as
-JMS.
+---
+
+## Troubleshooting
+
+| Problem                                 | Likely cause and fix                                                                        |
+|-----------------------------------------|---------------------------------------------------------------------------------------------|
+| `Connection refused` on port 61616      | Mode B only: the broker is not running, or the URL in the properties is wrong.              |
+| `curl` fails to connect on port 7502    | The application did not start, or the REST port in your properties file differs.            |
+| Request succeeds, but nothing is logged | Check that `TimeListener` is bound and that publisher and listener use the same topic name. |
+| `Unable to access jarfile`              | Run `mvn clean install` first and check the jar name in `target/`.                          |
+
+---
+
+## Try It Yourself
+
+1. Write a second `TimeDisplay` implementation that prints to `System.out`. What do you have to change in the core? (Hint: nothing.)
+2. Add a second use case, for example publishing a time on request with a given `LocalTime`. Which layers do you touch?
+3. Replace the JMS publisher by a fake that stores times in a list. Which classes stay unchanged?
+
+---
+
+## Next Steps
+
+| Goal                        | Resource                                                             |
+|-----------------------------|----------------------------------------------------------------------|
+| Start a real project        | [JexxaArchetypes](https://github.com/jexxa-projects/JexxaArchetypes) |
+| Learn the concepts in depth | https://www.jexxa.io                                                 |

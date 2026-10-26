@@ -1,7 +1,7 @@
 package io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
-import io.jexxa.tutorials.timeservice.domainservice.TimePublisher;
+import io.jexxa.tutorials.timeservice.application.port.outbound.TimePublisher;
 
 import java.time.LocalTime;
 import java.util.Properties;

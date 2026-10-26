@@ -1,4 +1,4 @@
-package io.jexxa.tutorials.timeservice.domainservice;
+package io.jexxa.tutorials.timeservice.application.port.outbound;
 
 import java.time.LocalTime;
 

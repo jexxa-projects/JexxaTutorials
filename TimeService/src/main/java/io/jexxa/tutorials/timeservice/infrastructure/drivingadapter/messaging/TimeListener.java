@@ -3,7 +3,7 @@ package io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging;
 
 import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
 import io.jexxa.common.drivingadapter.messaging.jms.listener.TypedMessageListener;
-import io.jexxa.tutorials.timeservice.applicationservice.TimeApplicationService;
+import io.jexxa.tutorials.timeservice.application.service.TimeApplicationService;
 
 import java.time.LocalTime;
 
