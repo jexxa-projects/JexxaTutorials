@@ -1,7 +1,7 @@
-package io.jexxa.tutorials.timeservice.applicationservice;
+package io.jexxa.tutorials.timeservice.application.service;
 
-import io.jexxa.tutorials.timeservice.domainservice.TimeDisplay;
-import io.jexxa.tutorials.timeservice.domainservice.TimePublisher;
+import io.jexxa.tutorials.timeservice.application.port.outbound.TimeDisplay;
+import io.jexxa.tutorials.timeservice.application.port.outbound.TimePublisher;
 
 import java.time.LocalTime;
 import java.util.Objects;
