@@ -1,9 +1,10 @@
 package io.jexxa.tutorials.contractmanagement.infrastructure.drivenadapter.persistence;
 
+import io.jexxa.adapters.core.drivenadapter.persistence.objectstore.IObjectStore;
+import io.jexxa.adapters.core.drivenadapter.persistence.objectstore.metadata.MetaTag;
+import io.jexxa.adapters.core.drivenadapter.persistence.objectstore.metadata.MetadataSchema;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-import io.jexxa.common.drivenadapter.persistence.objectstore.IObjectStore;
-import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTag;
-import io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetadataSchema;
+
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractNumber;
 import io.jexxa.tutorials.contractmanagement.domain.contract.ContractSigned;
 import io.jexxa.tutorials.contractmanagement.application.port.outbound.DomainEventStore;
@@ -12,9 +13,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.persistence.ObjectStoreFactory.createObjectStore;
-import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.instantTag;
-import static io.jexxa.common.drivenadapter.persistence.objectstore.metadata.MetaTags.numericTag;
+import static io.jexxa.adapters.core.drivenadapter.persistence.ObjectStoreFactory.createObjectStore;
+import static io.jexxa.adapters.core.drivenadapter.persistence.objectstore.metadata.MetaTags.instantTag;
+import static io.jexxa.adapters.core.drivenadapter.persistence.objectstore.metadata.MetaTags.numericTag;
 
 
 @SuppressWarnings("unused")

@@ -1,7 +1,7 @@
 package io.jexxa.tutorials;
 
+import io.jexxa.adapters.rest.RESTfulRPCAdapter;
 import io.jexxa.core.JexxaMain;
-import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
 
 public final class HelloJexxa
 {

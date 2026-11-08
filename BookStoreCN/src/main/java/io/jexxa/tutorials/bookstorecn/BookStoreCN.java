@@ -1,9 +1,10 @@
 package io.jexxa.tutorials.bookstorecn;
 
 
+import io.jexxa.adapters.esp.drivingadapter.KafkaAdapter;
+import io.jexxa.adapters.rest.RESTfulRPCAdapter;
 import io.jexxa.core.JexxaMain;
-import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
-import io.jexxa.esp.drivingadapter.KafkaAdapter;
+
 import io.jexxa.tutorials.bookstorecn.application.port.outbound.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstorecn.application.port.outbound.IntegrationEventSender;
 import io.jexxa.tutorials.bookstorecn.application.service.BookStoreService;

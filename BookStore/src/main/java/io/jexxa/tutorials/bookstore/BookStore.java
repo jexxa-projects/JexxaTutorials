@@ -1,8 +1,8 @@
 package io.jexxa.tutorials.bookstore;
 
 
+import io.jexxa.adapters.rest.RESTfulRPCAdapter;
 import io.jexxa.core.JexxaMain;
-import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
 import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstore.application.service.BookStoreService;
 import io.jexxa.tutorials.bookstore.application.port.outbound.IntegrationEventSender;

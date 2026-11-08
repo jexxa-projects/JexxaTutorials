@@ -1,6 +1,6 @@
 package io.jexxa.tutorials.bookstore.integration;
 
-import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
+import io.jexxa.adapters.jms.drivingadapter.JMSConfiguration;
 import io.jexxa.jexxatest.JexxaIntegrationTest;
 import io.jexxa.jexxatest.integrationtest.messaging.JMSBinding;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;

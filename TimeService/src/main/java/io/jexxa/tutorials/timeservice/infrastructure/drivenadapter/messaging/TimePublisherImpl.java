@@ -1,13 +1,12 @@
 package io.jexxa.tutorials.timeservice.infrastructure.drivenadapter.messaging;
 
-import io.jexxa.common.drivenadapter.messaging.MessageSender;
+import io.jexxa.adapters.core.drivenadapter.messaging.MessageSender;
 import io.jexxa.tutorials.timeservice.application.port.outbound.TimePublisher;
 
 import java.time.LocalTime;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
-
+import static io.jexxa.adapters.core.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
 
 
 @SuppressWarnings("unused")

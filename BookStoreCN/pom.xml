@@ -29,28 +29,9 @@
     <dependencies>
         <!-- dependencies for application core -->
         <dependency>
-            <groupId>io.jexxa.adapters</groupId>
-            <artifactId>esp-adapters-core</artifactId>
-            <version>${jexxa.esp.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.databind.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jexxa.adapters</groupId>
-            <artifactId>esp-adapters-test</artifactId>
-            <version>${jexxa.esp.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jexxa.adapters</groupId>
-            <artifactId>common-adapters</artifactId>
-            <version>4.1.11-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>io.jexxa</groupId>
+            <artifactId>jexxa-starter-streaming</artifactId>
+            <version>${jexxa.release.version}</version>
         </dependency>
     </dependencies>
     <repositories>

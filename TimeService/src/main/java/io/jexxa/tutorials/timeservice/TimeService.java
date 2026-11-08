@@ -1,9 +1,9 @@
 package io.jexxa.tutorials.timeservice;
 
-import io.jexxa.core.JexxaMain;
 
-import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
-import io.jexxa.drivingadapter.rest.RESTfulRPCAdapter;
+import io.jexxa.adapters.jms.drivingadapter.JMSAdapter;
+import io.jexxa.adapters.rest.RESTfulRPCAdapter;
+import io.jexxa.core.JexxaMain;
 import io.jexxa.tutorials.timeservice.application.service.TimeApplicationService;
 import io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging.TimeListener;
 

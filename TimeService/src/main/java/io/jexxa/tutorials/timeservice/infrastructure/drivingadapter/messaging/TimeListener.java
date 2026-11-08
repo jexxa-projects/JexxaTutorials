@@ -1,13 +1,14 @@
 package io.jexxa.tutorials.timeservice.infrastructure.drivingadapter.messaging;
 
 
-import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
-import io.jexxa.common.drivingadapter.messaging.jms.listener.TypedMessageListener;
+
+import io.jexxa.adapters.jms.drivingadapter.JMSConfiguration;
+import io.jexxa.adapters.jms.drivingadapter.listener.TypedMessageListener;
 import io.jexxa.tutorials.timeservice.application.service.TimeApplicationService;
 
 import java.time.LocalTime;
 
-import static io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration.MessagingType.TOPIC;
+import static io.jexxa.adapters.jms.drivingadapter.JMSConfiguration.MessagingType.TOPIC;
 
 
 /**

@@ -1,13 +1,13 @@
 package io.jexxa.tutorials.bookstorecn.infrastructure.drivenadapter.messaging;
 
+import io.jexxa.adapters.esp.drivenadapter.EventSender;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-import io.jexxa.esp.drivenadapter.EventSender;
 import io.jexxa.tutorials.bookstorecn.application.port.outbound.IntegrationEventSender;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 
 import java.util.Properties;
 
-import static io.jexxa.esp.drivenadapter.EventSenderFactory.createEventSender;
+import static io.jexxa.adapters.esp.drivenadapter.EventSenderFactory.createEventSender;
 
 
 @SuppressWarnings("unused")

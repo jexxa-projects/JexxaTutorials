@@ -1,7 +1,7 @@
 package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 
+import io.jexxa.adapters.core.messaging.InProcessPubSub;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-import io.jexxa.common.messaging.InProcessPubSub;
 import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventDispatcher;
 
 import java.util.function.Consumer;

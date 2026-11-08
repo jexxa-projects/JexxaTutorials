@@ -9,6 +9,13 @@
 
   <name>HelloJexxa</name>
   <artifactId>hellojexxa</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>io.jexxa</groupId>
+      <artifactId>jexxa-starter-business</artifactId>
+      <version>${jexxa.release.version}</version>
+    </dependency>
+  </dependencies>
 
   <properties>
     <main.http.port>7501</main.http.port>

@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static io.jexxa.tutorials.bookstorecn.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstorecn.domain.book.ISBN13.createISBN;
-import static io.smallrye.common.constraint.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookTest {
     private static final ISBN13 ANY_BOOK = createISBN("978-3-86490-387-8" );
