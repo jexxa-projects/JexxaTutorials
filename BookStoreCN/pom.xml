@@ -33,6 +33,13 @@
             <artifactId>jexxa-starter-streaming</artifactId>
             <version>${jexxa.release.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.jexxa.adapters</groupId>
+            <artifactId>adapter-esp-test</artifactId>
+            <version>5.0.0-RC2-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>

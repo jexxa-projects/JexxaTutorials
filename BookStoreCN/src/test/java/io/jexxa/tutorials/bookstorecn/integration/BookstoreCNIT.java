@@ -1,6 +1,6 @@
 package io.jexxa.tutorials.bookstorecn.integration;
 
-import io.jexxa.addend.infrastructure.DrivenAdapter;
+import io.jexxa.adapters.esp.EventBinding;
 import io.jexxa.jexxatest.JexxaIntegrationTest;
 import io.jexxa.jexxatest.integrationtest.rest.RESTBinding;
 import io.jexxa.tutorials.bookstorecn.BookStoreCN;
@@ -29,14 +29,14 @@ class BookstoreCNIT
 
     private static JexxaIntegrationTest jexxaIntegrationTest;  // Simplified IT testing with jexxa-test
     private static RESTBinding restBinding;                    // Binding to access the application under test via REST
-    //private static EventBinding eventBinding;                    // Binding to access the application under test via REST
+    private static EventBinding eventBinding;                    // Binding to access the application under test via REST
 
     @BeforeAll
     static void initBeforeAll()
     {
         jexxaIntegrationTest = new JexxaIntegrationTest(BookStoreCN.class);
         restBinding = jexxaIntegrationTest.getBinding(RESTBinding.class);
-        //eventBinding = jexxaIntegrationTest.getBinding(EventBinding.class);
+        eventBinding = jexxaIntegrationTest.getBinding(EventBinding.class);
     }
 
 
@@ -75,7 +75,7 @@ class BookstoreCNIT
     void testSellLastBook()
     {
         //Arrange
-        /*var result = new ArrayList<BookEvent.BookSoldOut>();
+        var result = new ArrayList<BookEvent.BookSoldOut>();
 
         var bookStoreService = restBinding.getRESTHandler(BookStoreService.class);
         eventBinding.getListener("BookStore", result::add, ISBN13.class, BookEvent.BookSoldOut.class);
@@ -96,7 +96,7 @@ class BookstoreCNIT
 
         //Assert
         assertFalse(result.isEmpty());
-        assertEquals(ANY_BOOK, result.getFirst().isbn13());*/
+        assertEquals(ANY_BOOK, result.getFirst().isbn13());
     }
 
     @AfterAll
