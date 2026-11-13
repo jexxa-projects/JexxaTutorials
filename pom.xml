@@ -51,7 +51,7 @@
         <postgres.version>42.7.14</postgres.version>
         <slf4j.simple.version>2.0.20</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
-        <jackson.databind.version>2.23.0</jackson.databind.version>
+        <netty.bom.version>4.2.20.Final</netty.bom.version>
 
 
 
@@ -94,6 +94,20 @@
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${junit.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-bom</artifactId>
+                <version>${activemq.artemis.client.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
