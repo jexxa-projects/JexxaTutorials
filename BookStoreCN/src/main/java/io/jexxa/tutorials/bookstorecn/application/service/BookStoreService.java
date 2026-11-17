@@ -26,6 +26,10 @@ public class BookStoreService
         this.domainEventDispatcher = domainEventDispatcher;
     }
 
+    public void registerBook(ISBN13 isbn13)
+    {
+        addToStock(isbn13, 0);
+    }
     public void addToStock(ISBN13 isbn13, int amount)
     {
         if (!bookRepository.isRegistered(isbn13))

@@ -1,31 +1,29 @@
 package io.jexxa.tutorials.bookstorecn.infrastructure.bootstrap;
 
-import io.jexxa.tutorials.bookstorecn.domain.book.BookRepository;
+import io.jexxa.tutorials.bookstorecn.application.service.BookStoreService;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static io.jexxa.tutorials.bookstorecn.domain.book.Book.newBook;
 import static io.jexxa.tutorials.bookstorecn.domain.book.ISBN13.createISBN;
 
 
 @SuppressWarnings("unused")
 public class ReferenceLibrary
 {
-    private final BookRepository bookRepository;
+    private final BookStoreService bookStoreService;
 
-    public ReferenceLibrary(BookRepository bookRepository)
+    public ReferenceLibrary(BookStoreService bookStoreService)
     {
-        this.bookRepository = Objects.requireNonNull(bookRepository);
+        this.bookStoreService = Objects.requireNonNull(bookStoreService);
         addLatestBooks();
     }
 
     public void addLatestBooks()
     {
         getLatestBooks()
-                .filter(book -> !bookRepository.isRegistered(book))
-                .forEach(isbn13 -> bookRepository.add(newBook(isbn13)));
+                .forEach(bookStoreService::registerBook);
     }
 
     /**
