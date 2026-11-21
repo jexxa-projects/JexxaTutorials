@@ -12,18 +12,18 @@ import static io.jexxa.tutorials.bookstore.domain.book.ISBN13.createISBN;
 @SuppressWarnings("unused")
 public class ReferenceLibrary
 {
-    private final BookStoreService bookStoreService;
+    private final BookStoreService bookRepository;
 
-    public ReferenceLibrary(BookStoreService bookStoreService)
+    public ReferenceLibrary(BookStoreService bookRepository)
     {
-        this.bookStoreService = Objects.requireNonNull(bookStoreService);
+        this.bookRepository = Objects.requireNonNull(bookRepository);
         addLatestBooks();
     }
 
     public void addLatestBooks()
     {
         getLatestBooks()
-                .forEach(bookStoreService::registerBook);
+                .forEach(isbn13 -> bookRepository.addToStock(isbn13,0));
     }
 
     /**
