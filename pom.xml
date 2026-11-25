@@ -48,7 +48,7 @@
         <jexxa.release.version>10.0.0-RC2</jexxa.release.version>
         <addend.version>2.1.0</addend.version>
         <activemq.artemis.client.version>2.57.0</activemq.artemis.client.version>
-        <postgres.version>42.7.14</postgres.version>
+        <postgres.version>42.7.15</postgres.version>
         <slf4j.simple.version>2.0.20</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
         <netty.bom.version>4.2.20.Final</netty.bom.version>
@@ -82,7 +82,7 @@
         <maven.reports.plugin>3.9.0</maven.reports.plugin>
         <maven.enforcer.plugin>3.7.0</maven.enforcer.plugin>
         <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
-        <maven.versions.plugin>2.25.1</maven.versions.plugin>
+        <maven.versions.plugin>2.25.3</maven.versions.plugin>
         <maven.build.helper.version>3.8.0</maven.build.helper.version>
         <maven.jib.plugin>3.5.2</maven.jib.plugin>
         <maven.shade.plugin>3.6.2</maven.shade.plugin>
