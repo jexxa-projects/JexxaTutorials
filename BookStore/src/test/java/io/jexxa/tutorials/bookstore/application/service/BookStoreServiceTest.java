@@ -3,7 +3,7 @@ package io.jexxa.tutorials.bookstore.application.service;
 import io.jexxa.jexxatest.DomainEventRecorder;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
-import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventDispatcher;
+import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventSender;
 import io.jexxa.tutorials.bookstore.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
@@ -34,7 +34,7 @@ class BookStoreServiceTest
         // JexxaTest is created for each test. It provides stubs for running your tests so that no
         // mock framework is required. It expects the class name your application!
         JexxaTest jexxaTest = getJexxaTest(BookStore.class);
-        var domainEventDispatcher = jexxaTest.getInstanceOfPort(DomainEventDispatcher.class);
+        var domainEventDispatcher = jexxaTest.getInstanceOfPort(DomainEventSender.class);
 
 
         // Request the objects needed for our tests

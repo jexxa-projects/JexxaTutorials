@@ -46,8 +46,8 @@ This tutorial illustrates one possible combination of Domain-Driven Design (DDD)
 | `BookNotInStockException`   | Signals a domain rule violation                                                 | Domain exception                            |
 | `BookRepository`            | Provides domain-oriented access to books                                        | Repository interface in the domain          |
 | `BookStoreService`          | Coordinates use cases such as adding stock and selling books                    | Application service                         |
-| `DomainEventDispatcher`     | Allows application code to publish and subscribe to domain events               | Application port (outbound for publication) |
-| `DomainEventDispatcherImpl` | Distributes domain events synchronously to registered subscribers               | Infrastructure driven adapter               |
+| `DomainEventSender`     | Allows application code to publish and subscribe to domain events               | Application port (outbound for publication) |
+| `DomainEventSenderImpl` | Distributes domain events synchronously to registered subscribers               | Infrastructure driven adapter               |
 | `IntegrationEventSender`    | Sends events through the configured messaging infrastructure                    | Infrastructure driven adapter               |
 | `ReferenceLibrary`          | Seeds a hardcoded list of books at startup                                      | Bootstrap / sample-data component           |
 
@@ -118,7 +118,7 @@ In this tutorial, `Book.sell()` returns a domain event when the last copy is sol
 ```java
 var bookEvent = book.sell();
 bookRepository.update(book);
-domainEventDispatcher.publish(bookEvent);
+domainEventSender.publish(bookEvent);
 ```
 
 This keeps event distribution out of the aggregate. The dispatcher is an in-memory, synchronous implementation of `IDomainEventDispatcher`, located in `infrastructure.drivenadapter.messaging` and annotated `@DrivenAdapter`.
@@ -126,7 +126,7 @@ This keeps event distribution out of the aggregate. The dispatcher is an in-memo
 For the tutorial, the composition root subscribes the integration sender to the `BookSoldOut` event type:
 
 ```java
-domainEventDispatcher.subscribe(BookSoldOut.class, sender::publish);
+domainEventSender.subscribe(BookSoldOut.class, sender::publish);
 ```
 
 This is **wiring**, not a separate application use case. There is no need for an additional `ApplicationService` merely to connect two components. If a domain event must be transformed into a stable external event contract, a dedicated application-layer event handler can perform that mapping while the composition root still registers the subscription.
@@ -189,13 +189,13 @@ public final class BookStore
     static void main()
     {
         var jexxaMain = new JexxaMain(BookStore.class);
-        var domainEventDispatcher =
+        var domainEventSender =
                 jexxaMain.getInstanceOfPort(IDomainEventDispatcher.class);
 
         jexxaMain
                 .bootstrap(ReferenceLibrary.class).and()
                 .bootstrap(IntegrationEventSender.class)
-                    .with(sender -> domainEventDispatcher.subscribe(
+                    .with(sender -> domainEventSender.subscribe(
                             BookSoldOut.class, sender::publish))
 
                 .bind(RESTfulRPCAdapter.class).to(BookStoreService.class)

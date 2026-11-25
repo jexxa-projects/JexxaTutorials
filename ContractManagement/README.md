@@ -100,7 +100,7 @@ Both interfaces belong to the Application Core (or domain, where appropriate); t
                      JexxaAdapters
 ```
 
-The diagram is conceptual: `ContractService` publishes the event through an application-defined `DomainEventDispatcher` port; `ContractAuditService` subscribes to that port and persists the event through `DomainEventStore`.
+The diagram is conceptual: `ContractService` publishes the event through an application-defined `DomainEventSender` port; `ContractAuditService` subscribes to that port and persists the event through `DomainEventStore`.
 
 **This is not Event Sourcing.** The contract's current state is stored in `ContractRepository`; `DomainEventStore` maintains a separate history of signed contracts.
 
@@ -224,14 +224,14 @@ Both are application services. The audit service is **not a Domain Service**: it
 public class ContractService
 {
     private final ContractRepository contractRepository;
-    private final DomainEventDispatcher domainEventDispatcher;
+    private final DomainEventDispatcher domainEventSender;
 
     public ContractService(
             ContractRepository contractRepository,
-            DomainEventDispatcher domainEventDispatcher)
+            DomainEventDispatcher domainEventSender)
     {
         this.contractRepository = requireNonNull(contractRepository);
-        this.domainEventDispatcher = requireNonNull(domainEventDispatcher);
+        this.domainEventSender = requireNonNull(domainEventSender);
     }
 
     public void signContract(ContractNumber contractNumber)
@@ -239,7 +239,7 @@ public class ContractService
         var contract = contractRepository.get(contractNumber);
         var event = contract.sign();
         contractRepository.update(contract);
-        domainEventDispatcher.publish(event);
+        domainEventSender.publish(event);
     }
 
     // Other contract operations omitted ...
@@ -255,14 +255,14 @@ The aggregate performs the domain operation and returns `ContractSigned`. The ap
 public class ContractAuditService
 {
     private final DomainEventStore domainEventStore;
-    private final DomainEventDispatcher domainEventDispatcher;
+    private final DomainEventDispatcher domainEventSender;
 
     public ContractAuditService(
-            DomainEventDispatcher domainEventDispatcher,
+            DomainEventDispatcher domainEventSender,
             DomainEventStore domainEventStore)
     {
         this.domainEventStore = requireNonNull(domainEventStore);
-        this.domainEventDispatcher = requireNonNull(domainEventDispatcher);
+        this.domainEventSender = requireNonNull(domainEventSender);
     }
 
     public void handle(ContractSigned event)
@@ -287,7 +287,7 @@ public class ContractAuditService
 
     public void initialize()
     {
-        domainEventDispatcher.subscribe(ContractSigned.class, this::handle);
+        domainEventSender.subscribe(ContractSigned.class, this::handle);
     }
 }
 ```

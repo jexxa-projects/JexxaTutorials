@@ -1,7 +1,8 @@
 package io.jexxa.tutorials.bookstore.application.service;
 
 import io.jexxa.addend.applicationcore.ApplicationService;
-import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventDispatcher;
+import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventSender;
+import io.jexxa.tutorials.bookstore.application.port.outbound.IntegrationEventSender;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
@@ -16,12 +17,20 @@ import static io.jexxa.tutorials.bookstore.domain.book.Book.newBook;
 public class BookStoreService
 {
     private final BookRepository bookRepository;
-    private final DomainEventDispatcher domainEventDispatcher;
+    private final DomainEventSender domainEventSender;
+    private final IntegrationEventSender integrationEventSender;
 
-    public BookStoreService (BookRepository bookRepository, DomainEventDispatcher domainEventDispatcher)
+    /**
+     * Forward domain events to the integration messaging adapter.
+     * Note: Production systems may require explicit event selection,
+     *  mapping, versioning, and reliable delivery. That's why we provide an DomainEventSender (for internal)
+     *  and an IntegrationEventSender (for externally) sending messages
+     */
+    public BookStoreService (BookRepository bookRepository, DomainEventSender domainEventSender, IntegrationEventSender  integrationEventSender)
     {
         this.bookRepository = bookRepository;
-        this.domainEventDispatcher = domainEventDispatcher;
+        this.domainEventSender = domainEventSender;
+        this.integrationEventSender = integrationEventSender;
     }
 
     public void registerBook(ISBN13 isbn13)
@@ -74,7 +83,8 @@ public class BookStoreService
         var bookEvent = book.sell();
 
         bookRepository.update(book);
-        domainEventDispatcher.publish(bookEvent);
+        domainEventSender.publish(bookEvent);
+        integrationEventSender.publish(bookEvent);
     }
 
     public List<ISBN13> getBooks()
