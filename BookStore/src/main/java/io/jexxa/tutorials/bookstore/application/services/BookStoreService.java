@@ -1,8 +1,8 @@
-package io.jexxa.tutorials.bookstore.application.service;
+package io.jexxa.tutorials.bookstore.application.services;
 
 import io.jexxa.addend.applicationcore.ApplicationService;
-import io.jexxa.tutorials.bookstore.application.port.outbound.DomainEventSender;
-import io.jexxa.tutorials.bookstore.application.port.outbound.IntegrationEventSender;
+import io.jexxa.tutorials.bookstore.application.ports.DomainEventSender;
+import io.jexxa.tutorials.bookstore.application.ports.IntegrationEventSender;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
@@ -26,7 +26,7 @@ public class BookStoreService
      *  mapping, versioning, and reliable delivery. That's why we provide an DomainEventSender (for internal)
      *  and an IntegrationEventSender (for externally) sending messages
      */
-    public BookStoreService (BookRepository bookRepository, DomainEventSender domainEventSender, IntegrationEventSender  integrationEventSender)
+    public BookStoreService(BookRepository bookRepository, DomainEventSender domainEventSender, IntegrationEventSender  integrationEventSender)
     {
         this.bookRepository = bookRepository;
         this.domainEventSender = domainEventSender;

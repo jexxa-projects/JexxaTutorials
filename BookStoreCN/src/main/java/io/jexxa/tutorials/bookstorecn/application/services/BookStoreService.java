@@ -1,7 +1,7 @@
-package io.jexxa.tutorials.bookstorecn.application.service;
+package io.jexxa.tutorials.bookstorecn.application.services;
 
 import io.jexxa.addend.applicationcore.ApplicationService;
-import io.jexxa.tutorials.bookstorecn.application.port.outbound.DomainEventDispatcher;
+import io.jexxa.tutorials.bookstorecn.application.ports.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstorecn.domain.book.Book;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookRepository;

@@ -2,6 +2,7 @@ package io.jexxa.tutorials;
 
 import io.jexxa.adapters.rest.RESTfulRPCAdapter;
 import io.jexxa.core.JexxaMain;
+import io.jexxa.tutorials.application.services.GreetingService;
 
 public final class HelloJexxa
 {

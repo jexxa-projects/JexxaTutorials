@@ -3,6 +3,7 @@ package io.jexxa.tutorials.bookstore.application.service;
 import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstore.BookStore;
+import io.jexxa.tutorials.bookstore.application.services.BookStoreService;
 import io.jexxa.tutorials.bookstore.domain.book.Book;
 import io.jexxa.tutorials.bookstore.domain.book.BookRepository;
 import io.jexxa.tutorials.bookstore.domain.book.ISBN13;

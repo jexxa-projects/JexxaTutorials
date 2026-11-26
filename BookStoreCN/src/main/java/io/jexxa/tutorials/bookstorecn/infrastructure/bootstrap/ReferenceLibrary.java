@@ -1,6 +1,6 @@
 package io.jexxa.tutorials.bookstorecn.infrastructure.bootstrap;
 
-import io.jexxa.tutorials.bookstorecn.application.service.BookStoreService;
+import io.jexxa.tutorials.bookstorecn.application.services.BookStoreService;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 
 import java.util.Objects;

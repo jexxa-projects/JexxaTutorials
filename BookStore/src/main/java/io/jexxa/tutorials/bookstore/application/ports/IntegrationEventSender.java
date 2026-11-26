@@ -1,4 +1,4 @@
-package io.jexxa.tutorials.bookstore.application.port.outbound;
+package io.jexxa.tutorials.bookstore.application.ports;
 
 import io.jexxa.addend.applicationcore.InfrastructureService;
 

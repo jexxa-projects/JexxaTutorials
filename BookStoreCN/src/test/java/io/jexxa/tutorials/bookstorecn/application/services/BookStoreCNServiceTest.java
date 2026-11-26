@@ -1,9 +1,9 @@
-package io.jexxa.tutorials.bookstorecn.application.service;
+package io.jexxa.tutorials.bookstorecn.application.services;
 
 import io.jexxa.jexxatest.DomainEventRecorder;
 import io.jexxa.jexxatest.JexxaTest;
 import io.jexxa.tutorials.bookstorecn.BookStoreCN;
-import io.jexxa.tutorials.bookstorecn.application.port.outbound.DomainEventDispatcher;
+import io.jexxa.tutorials.bookstorecn.application.ports.DomainEventDispatcher;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookNotInStockException;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookRepository;

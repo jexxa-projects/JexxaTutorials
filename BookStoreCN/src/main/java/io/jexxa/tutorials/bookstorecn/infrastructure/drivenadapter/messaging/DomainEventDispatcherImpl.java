@@ -2,10 +2,11 @@ package io.jexxa.tutorials.bookstorecn.infrastructure.drivenadapter.messaging;
 
 import io.jexxa.adapters.core.messaging.InProcessPubSub;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-import io.jexxa.tutorials.bookstorecn.application.port.outbound.DomainEventDispatcher;
+import io.jexxa.tutorials.bookstorecn.application.ports.DomainEventDispatcher;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 @DrivenAdapter
 public final class DomainEventDispatcherImpl implements DomainEventDispatcher {
     private final InProcessPubSub messageBus = new InProcessPubSub();

@@ -4,7 +4,7 @@ import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.adapters.esp.drivingadapter.TypedEventListener;
 import io.jexxa.addend.infrastructure.DrivingAdapter;
 
-import io.jexxa.tutorials.bookstorecn.application.service.BookStoreService;
+import io.jexxa.tutorials.bookstorecn.application.services.BookStoreService;
 import io.jexxa.tutorials.bookstorecn.domain.book.BookEvent;
 import io.jexxa.tutorials.bookstorecn.domain.book.ISBN13;
 

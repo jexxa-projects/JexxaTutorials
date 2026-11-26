@@ -1,4 +1,4 @@
-package io.jexxa.tutorials;
+package io.jexxa.tutorials.application.services;
 
 public final class GreetingService
 {

@@ -4,7 +4,7 @@ package io.jexxa.tutorials.bookstore;
 import io.jexxa.adapters.rest.RESTfulRPCAdapter;
 import io.jexxa.core.JexxaMain;
 import io.jexxa.metrics.MetricsCollector;
-import io.jexxa.tutorials.bookstore.application.service.BookStoreService;
+import io.jexxa.tutorials.bookstore.application.services.BookStoreService;
 
 
 public final class BookStore
