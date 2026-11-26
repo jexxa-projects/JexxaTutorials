@@ -22,6 +22,11 @@
             <artifactId>jexxa-starter-test</artifactId>
             <version>${jexxa.release.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.jexxa</groupId>
+            <artifactId>jexxa-metrics</artifactId>
+            <version>${jexxa.release.version}</version>
+        </dependency>
     </dependencies>
 
   <properties>
