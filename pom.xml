@@ -45,7 +45,7 @@
         <maven.compiler.release>25</maven.compiler.release>
 
         <!-- version of dependencies -->
-        <jexxa.release.version>10.0.0-RC2</jexxa.release.version>
+        <jexxa.release.version>10.0.0-RC3</jexxa.release.version>
         <addend.version>2.1.0</addend.version>
         <activemq.artemis.client.version>2.57.0</activemq.artemis.client.version>
         <postgres.version>42.7.15</postgres.version>
@@ -91,6 +91,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>io.jexxa</groupId>
+                <artifactId>jexxa-bom</artifactId>
+                <version>${jexxa.release.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${junit.bom.version}</version>
@@ -133,33 +140,6 @@
         <artifactId>artemis-jms-client</artifactId>
         <version>${activemq.artemis.client.version}</version>
     </dependency>
-
-
-        <!-- dependencies for tests -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jexxa.jexxatest</groupId>
-            <artifactId>jexxa-test</artifactId>
-            <version>${jexxa.release.version}</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.awaitility</groupId>

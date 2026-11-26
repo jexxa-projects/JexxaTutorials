@@ -35,9 +35,15 @@
         </dependency>
 
         <dependency>
+            <groupId>io.jexxa</groupId>
+            <artifactId>jexxa-starter-test</artifactId>
+            <version>${jexxa.release.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.jexxa.adapters</groupId>
             <artifactId>adapter-esp-test</artifactId>
-            <version>5.0.0-RC3-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
