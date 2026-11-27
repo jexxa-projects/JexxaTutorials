@@ -42,7 +42,7 @@ hellojexxa/
 ├── pom.xml
 └── src/main/
     ├── java/
-    │   ├── GreetingService.java
+    │   ├── application/services/GreetingService.java
     │   └── HelloJexxa.java
     └── resources/
         └── jexxa-application.properties
@@ -51,6 +51,7 @@ hellojexxa/
 Use this complete `pom.xml`:
 
 ```xml
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -69,8 +70,8 @@ Use this complete `pom.xml`:
         <!-- Jexxa core + REST support -->
         <dependency>
             <groupId>io.jexxa</groupId>
-            <artifactId>jexxa-web</artifactId>
-            <version>9.1.1</version>
+            <artifactId>jexxa-starter-business</artifactId>
+            <version>10.0.0</version>
         </dependency>
 
         <!-- Log output to the console -->
@@ -112,7 +113,7 @@ Use this complete `pom.xml`:
 </project>
 ```
 
-`jexxa-web` is the only Jexxa dependency you need here. It brings the core and the REST adapter. `slf4j-simple` just makes Jexxa's log output visible.
+`jexxa-starter-business` is the only dependency you need here. It provides the core, REST-, jms, and JDBC-adapter. `slf4j-simple` just makes Jexxa's log output visible.
 
 **Checkpoint:** `mvn clean compile` runs without errors.
 
