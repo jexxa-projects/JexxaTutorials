@@ -1,14 +1,14 @@
 package io.jexxa.tutorials.bookstore.infrastructure.drivenadapter.messaging;
 
+import io.jexxa.adapters.core.drivenadapter.messaging.MessageSender;
 import io.jexxa.addend.applicationcore.DomainEvent;
 import io.jexxa.addend.infrastructure.DrivenAdapter;
-import io.jexxa.common.drivenadapter.messaging.MessageSender;
-import io.jexxa.tutorials.bookstore.domainservice.IntegrationEventSender;
+import io.jexxa.tutorials.bookstore.application.ports.IntegrationEventSender;
 
 import java.util.Objects;
 import java.util.Properties;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
+import static io.jexxa.adapters.core.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
 
 
 @SuppressWarnings("unused")
@@ -21,6 +21,7 @@ public class IntegrationEventSenderImpl implements IntegrationEventSender {
         // Request a MessageSender from the framework, so that we can configure it in our properties file
         messageSender = createMessageSender(IntegrationEventSender.class, properties);
     }
+
 
     @Override
     public void publish(Object domainEvent)
