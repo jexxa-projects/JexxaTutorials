@@ -51,7 +51,7 @@
         <postgres.version>42.7.15</postgres.version>
         <slf4j.simple.version>2.0.20</slf4j.simple.version>
         <commons.lang3.version>3.12.0</commons.lang3.version>
-        <netty.bom.version>4.2.20.Final</netty.bom.version>
+        <netty.bom.version>4.2.21.Final</netty.bom.version>
 
 
 
